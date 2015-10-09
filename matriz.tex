@@ -1,0 +1,59 @@
+
+\begin{Interfaz}
+  
+  \textbf{parámetros formales}\hangindent=2\parindent\\
+  \parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
+  \parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+    \InterfazFuncion{Copiar}{\In{a}{$\alpha$}}{$\alpha$}
+    {$res \igobs a$}
+    [$\Theta(copy(a))$]
+    [función de copia de $\alpha$'s]
+  }
+
+  \textbf{se explica con}: \tadNombre{Matriz$(\alpha)$}.
+
+  \textbf{géneros}: \TipoVariable{mat$(\alpha)$}.
+  
+  \Titulo{Operaciones básicas de matriz}
+
+  \InterfazFuncion{Crear}{\In{alto}{nat},\In{ancho}{nat},\In{a}{($\alpha$)}}{matriz($\alpha$)}
+  {$res \igobs$ Crear(ancho, alto, a)}
+  [$\Theta$(ancho*alto)]
+  [genera una matriz de ancho*alto que contenga todos a.]
+
+  \InterfazFuncion{$\bullet$[$\bullet$][$\bullet$]}{\Inout{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{$\alpha$}
+  [PosValida(m, ancho, alto)]
+  {alias($res \igobs$ Valor(m, ancho, alto))}
+  [$\Ogr$(1)]
+  [devuelve el elemento en la posicion ancho*alto de la matriz m con alias]
+  [el elemento se retorna con aliasing y se podra modificar]
+  
+  \InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
+  {$res \igobs$ Alto(m)}  
+  [$\Ogr$(1)]
+  [retorna la altura de la matriz m]
+  
+  \InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
+  {$res \igobs$ Ancho(m)}  
+  [$\Ogr$(1)]
+  [retorna la anchura de la matriz m]
+  
+  
+  \Titulo{Operaciones del iterador}
+
+  \InterfazFuncion{CrearIt}{\In{l}{lista($\alpha$)}}{itLista($\alpha$)}
+  {$res$ $\igobs$ crearItBi(\secuencia{}, $l$) $\land$ alias(SecuSuby($it$) $=$ $l$)}
+  [$\Theta(1)$]
+  [crea un iterador bidireccional de la lista, de forma tal que al pedir \NombreFuncion{Siguiente} se obtenga el primer elemento de $l$.]
+  [el iterador se invalida si y sólo si se elimina el elemento siguiente del iterador sin utilizar la función \NombreFuncion{EliminarSiguiente}.]
+
+  \InterfazFuncion{CrearItUlt}{\In{l}{lista($\alpha$)}}{itLista($\alpha$)}
+  {$res$ $\igobs$ crearItBi($l$, \secuencia{}) $\land$ alias(SecuSuby($it$) $=$ $l$)}
+  [$\Theta(1)$]
+  [crea un iterador bidireccional de la lista, de forma tal que al pedir \NombreFuncion{Anterior} se obtenga el último elemento de $l$.]  
+  [el iterador se invalida si y sólo si se elimina el elemento siguiente del iterador sin utilizar la función \NombreFuncion{EliminarSiguiente}.]
+
+  
+  
+  
+\end{Interfaz}
