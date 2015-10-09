@@ -31,6 +31,7 @@ Como hacer una Interfaz
 	}
 
 //Exlpicación y género
+
 	\textbf{se explica con}: \tadNombre{}
 
 	\textbf{géneros}: \TipoVariable{}
