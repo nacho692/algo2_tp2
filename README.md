@@ -12,3 +12,40 @@ El workflow con git es mas o menos asi:
 4. Luego tienen que pushear los cambios al repositorio remoto, o sea al que accedemos todos, para eso hay que hacer ```git push```.
 
 Aca puede pasar que les de algun tipo de error. Lean el error, en general puede ser 2 cosas, o pusieron mal su contraseña, o les dice algo como ```Updates were rejected because the remote contains work that you do not have locally.```. Eso significa que alguien pusheo algo y entonces el repositorio que ustedes tienen localmente no esta up-to-date. Para arreglar eso tienen que hacer ```git pull``` y despues de nuevo ```git push```. 
+
+
+
+--------0--------
+
+Como hacer una Interfaz
+
+\begin{Interfaz}
+
+
+//Paramtero Formal
+
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		//Aca va la definicion de las funciones que se requieran de este parametro
+	}
+
+//Exlpicación y género
+	\textbf{se explica con}: \tadNombre{}
+
+	\textbf{géneros}: \TipoVariable{}
+
+
+//Como definir una funcion
+	
+	\InterfazFuncion{nombreDeLaFuncion}{parametroDeEntrada}{paramteroDeSalida}
+	[] //Acá va la precondicón
+	{} //Acá va la postcondición
+	[] //Acá va la complejidad
+	[] //Acá va una descripción
+	[] //Acá va el aliasing
+
+\end{Interfaz}
+
+
+

@@ -1,0 +1,73 @@
+\begin{Interfaz}
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{a}{$\alpha$}}{$\alpha$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(a))$]
+		[función de copia de $\alpha$'s]
+	}
+  
+	\textbf{se explica con}: \tadNombre{Campus}
+	
+	\textbf{géneros}: \TipoVariable{campus}
+	
+	\Titulo{Operaciones de Campus}
+
+	\InterfazFuncion{CrearCampus}{\In{ancho}{nat}, \In{alto}{nat}}{campus}
+	{res $\igobs$ crearCampus(ancho,alto)}
+	[$\Ogr$(alto x ancho)]
+	[Crea un campus sin obstaculos]
+	
+	\InterfazFuncion{AgregarObstaculo}{\Inout{c}{campus}, \In{p}{posicion}}{}
+	[posValida?(p,c) $\land$ $\neg$ocupada(p, c) $\land$ c = $c_{0}$]
+	{c $\igobs$ agregarObstáculo(p, $c_{0}$)}
+	[$\Ogr$(1)]
+	[Agrega un obstáculo en la posición dada]
+	
+	\InterfazFuncion{Filas}{\In{c}{campus}}{nat}
+	{res $\igobs$ filas(c)}
+	[$\Ogr$(1)]
+	[Indica la cantidad de filas del campus dado]
+	
+	\InterfazFuncion{Columnas}{\In{c}{campus}}{nat}
+	{res $\igobs$ columnas(c)}
+	[$\Ogr$(1)]
+	[Indica la cantidad de columnas del campus dado]	
+	
+	\InterfazFuncion{Ocupada}{\In{c}{campus}, \In{p}{posicion}}{bool}
+	[posValida?(p,c)]
+	{res $\igobs$ ocupada(p,c)}
+	[$\Ogr$(1)]
+	[Indica si la posición dada tiene un obstáculo]
+	
+	\InterfazFuncion{PosValida}{\In{c}{campus}, \In{p}{posicion}}{bool}
+	{res $\igobs$ posValida?(p,c)}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{IngresoSuperior}{\In{c}{campus}, \In{p}{posicion}}{bool}
+	{res $\igobs$ ingresoSuperior?(p,c)}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{IngresoInferior}{\In{c}{campus}, \In{p}{posicion}}{bool}
+	{res $\igobs$ ingresoInferior?(p,c)}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{EsIngreso}{\In{c}{campus}, \In{p}{posicion}}{bool}
+	{res $\igobs$ esIngreso?(p,c)}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{Vecinos}{\In{c}{campus}, \In{p}{posicion}}{con(posicion)}
+	[posValida?(p,c)]
+	{res $\igobs$ vecinos?(p,c)}
+	[$\Ogr$(1)]
+	[Dada una posición, devuelve las 4 posiciones vecinas]
+		
+	\InterfazFuncion{VecinosComunes}{\In{c}{campus}, \In{p_1}{posicion}, \In{p_2}{posicion}}{conj(posicion)}
+	[posValida?($p_1$,c) $\land$ posValida?($p_1$,c)]
+	{res $\igobs$ vecinosComunes($p_1$,$p_2$,c)}
+	[$\Ogr$(1)]
+		
+	
+	
+\end{Interfaz}
