@@ -1,0 +1,48 @@
+\begin{Interfaz}
+
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\sigma$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{s}{$\sigma$}}{$\sigma$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(s))$]
+		[función de copia de $\sigma$'s]
+	}
+	
+	\textbf{se explica con}: \tadNombre{diccionario(string,$\sigma$)}
+	
+	\textbf{usa}: nat, bool
+	
+	\textbf{géneros}: \TipoVariable{diccNom(string, $\sigma$)}
+	
+	\tituloModulo{Operaciones de DiccionarioNombres(string,$\sigma$)}
+	
+	\InterfazFuncion{Vacio}{}{diccNom(string, $\sigma$)}
+	{res $\igobs$ vacio}
+	[$\Ogr$(1)]
+	[Crea un diccionario vacio]
+	
+	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom}
+	[$\neg$def?(c,d) $\land$ d=$d_0$]
+	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <k,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
+	[$\Ogr$(1)]
+	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento]	
+	
+	\InterfazFuncion{Borrar}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{strng}, \In{s}{$\sigma$}}{}
+	[def?(c,d) $\land$ d=$d_0$]
+	{d $\igobs$ borrar(c,$d_0$)}
+	[$\Ogr$($\#$claves(d) $+$ |c|)]
+	[Borra el elemento correspondiente a la clave c del diccionario]
+	
+	\InterfazFuncion{BorrarRapido}{\Inout{d}{diccNom(string,$\sigma$)}, \In{it}{itDiccNom}}{}
+	[def?(c,d) $\land$ d=$d_0$]
+	{d $\igobs$ borrar(c,$d_0$)}
+	[$\Ogr$(|c|)]
+	[Borra el elemento correspondiente a la clave c del diccionario]
+	
+	\InterfazFuncion{Obtener}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{$\sigma$}
+	[def?(c,d) $\land$ d=$d_0$]
+	{alias(res $\igobs$ obtener(c,d)) $\land$ ($\forall$ c' : string)( c' $\in$ claves(s) $\impluego$ obtener(c,d) $\igobs$ obtener(c,$d_0$) )}
+	[$\Ogr$(|c|)]
+	
+\end{Interfaz}
