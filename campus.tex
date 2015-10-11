@@ -12,7 +12,7 @@
 	
 	\textbf{géneros}: \TipoVariable{campus}
 	
-	\Titulo{Operaciones de Campus}
+	\tituloModulo{Operaciones de Campus}
 
 	\InterfazFuncion{CrearCampus}{\In{ancho}{nat}, \In{alto}{nat}}{campus}
 	{res $\igobs$ crearCampus(ancho,alto)}
@@ -90,7 +90,7 @@
 
 \begin{Representacion}
 
-	\Titulo{Representación del campus}
+	\tituloModulo{Representación del campus}
 	
 	\begin{Estructura}{campus}
 	donde estr es Matriz(bool)
@@ -102,8 +102,194 @@
 	
 	\AbsFc{campus}{c $:$ campus $/$\\
 	filas(c) $=$ Alto(e) $\land$ columnas(c) $=$ Ancho(e)\\
-	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[p.X $-$ 1][p.Y $-$ 1])
+	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[p.X $-$ 1][p.Y $-$ 1] )
 	}
 	
+	
+\begin{Algoritmos}
+
+	\begin{algorithm}[1]
+		\caption{iCrearCampus}
+		
+		\begin{algorithmic}
+			\Procedure{iCrearCampus}{\texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : $estr$
+				\State $res \gets$ Crear(ancho,alto,false) \Comment $\Ogr$(ancho x alto)
+			
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(ancho * alto)
+				
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iAgregar}
+		\begin{algorithmic}
+			\Procedure{iAgregar}{\texttt{in/out} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
+				\State e[p.X $-$ 1][p.Y $-$ 1] $\gets$ true \Comment $\Ogr$(1)
+			
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	
+	
+	\end{algorithm}	
+	
+	\begin{algorithm}
+		\caption{iFila}
+		\begin{algorithmic}
+			\Procedure{iFila}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
+				\State $res \gets$ Alto($e$)	\Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iColumna}
+		\begin{algorithmic}
+			\Procedure{iColumna}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
+				\State $res \gets$ Ancho($e$) \Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iOcupada}
+		\begin{algorithmic}
+			\Procedure{iOcupada}{\texttt{in} e : \texttt{estr}, \texttt{in} p: \texttt{posicion}} $\to res$ : $bool$	
+				\State $res \gets$ e[p.X $-$ 1][e.Y $-$ 1] \Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iPosValida}
+		\begin{algorithmic}
+			\Procedure{iPosValida}{\texttt{in} e: \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
+				\State 0 $<$ p.X $\land$ p.X $\leq$ Ancho(e) $\land$ 0 $<$ p.Y $\land$ p.Y $\leq$ Alto(e) \Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+
+	\begin{algorithm}
+		\caption{iIngresoSuperior}
+		\begin{algorithmic}
+			\Procedure{iIngresoSuperior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
+				\State $res \gets$ (p.Y $=$ 1) \Comment $\Ogr$(1)		
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iIngresoInferior}
+		\begin{algorithmic}
+			\Procedure{iIngresoInferior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
+				\State $res \gets$ (p.Y $=$ Alto()) \Comment $\Ogr$(1)		
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iEsIngreso}
+		\begin{algorithmic}
+			\Procedure{iEsIngreso}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
+				\State $res \gets$ (iEsIngresoSuperior(e,p) $\land$ iEsIngresoInferior(e,p)) \Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iVecinos}
+		\begin{algorithmic}
+			\Procedure{iVecinos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
+				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <p.X $-$ 1, p.Y>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <p.X $+$ 1, p.Y>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <p.X, p.Y $-$ 1>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <p.X, p.Y $+$ 1>) \Comment $\Ogr$(1)
+				\State $res \gets$ iVecinosValidos(e, res) \Comment $\Ogr$($\#$res) $=$ $\Ogr$(4) $=$ $\Ogr$(1)				
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+		
+	\begin{algorithm}
+		\caption{iVecinosComunes}
+		\begin{algorithmic}
+			\Procedure{iVecinosComunes}{\texttt{in} e : \texttt{estr}, \texttt{in} $p_1$ : \texttt{posicion}, \texttt{in} $p_2$ : \texttt{posicion}} $\to res$ : $conj(posicion)$
+				\State $vec_1 \gets$ iVecinos(e, $p_1$) \Comment $\Ogr$(1)
+				\State $vec_2 \gets$ iVecinos(e, $p_2$) \Comment $\Ogr$(1)
+				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
+				\State $it_1 \gets$ CrearIt($vec_1$) \Comment $\Ogr$(1)
+				\While{HaySiguiente($it_1$)} \Comment Se repite 4 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(1)	
+					\State $it_2 \gets$ CrearIt($vec_2$) \Comment $\Ogr$(1)
+					\While{HaySiguiente($it_2$)} \Comment Se repite 4 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(1)
+						\If{Siguiente($it_1$) $=$ Siguiente($it_2$)} \Comment $\Ogr$(1)
+							\State AgregarRapido(res, Siguiente($it_1$))
+						\EndIf
+						\State Avanzar($it_2$) \Comment $\Ogr$(1)
+					\EndWhile
+					\State Avanzar($it_1$) \Comment $\Ogr$(1)
+				\EndWhile		
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+			
+	\begin{algorithm}
+		\caption{iVecinosValidos}
+		\begin{algorithmic}
+			\Procedure{iVecinosValidos}{\texttt{in} e : \texttt{estr},\texttt{in/out} cp : $conj(posicion)$}
+				\State $it \gets$ CrearIt(cp) \Comment $\Ogr$(1)
+				\While{HaySiguiente(it)} \Comment Se repite $\#$cp veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$($\#$cp)
+					\If{$\neg$ iPosValida(e, Siguiente(it))} \Comment $\Ogr$(1)
+						\State EliminarSiguiente(it) \Comment $\Ogr$(1)
+					\Else
+						\State Avanzar(it) \Comment $\Ogr$(1)
+					\EndIf
+				\EndWhile
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$cp)
+	\end{algorithm}
+				
+	\begin{algorithm}
+		\caption{iProxPosicion}
+		\begin{algorithmic}
+			\Procedure{iProxPosicion}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}, \texttt{in} dir : \texttt{direccion}} $\to res$ : $posicion$
+				\State $res \gets$ <p.X $+$ $\beta$(dir $=$ der) $-$ $\beta$(dir $= $ izq), p.Y $+$ $\beta$(dir $=$ abajo) $-$ $\beta$(dir $=$ arriba)> \Comment $\Ogr$(1)
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+				
+	\begin{algorithm}
+		\caption{iIngresosMasCercanos}
+		\begin{algorithmic}
+			\Procedure{iIngresosMasCercanos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
+				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
+				\If{Dist(p, <p.X, 1>) $<$ Dist(p, <p.Y, iFilas(e)>)} \Comment $\Ogr$(1)
+					\State AgregarRapido(res, <p.X, 1>) \Comment $\Ogr$(1)
+				\Else
+					\If{Dist(p, <p.X, 1>) $>$ Dist(p, <p.Y, iFilas(e)>)} \Comment $\Ogr$(1)
+						\State AgregarRapido(res, <p.X, iFilas(e)>) \Comment $\Ogr$(1)
+					\Else
+						\State AgregarRapido(res, <p.X, 1>) \Comment $\Ogr$(1)
+						\State AgregarRapido(res, <p.X, iFilas(e)>) \Comment $\Ogr$(1)
+					\EndIf				
+				\EndIf
+			\EndProcedure		
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+\end{Algoritmos}
+	    
     
 \end{Representacion}
