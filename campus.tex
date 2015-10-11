@@ -67,7 +67,43 @@
 	[posValida?($p_1$,c) $\land$ posValida?($p_1$,c)]
 	{res $\igobs$ vecinosComunes($p_1$,$p_2$,c)}
 	[$\Ogr$(1)]
+	
+	\InterfazFuncion{VecinosValidos}{\In{c}{campus}, \Inout{cp}{conj(posicion)}}{}
+	[c = $c_0$]
+	{c $\igobs$ vecinosValidos}
+	[$\Ogr$( |cp| )]
+	[Dado un conjunto de posiciones devuelve el conjunto resultado de quitar las posiciones no validas]
+	
+	\InterfazFuncion{ProxPosicion}{\In{c}{campus}, \In{p}{posicion}, \In{d}{direccion}}{posicion}
+	[posValida?(p,c)]
+	{res $\igobs$ proxPosición(p,d,c)}
+	[$\Ogr$(1)]
+	[Devuelve el resultado de mover la posición indicada en la dirección dada]
 		
-	
-	
+	\InterfazFuncion{IngresosMasCercanos}{\In{c}{campus}, \In{p}{posicion}}{conj(posicion)}
+	[posValida?(p,c)]
+	{res $\igobs$ ingresosMásCercanos(p,c)}
+	[$\Ogr$(1)]
+	[Devuelve el conjunto de ingresos más cercanos a la posición dada]
+				
 \end{Interfaz}
+
+\begin{Representacion}
+
+	\Titulo{Representación del campus}
+	
+	\begin{Estructura}{campus}
+	donde estr es Matriz(bool)
+	\end{Estructura}
+	
+	\Rep{true}
+	
+~	
+	
+	\AbsFc{campus}{c $:$ campus $/$\\
+	filas(c) $=$ Alto(e) $\land$ columnas(c) $=$ Ancho(e)\\
+	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[p.X $-$ 1][p.Y $-$ 1])
+	}
+	
+    
+\end{Representacion}
