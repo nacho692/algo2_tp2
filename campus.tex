@@ -10,6 +10,8 @@
   
 	\textbf{se explica con}: \tadNombre{Campus}
 	
+	\textbf{usa}: nat, bool, Matriz(bool), posicion
+	
 	\textbf{géneros}: \TipoVariable{campus}
 	
 	\tituloModulo{Operaciones de Campus}
@@ -85,6 +87,11 @@
 	{res $\igobs$ ingresosMásCercanos(p,c)}
 	[$\Ogr$(1)]
 	[Devuelve el conjunto de ingresos más cercanos a la posición dada]
+	
+	\InterfazFuncion{Copiar}{\In{c}{campus}}{campus}
+	{res $\igobs$ c}
+	[$\Ogr$(Filas(c) * Columnas(c))]
+	[Crea una copia del campus]
 				
 \end{Interfaz}
 
@@ -288,6 +295,16 @@
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iCopiar}
+		\begin{algorithmic}
+			\Procedure{iCopiar}{\texttt{in} e : \texttt{estr}} $\to res$ : $estr$
+				\State $res \gets$ Copiar(e) \Comment $\Ogr$(Copiar(e)) $=$ $\Ogr$(Ancho(e) * Alto(e))
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(Ancho(e) * Alto(e))
+	\end{algorithm}	
 	
 \end{Algoritmos}
 	    
