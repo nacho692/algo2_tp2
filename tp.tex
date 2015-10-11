@@ -15,21 +15,18 @@
 \usepackage{modulos}
 \usepackage[colorlinks=true, linkcolor=blue]{hyperref}
 \usepackage{calc}
+\usepackage{lastpage}
 
-
-\newcommand{\moduloNombre}[1]{\textbf{#1}}
-
+\newcommand{\tituloModulo}[1]{
+  \vspace*{1ex}\par\noindent\textbf{\large #1}\par
+}
 \let\NombreFuncion=\textsc
 \let\TipoVariable=\texttt
 \let\ModificadorArgumento=\textbf
 \newcommand{\res}{$res$\xspace}
 \newcommand{\tab}{\hspace*{7mm}}
-
 \newcommand{\Ogr}{\mathcal{O}}
-
-
 \newcommand{\footnoteMio}[2]{\textsuperscript{#1} \lfoot{\footnotesize \parbox{16cm}{\textsuperscript{#1}#2}}}
-
 \newcommandx{\TipoFuncion}[3]{%
   \NombreFuncion{#1}(#2) \ifx#3\empty\else $\to$ \res\,: \TipoVariable{#3}\fi%
 }
@@ -38,16 +35,17 @@
 \newcommand{\Inout}[2]{\ModificadorArgumento{in/out} \ensuremath{#1}\,: \TipoVariable{#2}\xspace}
 \newcommand{\Aplicar}[2]{\NombreFuncion{#1}(#2)}
 
-\newcommand{\Titulo}[1]{
-  \vspace*{1ex}\par\noindent\textbf{\large #1}\par
-}
 \newcommand{\DRef}{\ensuremath{\rightarrow}}
 
+% Acomodo fancyhdr.
+\pagestyle{fancy}
+\thispagestyle{fancy}
+\lhead{Algoritmos y Estructuras de Datos II}
+\rhead{$2^\mathrm{do}$ cuatrimestre de 2015}
+\cfoot{\thepage /\pageref{LastPage}}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{13pt}
 
-
-\author{Algoritmos y Estructuras de Datos II, DC, UBA.}
-\date{}
-\title{Tipos abstractos de datos básicos}
 
 %Informacion para la caratula
 \materia{Algoritmos y Estructuras de Datos II}
@@ -72,14 +70,17 @@
 
 
 \clearpage
-
-
-
 \section{Módulo Campus Seguro($\alpha$)}
 \input{campus_seguro.tex}
 
+\clearpage
+\section{Módulo Campus}
+\input{campus.tex}
 
-\end{document}
+\clearpage
+\section{Módulo Matriz($\alpha$)}
+\input{matriz.tex}
+
 
 
 \end{document}
