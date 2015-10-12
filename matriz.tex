@@ -1,40 +1,70 @@
 \begin{Interfaz}
-  
-  \textbf{parámetros formales}\hangindent=2\parindent\\
-  \parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
-  \parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
-    \InterfazFuncion{Copiar}{\In{a}{$\alpha$}}{$\alpha$}
-    {$res \igobs a$}
-    [$\Theta(copy(a))$]
-    [función de copia de $\alpha$'s]
-  }
 
-  \textbf{se explica con}: \tadNombre{Matriz$(\alpha)$}.
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\alpha$\\	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+	\InterfazFuncion{Copiar}{\In{a}{$\alpha$}}{$\alpha$}
+	{$res \igobs a$}
+	[$\Theta(copy(a))$]
+	[función de copia de $\alpha$'s]
+	}
 
-  \textbf{géneros}: \TipoVariable{mat$(\alpha)$}.
-  
-  \tituloModulo{Operaciones básicas de matriz}
+	\textbf{se explica con}: \tadNombre{Matriz$(\alpha)$}.
 
-  \InterfazFuncion{Crear}{\In{alto}{nat},\In{ancho}{nat},\In{a}{($\alpha$)}}{matriz($\alpha$)}
-  {$res \igobs$ Crear(ancho, alto, a)}
-  [$\Theta$(ancho*alto)]
-  [genera una matriz de ancho*alto que contenga todos a.]
+	\textbf{géneros}: \TipoVariable{mat$(\alpha)$}.
 
-  \InterfazFuncion{$\bullet$[$\bullet$][$\bullet$]}{\Inout{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{$\alpha$}
-  [PosValida(m, ancho, alto)]
-  {alias($res \igobs$ Valor(m, ancho, alto))}
-  [$\Ogr$(1)]
-  [devuelve el elemento en la posicion ancho*alto de la matriz m con alias]
-  [el elemento se retorna con aliasing y se podra modificar]
-  
-  \InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
-  {$res \igobs$ Alto(m)}  
-  [$\Ogr$(1)]
-  [retorna la altura de la matriz m]
-  
-  \InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
-  {$res \igobs$ Ancho(m)}  
-  [$\Ogr$(1)]
-  [retorna la anchura de la matriz m]
-  
+	\tituloModulo{Operaciones básicas de matriz}
+
+	\InterfazFuncion{CrearMatriz}{\In{alto}{nat}, \In{ancho}{nat}, \In{a}{($\alpha$)}}{matriz($\alpha$)}
+	{$res \igobs$ Crear(ancho, alto, a)}
+	[$\Ogr$($ancho$ x $alto$)]
+	[genera una matriz de $ancho$*$alto$ que contenga todos $a$]
+
+	\InterfazFuncion{Definir}{\In{ancho}{nat}, \In{alto}{nat}, \In{a}{$\alpha$}, \Inout{m}{matriz($\alpha$)}}{}
+	[posValida(m, ancho, alto) $\land$ m$_0$=m]
+	{m $\igobs$ definirArreglo(alto, a, m$_0$[ancho])}%uso el definir de un arreglo
+	[$\Ogr$(1)]
+	[defino el elemento $a$ en la matriz]
+	
+	\InterfazFuncion{$\bullet$[$\bullet$][$\bullet$]}{\Inout{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{$\alpha$}
+	[posValida(m, ancho, alto)]
+	{alias($res \igobs$ valor(m, ancho, alto))}
+	[$\Ogr$(1)]
+	[devuelve el elemento en la posicion $ancho$*$alto$ de la matriz $m$ con alias]
+	[el elemento se retorna con aliasing y se podra modificar]
+
+	\InterfazFuncion{Copiar}{\In{m}{matriz($\alpha$)}}{matriz($\alpha$)}
+	{$res \igobs$ m}  
+	[$\Ogr$($ancho$ x $alto$)]
+	[crea una copia de la matriz $m$]
+
+	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
+	{$res \igobs$ alto(m)}  
+	[$\Ogr$(1)]
+	[retorna la altura de la matriz $m$]
+
+	\InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
+	{$res \igobs$ ancho(m)}  
+	[$\Ogr$(1)]
+	[retorna el ancho de la matriz $m$]
+
+	\InterfazFuncion{PosValida}{\In{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{nat}
+	{$res \igobs$ posValida(m, ancho, alto)}  
+	[$\Ogr$(1)]
+	[devuelve si es una posicion valida de mi matriz o no]
+	
 \end{Interfaz}
+
+\begin{Representacion}
+	
+	\tituloModulo{Representación de la campus}
+	
+	\begin{Estructura}{matriz($\alpha$)}
+		donde estr es tupla<matriz: Arreglo\_dimencionable de Arreglo\_dimencionable de $\alpha$, Ancho: nat, Alto: nat>
+	\end{Estructura}
+	
+	\Rep{true $\leftrightarrow$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i $\in$ nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\rightarrow$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
+	
+	~	
+	
+	\AbsFc{matriz($\alpha$)}{}
+\end{Representacion}
