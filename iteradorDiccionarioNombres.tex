@@ -11,30 +11,152 @@
 	
 	\textbf{se explica con}: \tadNombre{Iterador Unidireccional Modificable (tupla<string, $\sigma$>)}
 	
-	\textbf{usa}: nat, bool
+	\textbf{usa}: nat, bool, DiccionarioNombre(string,$\sigma$)
 	
-	\textbf{géneros}: \TipoVariable{itDiccNom}
+	\textbf{géneros}: \TipoVariable{itDiccNom(string,$\sigma$)}
 	
 	\tituloModulo{Operaciones de DiccionarioNombres(string,$\sigma$)}
 	
-	\InterfazFuncion{CrearIt}{\In{d}{DiccNom(string,$\sigma$)}}{itDiccNom}
+	\InterfazFuncion{CrearIt}{\In{d}{DiccNom(string,$\sigma$)}}{itDiccNom(string,$\sigma$)}
 	{alias(esPermutacion(secuSuby(res),d)) $\land$ vacia?(Anteriores(res))}
 	[$\Ogr$(1)]
 	[Devuelve un iterador al diccionario]
 	
-	\InterfazFuncion{HaySiguiente}{\In{it}{itDiccNom}}{bool}
-	{res $\igobs$ haySiguiente(it)}	
+	\InterfazFuncion{HaySiguiente}{\In{it}{itDiccNom(string,$\sigma$)}}{bool}
+	{res $\igobs$ hayMas(it)}	
 	[$\Ogr$(1)]
 	[Devuelve verdadero si y sólo si el iterador tiene un siguiente elemento]
 	
-	\InterfazFuncion{Siguiente}{\In{it}{itDiccNom}}{tupla<string,$\sigma$>}
-	[haySiguiente(it)]
-	{alias(res $\igobs$ siguiente(it))}
+	\InterfazFuncion{Siguiente}{\In{it}{itDiccNom(string,$\sigma$)}}{tupla<string,$\sigma$>}
+	[hayMas(it)]
+	{alias(res $\igobs$ prim(Siguiente(it)))}
 	[$\Ogr$(1)]
 	
-	\InterfazFuncion{Avanzar}{\Inout{it}{itDiccNom}}{}
-	[haySiguiente(it) $\land$ it=$it_0$]
+	\InterfazFuncion{SiguienteClave}{\In{it}{itDiccNom(string,$\sigma$)}}{string}
+	[hayMas(it)]
+	{alias(res $\igobs$ $\Pi_1$(prim(Siguiente(it))))}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{SiguienteSignificado}{\In{it}{itDiccNom(string,$\sigma$)}}{$\sigma$}
+	[hayMas(it)]
+	{alias(res $\igobs$ $\Pi_2$(prim(Siguiente(it))))}
+	[$\Ogr$(1)]
+		
+	\InterfazFuncion{Avanzar}{\Inout{it}{itDiccNom(string,$\sigma$)}}{}
+	[hayMas(it) $\land$ it=$it_0$]
 	{it = avanzar($it_0$)}	
 	[$\Ogr$(1)]
+	
+	\InterfazFuncion{EliminarSiguiente}{\Inout{it}{itDiccNom(string,$\sigma$)}}{}
+	[hayMas(it) $\land$ it=$it_0$]
+	{it $\igobs$ Eliminar($it_0$)}
+	[$\Ogr$(|c|) donde c es la clave asociada al siguiente del iterador]
+	[Elimina el siguiente del iterador]
+
 
 \end{Interfaz}
+
+\begin{Representacion}
+
+	\tituloModulo{Representación del iterador}
+
+	\begin{Estructura}{itDiccNom(string,$\sigma$)}[ite]
+		Donde $ite$ es $it$ :  itDicc(string,$\sigma$)
+	\end{Estructura}
+		
+	\Rep[ite][i]{Rep(ite.it)}
+
+~
+	
+	\AbsFc[ite]{itDiccNom(string,$\sigma$)}[i]{Abs(i.it)}
+	
+~
+%%%
+%%
+
+	\begin{algorithm}
+		\caption{iCrearIt}
+		\begin{algorithmic}
+			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ : $ite$
+				\State $res \gets$ crearIt(e.lineal) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iHaySiguiente}
+		\begin{algorithmic}
+			\Procedure{iHaySiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $bool$
+				\State $res \gets$ haySiguiente(ite) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iSiguiente}
+		\begin{algorithmic}
+			\Procedure{iSiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $tupla<string,\sigma>$
+				\State $res \gets$ Siguiente(ite) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iSiguienteClave}
+		\begin{algorithmic}
+			\Procedure{iSiguienteClave}{\texttt{in} it : \texttt{ite}} $\to res$ : $string$
+				\State $res \gets$ $\Pi_1$(Siguiente(ite)) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iSiguienteSignificado}
+		\begin{algorithmic}
+			\Procedure{iSiguienteSignificado}{\texttt{in} it : \texttt{ite}} $\to res$ : $\sigma$
+				\State $res \gets$ $\Pi_2$(Siguiente(ite)) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iAvanzar}
+		\begin{algorithmic}
+			\Procedure{iAvanzar}{\texttt{in/out} it : \texttt{ite}}
+				\State Avanzar(ite) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iEliminarSiguiente}
+		\begin{algorithmic}
+			\Procedure{iEliminarSiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $tupla<string,\sigma>$
+				\State $c \gets$ SiguienteClave(ite) \Comment $\Ogr$(1)
+				\State EliminarSiguiente(ite) \Comment $\Ogr$(1)
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0 \Comment $\Ogr$(1)
+				\While{i < |c|-1} \Comment Se repite |c| - 1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
+					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
+					\State i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\State delete(Buscar(s[i],piso).significado)
+				\State Buscar(s[i],piso).significado $\gets$ NULL \Comment $\Ogr$(1)
+				
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	
+	
+	
+	
+	
+\end{Representacion}

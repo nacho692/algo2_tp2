@@ -22,7 +22,7 @@
 	[$\Ogr$(1)]
 	[Crea un diccionario vacio]
 	
-	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom}
+	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom(string,$\sigma$)}
 	[$\neg$def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <k,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
 	[$\Ogr$(|c| + copy(s))]
@@ -34,11 +34,11 @@
 	[$\Ogr$($\#$claves(d) $+$ |c|)]
 	[Borra el elemento correspondiente a la clave c del diccionario]
 	
-	\InterfazFuncion{BorrarRapido}{\Inout{d}{diccNom(string,$\sigma$)}, \In{it}{itDiccNom}}{}
+	\InterfazFuncion{BorrarRapido}{\Inout{d}{diccNom(string,$\sigma$)}, \In{it}{itDiccNom(string,$\sigma$)}}{}
 	[def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ borrar(c,$d_0$)}
 	[$\Ogr$(|c|)]
-	[Borra el elemento correspondiente a la clave c del diccionario]
+	[Borra el elemento correspondiente a la clave c del diccionario. c es la clave correspondiente al siguiente del iterador]
 	
 	\InterfazFuncion{Obtener}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{$\sigma$}
 	[def?(c,d) $\land$ d=$d_0$]
@@ -140,7 +140,7 @@
 	\begin{algorithm}
 		\caption{iDefinir}
 		\begin{algorithmic}
-			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $itDiccNom$
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $itDiccNom(string,\sigma)$
 				\State $res \gets$ DefinirRapido(e.lineal,c,s) \Comment $\Ogr$(copy(s))
 				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
 				\State $i \gets$ 0
@@ -171,6 +171,8 @@
 		{res $\igobs$ estaLetra(c,t)}
 		[$\Ogr$(1)]
 		[Devuelve verdadero si y sólo si el char de entrada esta en alguno de los elementos de la lista]
+
+~
 		
 		\begin{algorithmic}
 			\Procedure{iEsta}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $bool$
@@ -194,6 +196,8 @@
 		[Busca el elemento de la lista que este caracterizado con el char de entrada]
 		[El resultado queda ligado con aliasing]
 		
+~	
+
 		\begin{algorithmic}
 			\Procedure{iBuscar}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $tupla<char, puntero(\sigma), diccT(string,\sigma)>$
 				\State $it \gets$ crearIt(t)
@@ -243,17 +247,8 @@
 	\begin{algorithm}
 		\caption{iBorrarRapido}
 		\begin{algorithmic}
-			\Procedure{iBorrarRapido}{\texttt{in/out} e : \texttt{estr}, \texttt{in} it : \texttt{itDiccNom}}
-				\State $c \gets$ SiguienteClave(it) \Comment $\Ogr$(1)
-				\State EliminarSiguiente(it) \Comment $\Ogr$(1)
-				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
-				\State $i \gets$ 0
-				\While{i < |c|-1} \Comment Se repite |c| - 1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
-					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
-					\State i++ \Comment $\Ogr$(1)
-				\EndWhile
-				\State delete(Buscar(s[i],piso).significado)
-				\State Buscar(s[i],piso).significado $\gets$ NULL \Comment $\Ogr$(1)
+			\Procedure{iBorrarRapido}{\texttt{in/out} e : \texttt{estr}, \texttt{in} it : \texttt{itDiccNom(string,$\sigma$)}}
+				\State EliminarSiguiente(it) \Comment c es la clave asociada al siguiente del iterador $\Ogr$(|c|)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(|clave|) donde clave es la clave del siguiente del iterador

@@ -4,7 +4,7 @@
 	
 	\textbf{géneros}: \TipoVariable{posicion}.
 	
-	\Titulo{Operaciones básicas de posicion}
+	\tituloModulo{Operaciones básicas de posicion}
 	
 	\InterfazFuncion{<$\bullet$, $\bullet$>}{\In{x}{nat},\In{y}{nat}}{posicion}
 	{$res \igobs$ <x,y>}
@@ -33,14 +33,14 @@
 	[$\Theta$(1)]
 	
 	\InterfazFuncion{Dist}{\In{p1}{posicion},\In{p2}{posicion}}{nat}
-	{$res  \igobs$ (Max(X(p1), X(p2)) - Min(X(p1),X(p2))) + (Max(Y(p1),Y(p2)) - Max(Y(p1),Y(p2))) )}}
+	{$res  \igobs$ (Max(X(p1), X(p2)) - Min(X(p1),X(p2))) + (Max(Y(p1),Y(p2)) - Max(Y(p1),Y(p2))) )}
 	[$\Theta$(1)]
 	
 \end{Interfaz}
 
 \begin{Representacion}
 	
-	\Titulo{Representación de posicion}
+	\tituloModulo{Representación de posicion}
 	
 	\begin{Estructura}{posicion}[estr]
 		\begin{Tupla}[estr]
