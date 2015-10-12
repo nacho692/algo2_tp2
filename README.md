@@ -22,7 +22,7 @@ Como hacer una Interfaz
 \begin{Interfaz}
 
 
-//Paramtero Formal
+//Parametero Formal
 
 	\textbf{parámetros formales}\hangindent=2\parindent\\
 	\parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
@@ -30,7 +30,7 @@ Como hacer una Interfaz
 		//Aca va la definicion de las funciones que se requieran de este parametro
 	}
 
-//Exlpicación y género
+//Explicación y género
 
 	\textbf{se explica con}: \tadNombre{}
 
