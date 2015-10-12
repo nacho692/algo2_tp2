@@ -25,10 +25,10 @@
 	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom}
 	[$\neg$def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <k,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
-	[$\Ogr$(1)]
+	[$\Ogr$(|c| + copy(s))]
 	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento]	
 	
-	\InterfazFuncion{Borrar}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{strng}, \In{s}{$\sigma$}}{}
+	\InterfazFuncion{Borrar}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{}
 	[def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ borrar(c,$d_0$)}
 	[$\Ogr$($\#$claves(d) $+$ |c|)]
@@ -46,3 +46,217 @@
 	[$\Ogr$(|c|)]
 	
 \end{Interfaz}
+
+\begin{Representacion}
+
+	\tituloModulo{Representacion del DiccionaroNombres(string, $\sigma$)}
+	
+	\begin{Estructura}{diccNom(string,$\sigma$)}
+		\begin{Tupla}
+			\tupItem{lineal}{dicc(string,$\sigma$)}
+			\tupItem{trie}{diccT(string,$\sigma$)}
+		\end{Tupla}
+		Donde diccT(string,$\sigma$) es Lista(tupla<$letra$ : char, $significado$ : puntero($\sigma$), $prox$ : diccT(string, $\sigma$)>)
+	\end{Estructura}
+	
+	\Rep{Rep(e.lineal) $\land$ tamaño(e.trie) $<$ 256 $\land$ SinRepetidos(Letras(e.trie)) \\
+		($\forall$ dT : diccT(string,$\sigma$)) ( Esta?(dT, e.trie.prox) $\impluego$ Rep(dT) )	
+	}
+	
+	\tadOperacion{Letra}{li}{secu(char)}{}
+	\tadAxioma{Letra(l)}{\IF vacio?(l)
+							THEN \secuencia{}
+							ELSE prim(l).letra $\bullet$ Letra(fin(l))
+						FI}
+	Donde li es Lista(tupla<$letra$ : char, $significado$ : puntero($\sigma$), $prox$ : diccT(string, $\sigma$)>
+	
+~	
+	
+	\tadOperacion{SinRepetidos}{secu($\alpha$)}{bool}{}
+	\tadAxioma{SinRepetidos(s)}{\IF vacio?(s)
+									THEN true
+									ELSE $\neg$esta?(prim(s),fin(s)) $\land$ SinRepetidos(fin(s))
+								FI}
+	
+~
+~
+	
+	
+	\AbsFc{diccNom(string, $\sigma$)}{dN : diccNom(string, $\sigma$) $/$ \\
+		Abs(e.lineal) $\igobs$ dN \\
+		$\land$ ($\forall$ c : string) (Def?(c,d) $\Leftrightarrow$ Definido(c,e.trie))\\
+		$\land$ ($\forall$ c : string) (Def?(c,d) $\impluego$ Obtener(c,d) $\igobs$ Significado(c, e.trie))}
+	
+~
+	\tadOperacion{Definido}{string,trie}{bool}{}
+	\tadAxioma{Definido(s,t)}{estaLetra(s[0],t) $\yluego$ \IF Tamaño(s) == 1 
+															THEN true
+															ELSE Definido(c[1:Tamaño(c)-1],t)
+														FI}		
+
+~											
+	\tadOperacion{estaLetra}{char,trie}{bool}{}
+	\tadAxioma{estaLetra(c,t)}{	\IF vacio?(t)
+									THEN false
+									ELSE Primero(t).letra $\igobs$ c $\lor$ estaLetra(c, fin(t))
+								FI}		
+
+~
+	\tadOperacion{Significado}{string/s,trie/t}{$\sigma$}{Definido(s,t)}
+	\tadAxioma{Significado(s,e)}{
+		\IF Tamaño(s) = 1
+			THEN *(Buscar(s[0],t).significado)
+			ELSE Significado(s[1:Tamaño(s)-1],Buscar(s[0],t).prox)
+		FI }
+~
+	\tadOperacion{Buscar}{char/c,trie/t}{piso}{estaLetra(c,t)}
+	\tadAxioma{Buscar(c,t)}{
+		\IF primero(t).letra = c
+			THEN Primero(t)
+			ELSE Buscar(c,fin(t))
+		FI}
+	
+	Donde piso es tupla<$letra$ : char, $significado$ : puntero($\sigma$), $prox$ : trie>
+	
+~
+	
+	Donde trie es diccT(string, $\sigma$)
+
+\end{Representacion}
+
+\begin{Algoritmos}
+	
+	\begin{algorithm}
+		\caption{iVacio}
+		\begin{algorithmic}
+			\Procedure{iVacio}{} $\to res$ : estr
+				\State $res.lineal \gets$ Vacio() //vacio de diccionario lineal \Comment $\Ogr$(1)
+				\State $res.trie \gets$ Vacio() //vacio de lista \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iDefinir}
+		\begin{algorithmic}
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $itDiccNom$
+				\State $res \gets$ DefinirRapido(e.lineal,c,s) \Comment $\Ogr$(copy(s))
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0
+				\While{i $<$ |c|-1} \Comment Se repite |c|-1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|-1) $=$ $\Ogr$(|c|)
+					\If{iEsta(c[i],piso)}
+						\State $piso \gets$ iBuscar(c[i], piso).prox \Comment $\Ogr$(1)
+					\Else
+						\State AgregarAdelante(piso, <c[i],NULL,Vacio()>) \Comment $\Ogr$(1)
+						\State $piso \gets$ piso[0].prox
+					\EndIf
+					\State i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\If{iEsta(c[i],piso) \Comment $\Ogr$(1)}
+					\State iBuscar(c[i],piso).significado $\gets$ puntero(s) \Comment $\Ogr$(1)
+				\Else
+					\State AgregarAdelante(piso, <c[i],puntero(s),Vacio()>)
+				\EndIf
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(|c| + copy(s))
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iEsta}
+
+		\InterfazFuncion{Esta}{\In{c}{char}, \Inout{t}{diccT(string,$\sigma$)}}{bool}
+		[esta(c,t)]
+		{res $\igobs$ estaLetra(c,t)}
+		[$\Ogr$(1)]
+		[Devuelve verdadero si y sólo si el char de entrada esta en alguno de los elementos de la lista]
+		
+		\begin{algorithmic}
+			\Procedure{iEsta}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $bool$
+				\State $it \gets$ crearIr(t) \Comment $\Ogr$(1)
+				\While{haySiguiente(it) $\land$ Siguiente(it).letra $\neq$ c} \Comment Se repite a lo sumo la cantidad de char, que es una constate $\Rightarrow$ $\Ogr$(1)
+					\State Avanzar(it) \Comment $\Ogr$(1)
+				\EndWhile
+				\State $res \gets$ (HaySiguiente(it)) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iBuscar}
+
+		\InterfazFuncion{Buscar}{\In{c}{char}, \Inout{t}{diccT(string,$\sigma$)}}{tupla<$letra$ char, $significado$ puntero($\sigma$), $prox$ diccT(string,$\sigma$)>}
+		[esta(c,t)]
+		{alias(res $\igobs$ buscar(c,t))}
+		[$\Ogr$(1)]
+		[Busca el elemento de la lista que este caracterizado con el char de entrada]
+		[El resultado queda ligado con aliasing]
+		
+		\begin{algorithmic}
+			\Procedure{iBuscar}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $tupla<char, puntero(\sigma), diccT(string,\sigma)>$
+				\State $it \gets$ crearIt(t)
+				\While{Siguiente(it).letra $\neq$ c} \Comment Se repite a lo sumo la cantidad de char, que es una constate $\Rightarrow$ $\Ogr$(1)
+					\State Avanzar(it) \Comment $\Ogr$(1)
+				\EndWhile
+				\State $res \gets$ Siguiente(it)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iObtener}
+		\begin{algorithmic}
+			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}} $\to res$ : $\sigma$
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0
+				\While{i < |c| - 1} \Comment Se repite |c| - 1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
+					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
+					\State i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\State $res \gets$ *(Buscar(s[i],piso).significado) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(|c|)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iBorrar}
+		\begin{algorithmic}
+			\Procedure{iBorrar}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}}
+				\State Borrar(e.lineal, c) \Comment $\Ogr$($\#$claves(e.lineal))
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0
+				\While{i < |c|-1} \Comment Se repite |c| - 1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
+					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
+					\State i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\State delete(Buscar(s[i],piso).significado)
+				\State Buscar(s[i],piso).significado $\gets$ NULL \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Comlpejidad:} $\Ogr$(|c| + $\#$claves(e.lineal))
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iBorrarRapido}
+		\begin{algorithmic}
+			\Procedure{iBorrarRapido}{\texttt{in/out} e : \texttt{estr}, \texttt{in} it : \texttt{itDiccNom}}
+				\State $c \gets$ SiguienteClave(it) \Comment $\Ogr$(1)
+				\State EliminarSiguiente(it) \Comment $\Ogr$(1)
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0
+				\While{i < |c|-1} \Comment Se repite |c| - 1 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
+					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
+					\State i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\State delete(Buscar(s[i],piso).significado)
+				\State Buscar(s[i],piso).significado $\gets$ NULL \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(|clave|) donde clave es la clave del siguiente del iterador
+	\end{algorithm}
+	
+\end{Algoritmos}
