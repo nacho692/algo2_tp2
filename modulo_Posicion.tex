@@ -1,0 +1,59 @@
+\begin{Interfaz}
+	
+	\textbf{se explica con}: \tadNombre{TAD Posición}.
+	
+	\textbf{géneros}: \TipoVariable{posicion}.
+	
+	\Titulo{Operaciones básicas de posicion}
+	
+	\InterfazFuncion{<$\bullet$, $\bullet$>}{\In{x}{nat},\In{y}{nat}}{posicion}
+	{$res \igobs$ <x,y>}
+	[$\Theta$(TODO)]
+	[TODO?]
+	
+	\InterfazFuncion{X}{\In{p}{posicion}}{nat}
+	{alias($res \igobs$ X(p))}
+	[$\Ogr$(1)]
+	[TODO]
+	[TODO]
+	
+	\InterfazFuncion{Y}{\In{p}{posicion}}{nat}
+	{alias($res \igobs$ Y(p))}
+	[$\Ogr$(1)]
+	[TODO igual que arriba]
+	[TODO]
+	
+	\InterfazFuncion{$\bullet$ + $\bullet$}{\In{p1}{posicion},\In{p2}{posicion}}{posicion}
+	{$res \igobs$ <X(p1) + X(p2), Y(p1) + Y(p2)>}
+	[$\Theta$(1)]
+	
+	\InterfazFuncion{$\bullet$ - $\bullet$}{\In{p1}{posicion},\In{p2}{posicion}}{posicion}
+	[Y(p2) < Y(p1) $\land$ X(p2) < X(p1)]
+	{$res \igobs$ <X(p1) - X(p2), Y(p1) - Y(p2)>}
+	[$\Theta$(1)]
+	
+	\InterfazFuncion{Dist}{\In{p1}{posicion},\In{p2}{posicion}}{nat}
+	{$res  \igobs$ (Max(X(p1), X(p2)) - Min(X(p1),X(p2))) + (Max(Y(p1),Y(p2)) - Max(Y(p1),Y(p2))) )}}
+	[$\Theta$(1)]
+	
+\end{Interfaz}
+
+\begin{Representacion}
+	
+	\Titulo{Representación de posicion}
+	
+	\begin{Estructura}{posicion}[estr]
+		\begin{Tupla}[estr]
+			\tupItem{x}{nat}%
+			\tupItem{y}{nat}%
+		\end{Tupla}
+	\end{Estructura}
+	
+	\Rep[estr  $e$][e]{true}
+	
+	~
+	
+	\Abs[estr]{posicion}[e]{$p$}
+	{X($p$) $=$ Abs($e$.x) $\land$ Y($p$) $=$ Abs($e$.y)}
+	
+\end{Representacion}
