@@ -104,9 +104,7 @@
 	\end{Estructura}
 	
 	\Rep{true}
-	
 ~	
-	
 	\AbsFc{campus}{c $:$ campus $/$\\
 	filas(c) $=$ Alto(e) $\land$ columnas(c) $=$ Ancho(e)\\
 	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[p.X $-$ 1][p.Y $-$ 1] )
@@ -115,7 +113,7 @@
 	
 \begin{Algoritmos}
 
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iCrearCampus}
 		
 		\begin{algorithmic}[1]
@@ -128,9 +126,9 @@
 				
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iAgregar}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iAgregar}{\texttt{in/out} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
 				\State e[p.X $-$ 1][p.Y $-$ 1] $\gets$ true \Comment $\Ogr$(1)
 			
@@ -141,9 +139,9 @@
 	
 	\end{algorithm}	
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iFila}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iFila}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
 				\State $res \gets$ Alto($e$)	\Comment $\Ogr$(1)
 			\EndProcedure		
@@ -151,9 +149,10 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	
+	\begin{algorithm}[H]
 		\caption{iColumna}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iColumna}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
 				\State $res \gets$ Ancho($e$) \Comment $\Ogr$(1)
 			\EndProcedure		
@@ -163,7 +162,7 @@
 	
 	\begin{algorithm}
 		\caption{iOcupada}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iOcupada}{\texttt{in} e : \texttt{estr}, \texttt{in} p: \texttt{posicion}} $\to res$ : $bool$	
 				\State $res \gets$ e[p.X $-$ 1][e.Y $-$ 1] \Comment $\Ogr$(1)
 			\EndProcedure		
@@ -181,9 +180,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iIngresoSuperior}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iIngresoSuperior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
 				\State $res \gets$ (p.Y $=$ 1) \Comment $\Ogr$(1)		
 			\EndProcedure		
@@ -191,9 +190,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iIngresoInferior}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iIngresoInferior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
 				\State $res \gets$ (p.Y $=$ Alto()) \Comment $\Ogr$(1)		
 			\EndProcedure		
@@ -201,9 +200,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iEsIngreso}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iEsIngreso}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
 				\State $res \gets$ (iEsIngresoSuperior(e,p) $\land$ iEsIngresoInferior(e,p)) \Comment $\Ogr$(1)
 			\EndProcedure		
@@ -211,9 +210,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iVecinos}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iVecinos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
 				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
 				\State AgregarRapido(res, <p.X $-$ 1, p.Y>) \Comment $\Ogr$(1)
@@ -226,9 +225,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 		
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iVecinosComunes}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iVecinosComunes}{\texttt{in} e : \texttt{estr}, \texttt{in} $p_1$ : \texttt{posicion}, \texttt{in} $p_2$ : \texttt{posicion}} $\to res$ : $conj(posicion)$
 				\State $vec_1 \gets$ iVecinos(e, $p_1$) \Comment $\Ogr$(1)
 				\State $vec_2 \gets$ iVecinos(e, $p_2$) \Comment $\Ogr$(1)
@@ -249,9 +248,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 			
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iVecinosValidos}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iVecinosValidos}{\texttt{in} e : \texttt{estr},\texttt{in/out} cp : $conj(posicion)$}
 				\State $it \gets$ CrearIt(cp) \Comment $\Ogr$(1)
 				\While{HaySiguiente(it)} \Comment Se repite $\#$cp veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$($\#$cp)
@@ -266,9 +265,9 @@
 		\underline{Complejidad:} $\Ogr$($\#$cp)
 	\end{algorithm}
 				
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iProxPosicion}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iProxPosicion}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}, \texttt{in} dir : \texttt{direccion}} $\to res$ : $posicion$
 				\State $res \gets$ <p.X $+$ $\beta$(dir $=$ der) $-$ $\beta$(dir $= $ izq), p.Y $+$ $\beta$(dir $=$ abajo) $-$ $\beta$(dir $=$ arriba)> \Comment $\Ogr$(1)
 			\EndProcedure		
@@ -276,9 +275,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 				
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iIngresosMasCercanos}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iIngresosMasCercanos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
 				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
 				\If{Dist(p, <p.X, 1>) $<$ Dist(p, <p.Y, iFilas(e)>)} \Comment $\Ogr$(1)
@@ -296,9 +295,9 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iCopiar}
-		\begin{algorithmic}
+		\begin{algorithmic}[1]
 			\Procedure{iCopiar}{\texttt{in} e : \texttt{estr}} $\to res$ : $estr$
 				\State $res \gets$ Copiar(e) \Comment $\Ogr$(Copiar(e)) $=$ $\Ogr$(Ancho(e) * Alto(e))
 			\EndProcedure
