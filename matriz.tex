@@ -62,9 +62,10 @@
 		donde estr es tupla<matriz: Arreglo\_dimencionable de Arreglo\_dimencionable de $\alpha$, Ancho: nat, Alto: nat>
 	\end{Estructura}
 	
-	\Rep{true $\leftrightarrow$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i $\in$ nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\rightarrow$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
+	\Rep{true $\leftrightarrow$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\rightarrow$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
 	
 	~	
 	
-	\AbsFc{matriz($\alpha$)}{}
+	\AbsFc{matriz($\alpha$)}
+	{mat: matriz($\alpha$) $|$ e.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\land _l$ ($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ j $\geq$ $0$ $\land$ j $<$ alto $\rightarrow$ e.matriz[i][j] = Valor?(mat, i, j) }
 \end{Representacion}
