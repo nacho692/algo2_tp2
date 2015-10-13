@@ -60,15 +60,21 @@
 	\tituloModulo{Representación de la campus}
 	
 	\begin{Estructura}{matriz($\alpha$)}
-		donde estr es tupla<matriz: Arreglo\_dimensionable de Arreglo\_dimensionable de $\alpha$, Ancho: nat, Alto: nat>
+		 \begin{Tupla}[estr]
+			\tupItem{matriz}{arreglo\_dimensionable de arreglo\_dimensionable de $\alpha$}%
+			\tupItem{ancho}{nat}
+			\tupItem{alto}{nat}
+		\end{Tupla}
 	\end{Estructura}
 	
-	\Rep{true $\implies$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\implies$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
+	\Rep[estr]{$e$.ancho $>$ $0$ $\land$ $e$.alto $>$ $0$ tamaño($e$.matriz) = $e$.ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ $e$.ancho $\impluego$\\
+	tamaño($e$.matriz[i]) = $e$.alto }
 	
 	~	
 	
 	\AbsFc{matriz($\alpha$)}
-	{mat: matriz($\alpha$) $|$ e.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\land _l$ ($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ j $\geq$ $0$ $\land$ j $<$ alto $\implies$ e.matriz[i][j] = Valor?(mat, i, j) }
+	{mat: matriz($\alpha$) $|$ $e$.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\yluego$\\
+	($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ $e$.ancho $\land$ j $\geq$ $0$ $\land$ j $<$ $e$.alto $\impluego$ e.matriz[i][j] = Valor?(mat, i, j) }
 	
 \begin{Algoritmos}
 	
