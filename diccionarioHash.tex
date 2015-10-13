@@ -91,12 +91,14 @@
 	\begin{algorithm}
 		\caption{iVacio}
 		\begin{algorithmic}
-			\Procedure{iVacio}{\in n : Nat} $\to res$ : estr
+			\Procedure
+			{iVacio}
+			{\texttt{in} n : Nat} $\to res$ : estr
 				\State var $e$ : estr
-				\State $e.cant \gets$ $n$ \Comment $\Theta$(1)
+				\State $e.cant \gets$ n \Comment $\Theta$(1)
 				\State $e.valores \gets$ CrearArreglo($n$)
 				\Comment $\Ogr$(n)
-				\State $res \gets$ $e$ \Comment $\Theta$(1)
+				\State $res \gets$ e \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(n)
