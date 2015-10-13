@@ -28,6 +28,11 @@
 	[$\Ogr$(|c| + copy(s))]
 	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento]	
 	
+	\InterfazFuncion{Definido}{\In{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{bool}
+	{res $\igobs$ def?(c,d)}
+	[$\Ogr$(|c|)]
+	[Devuelve verdadero si y sólo si la clave de entrada esta definida en el diccionario]	
+	
 	\InterfazFuncion{Borrar}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{}
 	[def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ borrar(c,$d_0$)}
@@ -126,7 +131,7 @@
 
 \begin{Algoritmos}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iVacio}
 		\begin{algorithmic}
 			\Procedure{iVacio}{} $\to res$ : estr
@@ -137,7 +142,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iDefinir}
 		\begin{algorithmic}
 			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $itDiccNom(string,\sigma)$
@@ -163,7 +168,23 @@
 		\underline{Complejidad:} $\Ogr$(|c| + copy(s))
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
+		\caption{iDefinido}
+		\begin{algorithmic}
+			\Procedure{iDefinido}{\texttt{in} e : \texttt{estr}, \texttt{in} c : \texttt{string}} $\to res$ : $bool$
+				\State $piso \gets$ e.trie \Comment $\Ogr$(1)
+				\State $i \gets$ 0 \Comment $\Ogr$(1)
+				\While{Esta(c[i],piso)} \Comment Se repite a los sumo |c| veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(|c|)
+					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
+					\State $i \gets$ i++ \Comment $\Ogr$(1)
+				\EndWhile
+				\State $res \gets$ (i $=$ |c|)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(|c|)
+	\end{algorithm}	
+	
+	\begin{algorithm}[H]
 		\caption{iEsta}
 
 		\InterfazFuncion{Esta}{\In{c}{char}, \Inout{t}{diccT(string,$\sigma$)}}{bool}
@@ -186,7 +207,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iBuscar}
 
 		\InterfazFuncion{Buscar}{\In{c}{char}, \Inout{t}{diccT(string,$\sigma$)}}{tupla<$letra$ char, $significado$ puntero($\sigma$), $prox$ diccT(string,$\sigma$)>}
@@ -210,7 +231,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iObtener}
 		\begin{algorithmic}
 			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}} $\to res$ : $\sigma$
@@ -226,7 +247,7 @@
 		\underline{Complejidad:} $\Ogr$(|c|)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iBorrar}
 		\begin{algorithmic}
 			\Procedure{iBorrar}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{string}}
@@ -244,7 +265,7 @@
 		\underline{Comlpejidad:} $\Ogr$(|c| + $\#$claves(e.lineal))
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iBorrarRapido}
 		\begin{algorithmic}
 			\Procedure{iBorrarRapido}{\texttt{in/out} e : \texttt{estr}, \texttt{in} it : \texttt{itDiccNom(string,$\sigma$)}}

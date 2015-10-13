@@ -54,12 +54,12 @@
 		\end{Tupla}
 	\end{Estructura}
 	
-	\Rep[estr  $e$][e]{true}
+	\Rep[estr][e]{true}
 	
 	~
 	
 	\Abs[estr]{posicion}[e]{$p$}
-	{X($p$) $=$ Abs($e$.x) $\land$ Y($p$) $=$ Abs($e$.y)}
+	{X($p$) $=$ $e$.x $\land$ Y($p$) $=$ $e$.y}
 	
 	~
 	
@@ -83,7 +83,7 @@
 
 \begin{Algoritmos}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iCrearPosicion}
 		\begin{algorithmic}
 			\Procedure{iCrearPosicion}
@@ -97,7 +97,7 @@
 		\underline{Complejidad:}$\Theta$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iX}
 		\begin{algorithmic}
 			\Procedure{iX}{\texttt{in} pos : \texttt{estr}} $\to res$ : $Nat$
@@ -107,7 +107,7 @@
 		\underline{Complejidad:} $\Theta$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iY}
 		\begin{algorithmic}
 			\Procedure{iY}{\texttt{in} pos : \texttt{estr}} $\to res$ : $Nat$
@@ -117,7 +117,7 @@
 		\underline{Complejidad:} $\Theta$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iSumarPosiciones}
 		\begin{algorithmic}
 			\Procedure{iSumarPosicion}
@@ -130,15 +130,8 @@
 		\underline{Complejidad:}$\Theta$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iRestarPosiciones}
-		
-		\InterfazFuncion{iRestarPosiciones}
-		{\In{pos1}{estr}, \In{pos2}{estr}}{estr}
-		[pos1.x >\ pos2.x \land pos1.y > pos2.y]
-		{res $\igobs$ iCrearPosicion(pos1.x - pos2.x, pos1.y - pos2.y)}
-		[$\Theta$(1)]
-		[]
 		
 		\begin{algorithmic}
 			\Procedure{iRestarPosiciones}
@@ -151,7 +144,7 @@
 		\underline{Complejidad:} $\Theta$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iDistanciaPosiciones}
 		\begin{algorithmic}
 			\Procedure{iDistanciaPosiciones}
