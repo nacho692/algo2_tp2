@@ -13,30 +13,31 @@ $\land$ Y($p$) $\igobs$ Y($p'$)}
 \tadOperacion{Y}{posicion}{Nat}{}
 
 \tadGeneradores
-\tadOperacion{<$\bullet$, $\bullet$>}{Nat/x, Nat/y}{posicion}{}
+\tadOperacion{<$\bullet$, $\bullet$>}{Nat, Nat}{posicion}{}
 
 \tadOtrasOperaciones
 \tadOperacion{$\bullet$ + $\bullet$}{posicion,posicion}{posicion}{}
+~
 \tadOperacion{$\bullet$ - $\bullet$}{posicion/p,posicion/p'}{posicion}
 {Y($p'$) $<$ Y($p$) $\land$ X($p'$) $<$ X($p$)}
-
+~
 \tadOperacion{Dist}{posicion,posicion}{posicion}{}
 
 \subsection{Axiomas}
 
-\tadAxioma{X(<$x$,$y$>)}{$x$}
-
-\tadAxioma{Y(<$x$,$y$>)}{$y$}
-
 \tadAlinearAxiomas{aSal($d$,$y$,$alto$)}
 
+\tadAxioma{X(<$x$, $y$>)}{$x$}
+~
+\tadAxioma{Y(<$x$, $y$>)}{$y$}
+~
 \tadAxioma{Dist($p$,$p'$)}
-{(Max(X(p1), X(p2)) - Min(X(p1),X(p2))) + \\ (Max(Y(p1),Y(p2)) - Max(Y(p1),Y(p2)))}
-
+{( Max( X(p1), X(p2) ) - Min( X(p1), X(p2) ) ) + \\ ( Max( Y(p1), Y(p2) ) - Min( Y(p1), Y(p2) ))}
+~
 \tadAxioma{p - p'}
-{ <X(p) - X(p') , Y(p) - Y(p') >}
-
+{ < X(p) - X(p'), Y(p) - Y(p') >}
+~
 \tadAxioma{p + p'}
-{ <X(p) + X(p') , Y(p) + Y(p') >}
-
+{ < X(p) + X(p'), Y(p) + Y(p') >}
+~
 \end{tad}
