@@ -1,21 +1,10 @@
 
-
 \begin{Interfaz}
-  
-  \textbf{parámetros formales}\hangindent=2\parindent\\
-  \parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
-  \parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
-    \InterfazFuncion{Copiar}{\In{a}{$\alpha$}}{$\alpha$}
-    {$res \igobs a$}
-    [$\Theta(copy(a))$]
-    [función de copia de $\alpha$'s]
-  }
+  \textbf{se explica con}: \tadNombre{Campus Seguro}.
 
-  \textbf{se explica con}: \tadNombre{Secuencia$(\alpha)$}, \tadNombre{Iterador Bidireccional($\alpha$)}.
+  \textbf{géneros}: \TipoVariable{campusSeg}.
 
-  \textbf{géneros}: \TipoVariable{lista$(\alpha)$}, \TipoVariable{itLista($\alpha$)}.
-
-  \Titulo{Operaciones básicas de lista}
+  \tituloModulo{Operaciones básicas de campusSeg}
 
   \InterfazFuncion{Vacía}{}{lista$(\alpha)$}%
   {$res \igobs \secuencia{}$}%
@@ -29,158 +18,183 @@
   [agrega el elemento $a$ como primer elemento de la lista.  Retorna un iterador a $l$, de forma tal que Siguiente devuelva $a$.]
   [el elemento $a$ agrega por copia. El iterador se invalida si y sólo si se elimina el elemento siguiente del iterador sin utilizar la función \NombreFuncion{EliminarSiguiente}.]
 
- 
-  \Titulo{Operaciones del iterador}
-
-  \InterfazFuncion{CrearIt}{\In{l}{lista($\alpha$)}}{itLista($\alpha$)}
-  {$res$ $\igobs$ crearItBi(\secuencia{}, $l$) $\land$ alias(SecuSuby($it$) $=$ $l$)}
-  [$\Theta(1)$]
-  [crea un iterador bidireccional de la lista, de forma tal que al pedir \NombreFuncion{Siguiente} se obtenga el primer elemento de $l$.]
-  [el iterador se invalida si y sólo si se elimina el elemento siguiente del iterador sin utilizar la función \NombreFuncion{EliminarSiguiente}.]
-
-  \InterfazFuncion{CrearItUlt}{\In{l}{lista($\alpha$)}}{itLista($\alpha$)}
-  {$res$ $\igobs$ crearItBi($l$, \secuencia{}) $\land$ alias(SecuSuby($it$) $=$ $l$)}
-  [$\Theta(1)$]
-  [crea un iterador bidireccional de la lista, de forma tal que al pedir \NombreFuncion{Anterior} se obtenga el último elemento de $l$.]  
-  [el iterador se invalida si y sólo si se elimina el elemento siguiente del iterador sin utilizar la función \NombreFuncion{EliminarSiguiente}.]
 
 \end{Interfaz}
 
 \begin{Representacion}
   
-  \Titulo{Representación de la lista}
+  \tituloModulo{Representación de campusSeg}
 
-  \begin{Estructura}{lista$(\alpha)$}[lst]
-    \begin{Tupla}[lst]
-      \tupItem{primero}{puntero(nodo)}%
-      \tupItem{longitud}{nat}%
+  \begin{Estructura}{campusSeg}[estr]
+    \begin{Tupla}[estr]
+		\tupItem{hippies}{diccNombres(nombre,posicion)}%
+		\tupItem{estudiantes}{diccNombres(nombre,posicion)\\}
+		\tupItem{agentes}{diccAg(placa,datosAg)}
+		\tupItem{sanciones}{diccSanc(nat,conj(placa))}\\
+		\tupItem{placasPos}{diccLog(placa,posicion)}\\
+		\tupItem{pos}{posiciones}
+		\tupItem{masVigilante}{datosAg}
+		\tupItem{cp}{campus}
     \end{Tupla}
-
-    \begin{Tupla}[nodo]
-      \tupItem{dato}{$\alpha$}%
-      \tupItem{anterior}{puntero(nodo)}%
-      \tupItem{siguiente}{puntero(nodo)}%
-    \end{Tupla}
-  \end{Estructura}
-
-  \Rep[lst][l]{($l$.primero $=$ NULL) $=$ ($l$.longitud $=$ $0$) $\yluego$ ($l$.longitud $\neq$ $0$ \impluego \\
-    Nodo($l$, $l$.longitud) $=$ $l$.primero $\land$ \\
-    ($\forall i$: nat)(Nodo($l$,$i$)\DRef siguiente $=$ Nodo($l$,$i+1$)\DRef anterior) $\land$ \\
-    ($\forall i$: nat)($1 \leq i <$ $l$.longitud $\implies$ Nodo($l$,$i$) $\neq$ $l$.primero)}\mbox{}
-
-  ~      
-
-  \tadOperacion{Nodo}{lst/l,nat}{puntero(nodo)}{$l$.primero $\neq$ NULL}
-  \tadAxioma{Nodo($l$,$i$)}{\IF $i = 0$ THEN $l$.primero ELSE Nodo(FinLst($l$), $i-1$) FI}
-
-  ~
-
-  \tadOperacion{FinLst}{lst}{lst}{}
-  \tadAxioma{FinLst($l$)}{Lst($l$.primero\DRef siguiente, $l$.longitud $-$ $\min$\{$l$.longitud, $1$\})}
-
-  ~
-
-  \tadOperacion{Lst}{puntero(nodo),nat}{lst}{}
-  \tadAxioma{Lst($p,n$)}{$\langle p, n\rangle$}
-
-  ~
- 
-  \AbsFc[lst]{secu($\alpha$)}[l]{\IF $l$.longitud $=$ $0$ THEN \secuencia{} ELSE \secuencia{$l$.primero\DRef dato}[Abs(FinLst($l$))] FI}
-
-  \Titulo{Representación del iterador}
-
-  \begin{Estructura}{itLista($\alpha$)}[iter]
-    \begin{Tupla}[iter]
-      \tupItem{siguiente}{puntero(nodo)}%
-      \tupItem{lista}{puntero(lst)}%
+    
+	\begin{Tupla}[posiciones]
+		\tupItem{mAg}{matriz(tupla(bool,datosAg)}\\
+		\tupItem{mH}{matriz(tupla(bool,itdicc(nombre, posicion))}\\
+		\tupItem{mE}{matriz(tupla(bool,itdicc(nombre, posicion))}
+	\end{Tupla}
+	
+    \begin{Tupla}[datosAg]
+      \tupItem{pl}{placa}
+      \tupItem{sanciones}{nat}
+      \tupItem{premios}{nat}
+      \tupItem{pos}{posicion}%
+      \tupItem{kSanc}{itdicc(nat, conj(placa)}%
+      \tupItem{mismasSanc}{itconj(placa)}%
     \end{Tupla}
   \end{Estructura}
 
-  \Rep[iter][it]{Rep($\ast$($it$.lista)) $\yluego$ ($it$.siguiente $=$ NULL $\oluego$ ($\exists i$: nat)(Nodo($\ast it$.lista, $i$) $=$ $it$.siguiente)}
+  \tituloModulo{Aclaraciones}
+	Dada la complejidad de la estructura, el invariante puede ser dificil de seguir, por lo que a continuacion se encuentra detallado de manera informal las lineas que se siguieron al hacer el rep.
+	
+	\begin{enumerate}
+		\item Las claves de hippies y estudiantes intersecan vacio.
+		\item No hay posiciones iguales en estudiantes, hippies y placasPos y todas se encuentran en rango.
+		\item Las placas de agentes y placasPos son iguales y igual placa, misma posicion.
+		\item Las claves de sanciones y las diferentes sanciones de agentes forman el mismo conjunto. Los conjuntos de placas de la clave i de sanciones tienen todas las placas cuyos agentes tengan i sanciones.
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador kSanc es igual a una secuencia ordenada de sanciones y la siguiente clave del iterador es la cantidad de sanciones del datosAg.
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador mismasSanc es permutacion del conjunto de placas del diccionario sanciones donde se encuentra su propia placa, y el siguiente del iterador es su misma placa.
+		\item filas+1 y columnas+1 de cp (campus) es igual al alto y ancho de las matrices de pos.
+		\item mAg, el booleano es true si y solo si hay un agente en placasPos en esa posicion.\\
+		Si es true, los datosAg son iguales para esa placa.
+		\item mH, el booleano es true si y solo si hay un hippie en esa posicion.\\
+		Si es true,la siguiente clave del iterador es el hippie en esa posicion y la secuencia subyacente es permutacion de los hippies en hippies.
+		\item mE, el booleano es true si y solo si hay un estudiante en esa posicion.\\
+		Si es true,la siguiente clave del iterador es el estudiante en esa posicion y la secuencia subyacente es permutacion de los estudiantes en estudiantes.
+		\item El mas vigilante es el de mayor sanciones de los agentes y, entre ellos, el de menor placa.
+	\end{enumerate}
+	
+	Para facilitar la lectura se renombra las matrices $e$.pos.mXX a mXX
+  \Rep[estr]{
+	\begin{enumerate}
+		\item claves($e$.hippies) $\cap$ claves(e.estudiantes) = $\emptyset$
+		\item $\land$ ($\forall p$: posicion)($\#$($p$,armarMultiPos($e$)) $\geq$ 1 $\implies$ \\
+		$\#$($p$,armarMultiPos($e$)) = 1 $\land$ posValida($p$,$e$.cp) $\yluego$ $\neg$ocupada?($p$,$e$.cp))
+		\item $\land$ (claves($e$.agentes) $=$ claves($e$.placasPos) $\yluego$ ($\forall p$: placa) (def?($p$,e.placasPos) $\impluego$ \\
+		obtener($p$,$e$.placasPos) = obtener($p$,$e$.agentes).pos))
+		\item $\land$ unionSignificados($e$.sanciones) = claves($e$.agentes)\\
+		$\land$ ($\forall n$: nat) def?($n$,$e$.sanciones) $\impluego$ \\
+		($\neg$(obtener($n$,$e$.sanciones) = $\emptyset$) $\land$ ($\forall p$: placa) ($p \in$ obtener($n$,$e$.sanciones) $\implies$ \\
+		def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pl = p $\land$ obtener($p$,$e$.agentes).sanciones = n))
+		\item $\land$ ($\forall p$: placa) def?($p$,$e$.agentes) $\impluego$ \\
+		SecuSuby(obtener($p$,$e$.agentes).kSanc) = ordenar$\pi_1$(secuenciarDic($e$.sanciones)) \\
+		$\land$ $pi_1$(Siguiente(obtener($p$,$e$.agentes).kSanc)) = obtener($p$,$e$.agentes).pl
+		\item $\land$ ($\forall p$: placa) (def?($p$,$e$.agentes) $\yluego$ def?(obtener($p$,$e$.agentes).sanciones,$e$.sanciones) $\impluego$ \\
+		esPermutacion(SecuSuby(obtener($p$,$e$.agentes).mismasSanc),\\
+		secuenciarConj(obtener(obtener($p$,$e$.agentes).sanciones,$e$.sanciones)))\\
+		$\land$ siguiente(obtener($p$,$e$.agentes).mismasSanc) = $p$
+		\item $\land$ Ancho(mAg) = columnas($e$.campus) + 1 $\land$ Alto(mAg) = filas($e$.campus) + 1 \\
+		$\land$ Ancho(mH) = Ancho(mAg) $\land$ Alto(mH) = Alto(mAg)\\
+		$\land$ Ancho(mE) = Ancho(mH) $\land$ Alto(mE) = Alto(mH)
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mAg) $\land$ 0 $< j <$ Alto(mAg) $\impluego$ \\
+		($pi_1$(Valor(mAg,$i$,$j$)) $\iff$ \\
+		($\exists n$: nombre)(def?($p$,$e$.placasPos) $\land$ def?($p$,$e$.agentes)) $\yluego$\\
+		(obtener($p$,$e$.placasPos) = $\langle i$, $j \rangle$ $\land$ $\pi_2$(Valor(mAg,$i$,$j$)) = obtener($p$,$e$.agentes)))
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mH) $\land$ 0 $< j <$ Alto(mH) $\impluego$ \\
+		($\pi_1$(Valor(mH,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.hippies) $\yluego$ \\
+		obtener($n$,$e$.hippies) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mH,$i$,$j$)))) = $n$ $\land$ \\
+		esPermutacion(SecuSuby($\pi_2$(Valor(mH,$i$,$j$)),secuenciarDic($e$.hippies)))
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mE) $\land$ 0 $< j <$ Alto(mE) $\impluego$ \\
+		($\pi_1$(Valor(mE,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.estudiantes) $\yluego$ \\
+		obtener($n$,$e$.estudiantes) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mE,$i$,$j$)))) = $n$ $\land$ \\
+		esPermutacion(SecuSuby($\pi_2$(Valor(mE,$i$,$j$)),secuenciarDic($e$.estudiantes)))
+		\item $\#$claves($e$.agentes) $\geq$ 1 $\implies$ ($\exists p$: placa) def?($p$,$e$.agentes) $\yluego$ \\
+		(obtener($p$,$e$.agentes) = $e$.masVigilante $\land$ \\
+		(($\forall p':$ placa) def?($p'$,$e$.agentes) $\land p \neq p' \impluego$\\
+		(obtener($p$,$e$.agentes).premios $\geq$ obtener($p'$.$e$.agentes).premios $\land$ \\
+		(obtener($p$,$e$.agentes).premios = obtener($p'$,$e$.agentes) $\implies$ $p < p'$))))
+
+	\end{enumerate}
+  }\mbox{}
+	
+	\clearpage
+
+	\tadOperacion{armarMultiPos}{estr}{multiconj(posicion)}{}
+	\tadAxioma{armarMultiPos($e$)}{multiSignificados($e$.placasPos,claves($e$.placasPos)) $\cup$ \\
+	multiSignificados($e$.hippies,claves($e$.hippies)) $\cup$ \\
+	multiSignificados($e$.estudiantes,claves($e$.estudiantes)}
 
   ~
 
-  \Abs[iter]{itBi($\alpha$)}[it]{b}{Siguientes($b$) $=$ Abs(Sig($it$.lista, $it$.siguiente)) $\land$\\
-    Anteriores($b$) $=$ Abs(Ant($it$.lista, $it$.siguiente))}
+  \tadOperacion{multiSignificados}{dicc($\beta$,$\alpha$)/d, conj($\beta$)/c}{multiconj($\alpha$)}{($\forall cl: \beta$) $cl \in c \implies$ def?(cl,d)}
+  \tadAxioma{multiSignificados($d$,$c$)}{
+  \IF $\emptyset$?($c$) THEN $\emptyset$ 
+  ELSE Ag(obtener(dameUno($c$),$d$),multiSignificados($d$,sinUno($c$)))
+  FI}
 
   ~
 
-  \tadOperacion{Sig}{puntero(lst)/l,puntero(nodo)/p}{lst}{Rep($\langle l, p\rangle$)}
-  \tadAxioma{Sig($i, p$)}{Lst($p$, $l$\DRef longitud $-$ Pos($\ast l$, $p$))}
+  \tadOperacion{unionSignificados}{dicc($\beta$,$\alpha$)/d}{conj($\alpha$)}{}
+  \tadAxioma{unionSignificados($d$)}{multiAConj(multiSignificados($d$,claves($d$)))}
 
   ~
 
-  \tadOperacion{Ant}{puntero(lst)/l,puntero(nodo)/p}{lst}{Rep($\langle l, p\rangle$)}
-  \tadAxioma{Ant($i, p$)}{Lst(\IF $p$ $=$ $l$\DRef primero THEN NULL ELSE $l$\DRef primero FI, Pos($\ast l$, $p$))}
+  \tadOperacion{multiAConj}{multiconj($\alpha$)}{conj($\alpha$)}{}
+  \tadAxioma{multiAConj($mc$)}{\IF $mc$ = $\emptyset$ THEN $\emptyset$ 
+  ELSE Ag(dameUno($mc$),multiAConj(sinUno($mc$)))
+  FI}
 
   ~
 
-  {\small Nota: cuando $p$ $=$ NULL, Pos devuelve la longitud de la lista, lo cual está bien, porque significa que el iterador no tiene siguiente.}
-  \tadOperacion{Pos}{lst/l,puntero(nodo)/p}{puntero(nodo)}{Rep($\langle l, p\rangle$)}
-  \tadAxioma{Pos($l$,$p$)}{\IF $l$.primero $=$ $p$ $\lor$ $l$.longitud $=$ $0$ THEN $0$ ELSE $1$ $+$ Pos(FinLst($l$), $p$) FI}
+  \tadOperacion{secuenciarDic}{dicc($\beta$,$\alpha$)}{secu($\langle \beta, alpha \rangle$)}{}
+  \tadAxioma{secuenciarDic($d$)}{secuenciarDicAux($d$,claves($d$)}
 
+  ~
 
+  \tadOperacion{secuenciarDicAux}{dicc($\beta$,$\alpha$)/d, conj($\beta$)/c}{secu($\langle \beta, \alpha \rangle$)}{($\forall cl: \beta$) $cl \in c \implies$ def?(cl,d)}
+  \tadAxioma{secuenciarDicAux($d$,$c$)}{
+  \IF $\emptyset$?($c$) THEN $<>$ 
+  ELSE $\langle$dameUno($c$),obtener(dameUno($c$),$d$)$\rangle$ $\bullet$ secuenciarDicAux($d$,sinUno($c$))
+  FI}
+
+  ~
+
+  \tadOperacion{ordenar$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)}{secu($\langle \beta, \alpha \rangle$)}{}
+  \tadAxioma{ordenar$\pi_1$($s$)}{
+  \IF vacia?($s$) THEN $<>$ 
+  ELSE min$\pi_1$($s$) $\bullet$ ordenar$\pi_1$(fin($s$))
+  FI}
+
+  ~
+
+  \tadOperacion{min$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
+  \tadAxioma{min$\pi_1$($s$)}{minAux$\pi_1$($s$,prim($s$)}
+
+  ~
+  
+  \tadOperacion{minAux$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s, $\langle \beta $ , $\alpha \rangle$}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
+  \tadAxioma{minAux$\pi_1$($s$,$e$}{\IF long($s$) = 1 THEN 
+  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI} 
+  ELSE minAux$\pi_1$(fin($s$),
+  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI}
+  FI}
+
+  ~
+  
+  \AbsFc[estr]{campusSeg}[e]
+  {$cs$: campusSeg $/$ e.cp = campus(cs) $\land$ claves($e$.estudiantes) = estudiantes($cs$) \\ $\land$ claves($e$.hippies) = hippies($cs$) $\land$ claves($e$.agentes) = agentes(cs) $\land$ \\
+  ($\forall a$: agente)(($a \in$ agentes($cs$) $\iff$ def?($a$,$e$.agentes)) $\yluego$ ($a \in$ agentes($cs$) $\impluego$ \\
+  (obtener($a$,$e$.agentes).sanciones = cantSanciones($a$,$cs$) $\land$\\
+  obtener($a$,$e$.agentes).premios = cantHippiesAtrapados($a$,$cs$) $\land$\\
+  obtener($a$,$e$.agentes).posicion = posAgente($a$,$cs$)))) $\yluego$ \\
+  ($\forall n:$ nombre)(def?($n$,$e$.hippies) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.hippies)) $\land$\\
+  (def?($n$,$e$.estudiantes) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.estudiantes)) }
 
 
 \begin{Algoritmos}
 
-\begin{algorithm}
-\caption{Proximo}
 
-\begin{algorithmic}[1]
- \Procedure{iDesencolar}{\texttt{in/out} h : \texttt{ab($\alpha$)}} $\to res$ : $\alpha$
-  \State $res \gets$ h.cabeza$\to$ dato
 
-  \If{$tam$ = 1} \Comment $\Ogr(1)$
-    \State delete($cabeza$) \Comment $\Ogr(1)$
-    \State $cabeza \gets$ NULL \Comment $\Ogr(1)$
-  \Else
-    \State lista($nat$) $recorridoHastaUltimo \gets$ Vacia() \Comment $\Ogr(1)$
-    \State $x \gets h.tam$ \Comment $\Ogr(1)$
-    \While{x > 1} \Comment Se repite $\Ogr(log(x)) = \Ogr(log(tam))$ veces
-      \State agregarAdelante($recorridoHastaUltimo$, $x$\% 2) \Comment $\Ogr(copy(\alpha))$
-      \State $x \gets \frac{x}{2}$ \Comment $\Ogr(1)$
-    \EndWhile
-    \State puntero(nodo) $ultimo \gets h.cabeza$ \Comment $\Ogr(1)$
-    \State itLista($nat$) $i \gets$ crearIt(recorridoHastaUltimo) \Comment $\Ogr(1)$
-    \While{haySiguiente?($i$)}  \Comment Se repite $\Ogr(|recorridoHastaUltimo|) = \Ogr(log(tam))$ veces
-      \If {Siguiente(i) = 0} \ $p \gets p.izq$ \Comment $\Ogr(1)$
-      \Else \  $p \gets p.izq$ \Comment $\Ogr(1)$
-      \EndIf
-      \State $i \gets$ Avanzar($i$) \Comment $\Ogr(1)$
-    \EndWhile
-    
-    \If{($p \to padre)\to der$ = $p$} \Comment $\Ogr(1)$
-      \State $p \to padre \to der \gets$ NULL \Comment $\Ogr(1)$
-    \Else
-      \State $p \to padre \to izq \gets$ NULL \Comment $\Ogr(1)$
-    \EndIf
-  
-    \State $p \to der \gets cabeza \to der$ \Comment $\Ogr(1)$
-    \State $p \to izq \gets cabeza \to izq$ \Comment $\Ogr(1)$
-    \State $p \to padre \gets$ NULL \Comment $\Ogr(1)$
-  
-    \State puntero(nodo) $nodoActual \gets p$
-    \While{$(nodoActual \to izq \neq$ NULL $\land$ $nodoActual \to dato$ > $nodoActual \to izq)$ $\lor$ $(nodoActual \to der \neq$ NULL $\land$ $nodoActual \to dato$ > $nodoActual \to der)$}  \Comment Se repite $\Ogr(log(tam))$ veces.
-    \If{$nodoActual \to der$ = NULL} \Comment $\Ogr(1)$
-        \If{$nodoActual \to izq \to dato$ < $nodoActual \to dato$} \Comment $\Ogr(comparar(\alpha, <_\alpha))$
-          \State Intercambiar($h$, $nodoActual$, $nodoActual \to izq$) \Comment $\Ogr(1)$
-        \Else 
-          \If{$nodoActual \to izq \to dato < nodoActual \to dato \land nodoActual \to izq \to dato < nodoActual \to der \to dato$}  \Comment $\Ogr(comparar(\alpha, <_\alpha))$ 
-            \State Intercambiar($h$, $nodoActual$, $nodoActual \to izq$) \Comment $\Ogr(1)$
-          \Else
-             \State Intercambiar($h$, $nodoActual$, $nodoActual \to der$) \Comment $\Ogr(1)$
-          \EndIf
-        \EndIf
-      \EndIf
-    \EndWhile
-   \EndIf
-  \State $tam--$ \Comment $\Ogr(1)$
- \EndProcedure
-\end{algorithmic}
-
- \underline{Complejidad:} $\Ogr(1)$
-\end{algorithm}
 \end{Algoritmos}
 
 \end{Representacion}
+
