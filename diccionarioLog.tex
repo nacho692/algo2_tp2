@@ -1,0 +1,104 @@
+\begin{Interfaz}
+	
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\sigma$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{s}{$\sigma$}}{$\sigma$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(s))$]
+		[función de copia de $\sigma$'s]
+	}
+	
+	\textbf{se explica con}: \tadNombre{diccionarioAcotado(nat,$\sigma$)}
+	
+	\textbf{usa}: nat, bool
+	
+	\textbf{géneros}: \TipoVariable{diccLog(nat, $\sigma$)}
+	
+	\tituloModulo{Operaciones de DiccionarioLog(nat,$\sigma$)}
+	
+	\InterfazFuncion{Vacio}{\In{tam}{nat}}{diccLog(nat, $\sigma$)}
+	{res $\igobs$ vacio(tam)}
+	[$\Ogr$(1)]
+	[Crea un diccionario vacío con tam como límite de claves]
+	
+	\InterfazFuncion{Definir}{\Inout{d}{diccLog(nat, $\sigma$)}, \In{c}{nat}, \In{s}{$\sigma$}}{}
+	[($\forall$ c' : nat)( c' $\in$ claves(d) $\Rightarrow$ c $>$ c') $\land$ d=$d_0$ $\land$ $\#$claves(d) $<$ tamaño(d)]
+	{d $\igobs$ Definir(c,s,$d_0$)}
+	[$\Ogr$(1)]
+	
+	\InterfazFuncion{Definido}{\Inout{d}{diccLog(nat,$\sigma$)}, \In{c}{nat}}{bool}
+	{res $\igobs$ def?(c,d)}
+	[$\Ogr$(log $\#$claves(d))]
+	
+	\InterfazFuncion{Obtener}{\Inout{d}{diccLog(nat,$\sigma$)}, \In{c}{nat}}{$\sigma$}
+	[def?(c,d) $\land$ d=$d_0$]
+	{alias(res $\igobs$ obtener(c,d)) $\land$ ($\forall$ c' : nat)( (c' $\in$ claves(d) $\land$ c $\neq$ c') 
+	$\Rightarrow$ obtener(c',d) $\igobs$ obtener(c,d) )}
+	[$\Ogr$(log $\#$claves(d))]
+	
+\end{Interfaz}
+
+\begin{Representacion}
+
+	\tituloModulo{Representación DiccionarioLog(nat, $\sigma$)}
+	
+	\begin{Estructura}{diccLog(nat, $\sigma$)}
+		\begin{Tupla}
+			\tupItem{tamaño}{nat}
+			\tupItem{valores}{arreglo dimensionable de tupla<$clave$ : nat, $significado$ : $\sigma$>}
+			\tupItem{proxADefinir}{nat}
+		\end{Tupla}
+	\end{Estructura}
+	
+	\Rep{SinRepetidos(Claves(e.valores)) $\land$ Ordenada(Claves(e.valores))\\
+		e.tamaño $\igobs$ tamaño(e.valores) $\land$ e.proxADefinir $\leq$ e.tamaño}
+		
+~
+	\tadOperacion{SinRepetidos}{secu(nat)}{bool}{}
+	\tadAxioma{SinRepetidos(s)}{
+		\IF vacio?(s)
+			THEN true
+			ELSE	 $\neg$Esta?(prim(s),fin(s)) $\land$ sinRepetidos(fin(s))
+		FI}
+	
+~	
+	val es arreglo dimensionable de tupla<$clave$ : nat, $significado$ : $\sigma$>
+	\tadOperacion{Claves}{val}{secu(nat)}{}
+	\tadAxioma{Claves(v)}{
+		\IF tamaño(v) = 0
+			THEN <>
+			ELSE Primero(v).clave $\bullet$ Claves(fin(v))
+		FI}
+	
+~
+
+	\tadOperacion{Ordenada}{secu(nat)}{bool}{}
+	\tadAxioma{Ordenada(s)}{
+		\IF vacia?(s)
+			THEN true
+			ELSE ($\forall$ n : nat) (n $\in$ fin(s) $\Rightarrow$ n $>$ Primero(s)) $\land$ Ordenada(fin(s))
+		FI}
+	
+~
+
+	\AbsFc{diccLog(nat,$\sigma$)}{d : diccLog(nat,$\sigma$)/\\
+	e.tamaño $\igobs$ tamaño(d)\\
+	($\forall$ c : nat)( def?(c,d) $\Leftrightarrow$ ($\exists$ i : nat)( 0 $\leq$ i $<$ e.tamaño) $\land$ definido(e.valores,i) $\yluego$ e.valores[i].clave $\igobs$ c )\\
+	($\forall$ c : nat)( def(c,d) $\impluego$ Obtener(c,d) $\igobs$ Significado(c,e) )}
+	
+~
+
+	\tadOperacion{Significado}{nat,estr}{$\sigma$}{def?(c,d)}
+	\tadAxioma{Significado(c,e)}{ e.valores[Posicion(c,e.valores)].significado}
+	
+~
+
+	\tadOperacion{Posicion}{nat,val}{nat}{}	
+	\tadAxioma{Posicion(c,v)}{
+		\IF Primero(v).clave = c
+			THEN 0
+			ELSE 1 + Posicion(c,fin(v))
+		FI}
+	
+\end{Representacion}
