@@ -100,5 +100,71 @@
 			THEN 0
 			ELSE 1 + Posicion(c,fin(v))
 		FI}
+		
+~
+
+	\begin{algorithm}[H]
+		\caption{iVacio}
+		\begin{algorithmic}
+			\Procedure{iVacio}{\texttt{in} tam : \texttt{nat}} $\to res$ : $estr$
+				\State $e.tamaño \gets$ tam \Comment $\Ogr$(1)
+				\State $e.valores \gets$ CrearArreglo(tam) \Comment $\Ogr$(1)
+				\State $e.proxADefinir \gets$ 0 \Comment $\Ogr$(1)				
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinir}
+		\begin{algorithmic}
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{nat}, \texttt{in} s : \texttt{$\sigma$}}
+				\State $e.valores[e.proxADef] \gets$ tupla<c,s> \Comment $\Ogr$(1)
+				\State $e.proxADefinir \gets$ e.proxADefinir $+$ 1 \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinido}
+		\begin{algorithmic}
+			\Procedure{iDefinido}{\texttt{in} e : \texttt{estr}, \texttt{in} c : \texttt{nat}} $\to res$ : $bool$
+				\State $arriba \gets$ e.proxADefinir - 1 \Comment $\Ogr$(1)
+				\State $abajo \gets$ 0 \Comment $\Ogr$(1)
+				\While{arriba $>$ abajo} \Comment Se repite log e.proxADefinir veces y lo de adentro es $\Ogr$(1)\\
+				 \hfill $\Rightarrow$ $\Ogr$(log e.proxADefinir)
+					\State $	medio \gets$ (arriba $+$ abajo) $/$ 2 \Comment $\Ogr$(1)
+					\If{e.valores[medio].clave $<$ c} \Comment $\Ogr$(1)
+						\State $abajo \gets$ medio \Comment $\Ogr$(1)
+					\Else
+						\State $arriba \gets$ medio \Comment $\Ogr$(1)
+					\EndIf
+				\EndWhile
+				\State $res \gets$ ( e.valores[medio].clave $=$ c ) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iObtener}
+		\begin{algorithmic}
+			\Procedure{iObtener}{\texttt{in} e : \texttt{estr}, \texttt{in} c : \texttt{nat}} $\to res$ : $\sigma$
+				\State $arriba \gets$ e.proxADefinir - 1 \Comment $\Ogr$(1)
+				\State $abajo \gets$ 0 \Comment $\Ogr$(1)
+				\While{arriba $>$ abajo} \Comment Se repite log e.proxADefinir veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(log e.proxADefinir)
+					\State $	medio \gets$ (arriba $+$ abajo) $/$ 2 \Comment $\Ogr$(1)
+					\If{e.valores[medio].clave $<$ c} \Comment $\Ogr$(1)
+						\State $abajo \gets$ medio \Comment $\Ogr$(1)
+					\Else
+						\State $arriba \gets$ medio \Comment $\Ogr$(1)
+					\EndIf
+				\EndWhile
+				\State $res \gets$ e.valores[medio].significado \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
+	\end{algorithm}
 	
 \end{Representacion}
