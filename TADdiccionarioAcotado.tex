@@ -1,0 +1,46 @@
+\begin{tad}{\tadNombre{DiccionarioAcotado(clave, significado)}}
+\tadIgualdadObservacional{d}{d'}{diccAcot($\kappa,\sigma$)}{tamaño(d) $\igobs$ tamaño(d') $\land$ \\
+$(\forall c:\kappa)$(def?($c, d$) $\igobs$ def?($c, d'$) $\yluego$\\ (def?($c, d$) $\impluego$ obtener($c, d$) $\igobs$ obtener($c, d'$)))}
+
+\tadParametrosFormales{
+    \tadEncabezadoInline{géneros}{clave, significado}
+}
+
+\tadGeneros{diccAcot(clave, significado)}
+\tadExporta{diccAcot(clave, significado), generadores, observadores, borrar, claves}
+\tadUsa{\tadNombre{Bool, Nat, Conjunto(clave)}}
+
+%notar la importancia de agrupar el ultimo parametro, para la coma
+\tadAlinearFunciones{obtener}{clave,significado,{diccAcot(clave, significado)}}
+
+\tadObservadores 
+\tadOperacion{def?}{clave,{diccAcot(clave, significado)}}{bool}{} 
+\tadOperacion{obtener}{clave/c,{diccAcot(clave, significado)}/d}{significado}{def?($c$, $d$)}
+\tadOperacion{tamaño}{diccAcot(clave, significado)}{nat}{}
+
+\tadGeneradores
+\tadOperacion{vacío}{nat}{diccAcot(clave, significado)}{}
+\tadOperacion{definir}{clave,significado,{diccAcot(clave, significado)}/d}{diccAcot(clave, significado)}{$\#$claves($d$) $<$ tamaño}
+
+\tadOtrasOperaciones
+\tadOperacion{borrar}{clave/c,{diccAcot(clave, significado)}/d}{diccAcot(clave, significado)}{def?($c$,$d$)}
+\tadOperacion{claves}{{diccAcot(clave, significado)}}{conj(clave)}{}
+
+\tadAxiomas[\paratodo{diccAcot(clave, significado)}{d}, \paratodo{clave}{c, k}, \paratodo{significado}{s}]
+\tadAlinearAxiomas{obtener($c$, definir($k$, $s$, $d$))}
+
+\tadAxioma{def?($c$,vacío($n$))}{false}
+\tadAxioma{def?($c$, definir($k$, $s$, $d$)}{$c = k$ $\lor$ def?($c$, $d$)}
+
+\tadAxioma{obtener($c$, definir($k$, $s$, $d$))}{\IF $c = k$ THEN $s$ ELSE obtener($c$, $d$) FI}
+
+\tadAxioma{tamaño(vacio($n$))}{n}
+\tadAxioma{tamaño(definir($k$, $s$, $d$))}{tamaño(d)}
+
+\tadAxioma{borrar($c$, definir($k$, $s$, $d$))}{\IF $c = k$ THEN {\IF def?($c$,$d$) THEN borrar($c$,$d$) ELSE $d$ FI} ELSE
+definir($k$, $s$, borrar($c$, $d$)) FI}
+
+\tadAxioma{claves(vacío($n$))}{$\emptyset$}
+\tadAxioma{claves(definir($c$,$s$,$d$))}{Ag($c$, claves($d$))}
+
+\end{tad}
