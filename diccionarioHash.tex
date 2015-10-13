@@ -1,0 +1,139 @@
+\begin{Interfaz}
+
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\sigma$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{s}{$\sigma$}}{$\sigma$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(s))$]
+		[función de copia de $\sigma$'s]
+	}
+	
+	\textbf{se explica con}: \tadNombre{diccionario(k,$\sigma$)}
+	
+	\textbf{usa}: nat, bool
+	
+	\textbf{géneros}: \TipoVariable{dicch(Nat, $\sigma$)}
+	
+	\tituloModulo{Operaciones de Dicch(Nat,$\sigma$)}
+	
+	\InterfazFuncion
+	{Vacio}
+	{\In{cant}{Nat}}
+	{dicch(Nat, $\sigma$)}
+	[cant >\ 0]
+	{res $\igobs$ vacio}
+	[$\Theta$(1)]
+	[Crea un diccionario vacio]
+	
+	\InterfazFuncion
+	{Definir}
+	{\In{clave}{Nat}, \In{significado}{$\sigma$},\Inout{dicc}{dicch(Nat,$\sigma$)}}
+	{}
+	[$\neg$def?(clave,dicc) $\land$ dicc=$dicc_0$]
+	{dicc $\igobs$ Definir(clave,significado,$dicc_0$)}
+	[TODO]
+	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento.]	
+	
+	\InterfazFuncion
+	{Obtener}
+	{\In{clave}{Nat},\Inout{dicc}{dicch(Nat,$\sigma$)}}
+	{$\sigma$}
+	[def?(clave,dicc) $\land$ dicc=$dicc_0$]
+	{alias(res $\igobs$ obtener(clave,dicc)) 
+		$\land$\\ ($\forall$ clave' : Nat)( clave' $\in$ claves(dicc) $\impluego$ obtener(clave',dicc) $\igobs$ obtener(clave',$dicc_0$) )}
+	[TODO]
+	
+\end{Interfaz}
+
+\begin{Representacion}
+
+	\tituloModulo{Representacion del DiccionaroHash(Nat, $\sigma$)}
+	
+	\begin{Estructura}{dicch(Nat,$\sigma$)}
+		\begin{Tupla}
+			\tupItem{cant}{Nat}
+			\tupItem{valores}{Adt}
+		\end{Tupla}
+		Donde Adt es arreglo dimensionable de tupla<$clave$ : Nat, $significado$ : $\sigma$>)
+	\end{Estructura}
+	
+	\Rep{ e.cant $\igobs$ Tamaño(e.valores) $\yluego$ \\ 
+	($\forall$ i, j : Nat) 
+	( i <\ e.cant $\land$ j <\ e.cant $\land$ i $\neq$ j ) 
+	$\impluego$ e.valores[i].clave $\neq$ e.valores[j].clave
+	}
+	
+~
+	
+	\AbsFc
+	{dicch(Nat, $\sigma$)}
+	{dicc : dicch(Nat, $\sigma$) $/$ \\
+		($\forall$ clave : Nat) \\
+		( Def?(clave,dicc) $\Leftrightarrow$ ($\exists$ i : Nat)
+		( 0 <= i <\ e.cant $\land$ Definido( e.valores, i ) $\yluego$ e.valores[i].clave = clave ) $\land$ \\	($\forall$ clave : Nat) Def?(clave,dicc) $\impluego$	\\ Obtener(clave,dicc) $\igobs$ 
+		e.valores[ mod( hash( clave, e ) + corrimiento( h( clave, e) ) , cant) ].significado}
+~
+	\tadOperacion{hash}{Nat,estr}{Nat}{}
+	\tadAxioma{hash(clave, e)}{mod(clave, e)}		
+~											
+	\tadOperacion{corrimiento}{Nat,estr}{Nat}{}
+	\tadAxioma{corrimiento(n, e)}
+	{\IF e.valores[mod(i,cant)].clave = c
+		THEN 0
+		ELSE 1+corrimiento(i+1,e) TODO SIN SENTIDO
+	FI}		
+
+\end{Representacion}
+
+\begin{Algoritmos}
+	
+	\begin{algorithm}
+		\caption{iVacio}
+		\begin{algorithmic}
+			\Procedure{iVacio}{\in n : Nat} $\to res$ : estr
+				\State var $e$ : estr
+				\State $e.cant \gets$ $n$ \Comment $\Theta$(1)
+				\State $e.valores \gets$ CrearArreglo($n$)
+				\Comment $\Ogr$(n)
+				\State $res \gets$ $e$ \Comment $\Theta$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(n)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iDefinir}
+		\begin{algorithmic}
+			\Procedure
+			{iDefinir}
+			{\texttt{in} clave : \texttt{Nat}, \texttt{in} significado : \texttt{$\sigma$, \texttt{in/out} e : \texttt{estr}}}
+				\State $h \gets$ mod(clave, e.cant) \Comment $\Ogr$(?)
+				\While{Definido(e.valores, h)} \Comment algo sobre complejidad
+						\State $h \gets$ mod(h+1, e.cant) \Comment $\Ogr$(?)
+				\EndWhile
+				\State $e.valores(h) \gets$ significado \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(TODO)
+	\end{algorithm}
+	
+	\begin{algorithm}
+		\caption{iObtener}
+		\begin{algorithmic}
+			\Procedure
+			{iObtener}
+			{\texttt{in} clave : \texttt{Nat},\texttt{in/out} e : \texttt{estr}} $\to res$ : $\sigma$
+				\State $h \gets$ mod(c,e.cant) \Comment $\Ogr$(1)
+				\While{e.valores[h].clave $\neq$ clave} 
+				\Comment TODO kcyo
+					\State $h \gets$  mod(h+1, e.cant) 
+					\Comment $\Ogr$(?)
+				\EndWhile
+				\State $res \gets$ e.valores[h].significado \Comment //es por referencia $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(?)
+	\end{algorithm}
+	
+\end{Algoritmos}
