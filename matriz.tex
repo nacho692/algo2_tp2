@@ -15,6 +15,7 @@
 	\tituloModulo{Operaciones básicas de matriz}
 
 	\InterfazFuncion{CrearMatriz}{\In{alto}{nat}, \In{ancho}{nat}, \In{a}{($\alpha$)}}{matriz($\alpha$)}
+	[ancho $> 0 \land$ alto $>0$]
 	{$res \igobs$ Crear(ancho, alto, a)}
 	[$\Ogr$($ancho$ x $alto$)]
 	[genera una matriz de $ancho$*$alto$ que contenga todos $a$]
@@ -59,13 +60,128 @@
 	\tituloModulo{Representación de la campus}
 	
 	\begin{Estructura}{matriz($\alpha$)}
-		donde estr es tupla<matriz: Arreglo\_dimencionable de Arreglo\_dimencionable de $\alpha$, Ancho: nat, Alto: nat>
+		donde estr es tupla<matriz: Arreglo\_dimensionable de Arreglo\_dimensionable de $\alpha$, Ancho: nat, Alto: nat>
 	\end{Estructura}
 	
-	\Rep{true $\leftrightarrow$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\rightarrow$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
+	\Rep{true $\implies$ ancho $>$ $0$ $\land$ alto $>$ $0$ $\land _l$ tamaño(e.matriz) = ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ i $<$ alto $\implies$ tamaño(e.matriz) = ancho $\land$ tamaño(e.matriz[i]) = alto }
 	
 	~	
 	
 	\AbsFc{matriz($\alpha$)}
-	{mat: matriz($\alpha$) $|$ e.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\land _l$ ($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ j $\geq$ $0$ $\land$ j $<$ alto $\rightarrow$ e.matriz[i][j] = Valor?(mat, i, j) }
+	{mat: matriz($\alpha$) $|$ e.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\land _l$ ($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ ancho $\land$ j $\geq$ $0$ $\land$ j $<$ alto $\implies$ e.matriz[i][j] = Valor?(mat, i, j) }
+	
+\begin{Algoritmos}
+	
+	\begin{algorithm}[H]
+		\caption{iCrearMatriz}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iCrearMatriz}{\texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $estr$
+			\State $res$ $\leftarrow$ CrearArreglo(ancho) \Comment $\Ogr$(1)
+			\State i $\leftarrow$ $0$ \Comment $\Ogr$(1)
+			\While{i $<$ ancho} \Comment $\Ogr$(alto) ancho de veces $\implies$ $\Ogr$(ancho x alto)
+				\State j $\leftarrow$ $0$ \Comment $\Ogr$(1)
+				\State $res$[i] $\leftarrow$ crearArreglo(alto) \Comment $\Ogr$(1)
+				\While{j $<$ alto} \Comment $\Ogr$(1) alto de veces $\implies$  $\Ogr$(alto)
+					\State $res$[i][j] $\leftarrow$ a \Comment $\Ogr$(1)
+					\State j $\leftarrow$ j$+1$ \Comment $\Ogr$(1)
+				\EndWhile
+				\State i $\leftarrow$ i$+1$ \Comment $\Ogr$(1)
+			\EndWhile
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(ancho x alto)
+		\\
+		\underline{Justificacion:} $\Ogr$(1)+$\Ogr$(1)+$\Ogr$(ancho) $\implies \Ogr$(ancho x alto)
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinir}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $\alpha$
+			\State (e.matriz[ancho])[alto] $\leftarrow$ a \Comment $\Ogr$(1)+$\Ogr$(1) $\Rightarrow \Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iValor}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iValor}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : $\alpha$
+			\State $res \leftarrow$ (e.matriz[ancho])[alto] \Comment $\Ogr$(1)+$\Ogr$(1) $\Rightarrow \Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iCopiar}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iCopiar}{\texttt{in} e : \texttt{estr}} $\to res$ : $estr$
+			\State $res$ $\leftarrow$ CrearMatriz(e.alto, e.ancho, e[0][0]) \Comment $\Ogr$(e.ancho x e.alto)
+			\State i $\leftarrow$ $0$ \Comment $\Ogr$(1)
+			\While{i $<$ e.ancho} \Comment $\Ogr$(alto x $copy$($\alpha$)) e.ancho de veces $\implies$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+				\State j $\leftarrow$ $0$ \Comment $\Ogr$(1)
+				\While{j $<$ e.alto} \Comment $\Ogr$($copy$($\alpha$)) e.alto de veces $\implies$  $\Ogr$(e.alto x $copy$($\alpha$))
+					\State Definir($res$, i, j, Copiar(e.matriz[i][j])) \Comment $\Ogr$(1)+$\Ogr$($copy$($\alpha$)) $\implies \Ogr$($copy$($\alpha$))
+					\State j $\leftarrow$ j$+1$ \Comment $\Ogr$(1)
+				\EndWhile
+				\State i $\leftarrow$ i$+1$ \Comment $\Ogr$(1)
+			\EndWhile
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+		\\
+		\underline{Justificacion:} Llamo $\alpha$ a el tipo de elemento de e.matriz. $\Ogr$(e.ancho x e.alto) + $\Ogr$(1) + $\Ogr$(e.ancho x e.alto x $copy$($\alpha$)) $\implies$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAlto}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iAlto}{\texttt{in} e : \texttt{estr}} $\to res$ : estr
+			\State $res \leftarrow$ e.alto \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAncho}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iAncho}{\texttt{in} e : \texttt{estr}} $\to res$ : estr
+			\State $res \leftarrow$ e.ancho \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iPosValida}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iPosValida}{\texttt{in} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : bool
+			\If{ancho $> 0$ $\land$ alto $> 0$} \Comment $\Ogr$(1)$+$$\Ogr$(1)+$+$$\Ogr$(1) $\implies$ $\Ogr$(1)
+				\State $res \leftarrow$ true
+			\Else	\Comment $\Ogr$(1)
+				\State $res \leftarrow$ false
+				\EndIf
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+		
+	\end{algorithm}
+	
+\end{Algoritmos}
 \end{Representacion}
