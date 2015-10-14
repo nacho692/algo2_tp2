@@ -1,16 +1,22 @@
+
+Dadas las contradicciones de la especificacion, para las funciones que proveen movimientos tanto de estudiantes, de agentes o de hippies voy a seguir el siguiente orden.
+
+\begin{enumerate}
+	\item Apariciones y Movimientos
+	\item Enhippizacion (Estudiantes en hippies)
+	\item Educacion (Hippies en estudiantes)
+	\item Premios de capturas de hippies
+	\item Captura de hippies
+	\item Sanciones relacionadas con el evento
+\end{enumerate}
+
 \begin{Interfaz}
+
 	\textbf{se explica con}: \tadNombre{Campus Seguro}.
 
 	\textbf{géneros}: \TipoVariable{campusSeg}.
 
 	\tituloModulo{Operaciones básicas de campusSeg}
-
-	\InterfazFuncion{ComenzarRastrillaje}{\In{c}{campus}, \In{d}{dicc(agente,posicion)}}{campusSeg}%
-	[($\forall a$: agente)def?($a$,$d$)$\impluego$ posValida?(obtener($a$,$d$))$\land \neg$ocupada?(obtener($a$,$d$),$c$)))\\
-  $\land$($\forall a_0,a_1$: agente)((def?($a_0$,$d$)$\land$def?($a_1$,$d$)$\land a_0 \neq a_1$)$\impluego$obtener($a_0$,$d$)$\neq$obtener($a_1$,$d$))]
-	{$res \igobs $comenzarRastrillaje($c$,$d$)}%
-	[$\Ogr$($h*a + n^2$)]
-	[Inicializa toda la estructura en funcion de los datos de entrada]
 
 	\InterfazFuncion{Campus}{\In{c}{campusSeg}}{campus}
 	{alias($res \igobs $campus($c$))}
@@ -18,19 +24,19 @@
 	[Devuelve el campus de Campus Seguro]
 	[El campus se devuelve por referencia]
 
-	\InterfazFuncion{Estudiantes}{\In{c}{campusSeg}}{itdicc(nombre,posicion)}
+	\InterfazFuncion{Estudiantes}{\In{c}{campusSeg}}{itDiccN(nombre,posicion)}
 	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
 	[$\Ogr(1)$]
 	[Devuelve Iterador de todos los estudiantes actualmente en el campus]
 	[res no es modificable, si hay un cambio en los estudiantes, el iterador puede quedar invalidado]
   
-	\InterfazFuncion{Hippies}{\In{c}{campusSeg}}{itdicc(nombre,posicion)}
+	\InterfazFuncion{Hippies}{\In{c}{campusSeg}}{itDiccN(nombre,posicion)}
 	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
 	[$\Ogr(1)$]
 	[Devuelve Iterador de todos los hippies actualmente en el campus]
 	[res no es modificable, si hay un cambio en los hippies, el iterador puede quedar invalidado]
 
-	\InterfazFuncion{Agentes}{\In{c}{campusSeg}}{itdiccAg(nombre,datosAg)}
+	\InterfazFuncion{Agentes}{\In{c}{campusSeg}}{itDiccH(nombre,datosAg)}
 	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
 	[$\Ogr(1)$]
 	[Devuelve Iterador de todos los agentes actualmente en el campus]
@@ -48,20 +54,35 @@
 	[$\Ogr(1)$ en caso promedio]
 	[Devuelve la posicion del agente]
 
-	\InterfazFuncion{CantHippiesAtrapados}{\In{c}{campusSeg}, \In{pl}{placa}}{nat}
-	[$pl \in$ agentes($c$)]
-	{$res \igobs$ cantHippiesAtrapados($pl$,$c$)}
-	[$\Ogr(1)$ en caso promedio]
-	[Devuelve la cantidad de hippies que atrapo el agente]
-
 	\InterfazFuncion{CantSanciones}{\In{c}{campusSeg}, \In{pl}{placa}}{nat}
 	[$pl \in$ agentes($c$)]
 	{$res \igobs$ cantSanciones($pl$,$c$)}
 	[$\Ogr(1)$ en caso promedio]
 	[Devuelve la cantidad de sanciones del agente]
 	
+	\InterfazFuncion{CantHippiesAtrapados}{\In{c}{campusSeg}, \In{pl}{placa}}{nat}
+	[$pl \in$ agentes($c$)]
+	{$res \igobs$ cantHippiesAtrapados($pl$,$c$)}
+	[$\Ogr(1)$ en caso promedio]
+	[Devuelve la cantidad de hippies que atrapo el agente]
 
+	\InterfazFuncion{ComenzarRastrillaje}{\In{c}{campus}, \In{d}{dicc(agente,posicion)}}{campusSeg}%
+	[($\forall a$: agente)def?($a$,$d$)$\impluego$ posValida?(obtener($a$,$d$))$\land \neg$ocupada?(obtener($a$,$d$),$c$)))\\
+  $\land$($\forall a_0,a_1$: agente)((def?($a_0$,$d$)$\land$def?($a_1$,$d$)$\land a_0 \neq a_1$)$\impluego$obtener($a_0$,$d$)$\neq$obtener($a_1$,$d$))]
+	{$res \igobs $comenzarRastrillaje($c$,$d$)}%
+	[$\Ogr$($h*a + n^2$)]
+	[Inicializa toda la estructura en funcion de los datos de entrada]
+
+	\InterfazFuncion{IngresarEstudiante}{\Inout{c}{campusSeg}, \In{n}{nombre}, \In{p}{posicion}}{}
+	[$c$ = $c_0 \land n \notin$ (estudiantes($c$)$\cup$hippies($c$))$\land$esIngreso($p$,campus($c$))$\land \neg$ estaOcupada?($p$,$c$)]
+	{$c$ = ingresarEstudiante($n$,$p$,$c_0$)}
+	[$\Ogr(|n_m|)$]
 	
+	\InterfazFuncion{MasVigilante}{\In{c}{campusSeg}}{placa}
+	[$\#Agentes(c) \geq$ 1]
+	{$res \igobs$masVigilante($c$)}
+	[$\Ogr(1)$]
+
 \end{Interfaz}
 
 \begin{Representacion}
@@ -81,9 +102,9 @@
     \end{Tupla}
     
 	\begin{Tupla}[posiciones]
-		\tupItem{mAg}{matriz(tupla(bool,datosAg)}\\
-		\tupItem{mH}{matriz(tupla(bool,itdicc(nombre, posicion))}\\
-		\tupItem{mE}{matriz(tupla(bool,itdicc(nombre, posicion))}
+		\tupItem{mAg}{matriz(tupla(def: bool,datos: datosAg)}\\
+		\tupItem{mH}{matriz(tupla(def: bool,datos: itDiccN(nombre, posicion))}\\
+		\tupItem{mE}{matriz(tupla(def: bool,datos: itDiccN(nombre, posicion))}
 	\end{Tupla}
 	
     \begin{Tupla}[datosAg]
@@ -233,10 +254,117 @@
   (def?($n$,$e$.estudiantes) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.estudiantes)) }
 
 
+\end{Representacion}
+
+
 \begin{Algoritmos}
 
 \begin{algorithm}[H]
-\caption{iComenzarRastrillaje}
+\caption{Campus}
+
+\begin{algorithmic}[1]
+ \Procedure{iCampus}{\texttt{in} c : \texttt{estr}} $\to res$ : campus
+  \State $res \gets$ $c$.cp \Comment $\Ogr(1)$
+ \EndProcedure
+\end{algorithmic}
+
+ \underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Estudiantes}
+
+\begin{algorithmic}[1]
+ \Procedure{iEstudiantes}{\texttt{in} c : \texttt{estr}} $\to res$ : itDiccN(string,posicion)
+  \State $res \gets$ CrearIt($c$.estudiantes) \Comment $\Ogr(1)$
+ \EndProcedure
+\end{algorithmic}
+ \underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Hippies}
+\begin{algorithmic}[1]
+	\Procedure{iHippies}{\texttt{in} c : \texttt{estr}} $\to res$ : itDiccN(string,posicion)
+	\State $res \gets$ CrearIt($c$.hippies) \Comment $\Ogr(1)$
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Agentes}
+\begin{algorithmic}[1]
+	\Procedure{iAgentes}{\texttt{in} c : \texttt{estr}} $\to res$ : itDiccH(nat,datosAg)
+	\State $res \gets$ CrearIt($c$.agentes) \Comment $\Ogr(1)$
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{Posicion de Estudiante Y Hippie}
+
+\begin{algorithmic}[1]
+\Procedure{iPosEstudianteYHippie}{\texttt{in} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}} $\to res$ : posicion
+	\If{Definido($c$.hippies,$n$} \Comment $\Ogr(|h_m|)$
+		\State $res \gets$ Obtener($n$,$c$.hippies) \Comment $\Ogr(|h_m|)$
+	\Else
+		\If{Definido($c$.estudiantes,$n$)} \Comment $\Ogr(|e_m|)$
+			\State $res \gets$ Obtener($n$,$c$.estudiantes) \Comment $\Ogr(|e_m|)$
+		\EndIf
+	\EndIf	
+ \EndProcedure
+\end{algorithmic}
+
+\underline{Complejidad:} $\Ogr(|n_m|)$ \\
+\underline{Justificacion:} $h_m$ y $e_m$ son el hippie y estudiante con nombre mas largo, sea cual sea la rama del if a la que se entra la complejidad llega a ser 
+$\Ogr(|n_m|)$ + $\Ogr(|n_m|)$ = $\Ogr(|n_m|)$ con $|n_m|$ = max($|h_m|$,$|e_m|$)
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Posicion de Agente}
+\begin{algorithmic}[1]
+ \Procedure{iPosAgente}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{placa}} $\to res$ : posicion
+  \State $res \gets$ Obtener($c$.agentes, $pl$) \Comment $\Ogr(1)$ promedio
+ \EndProcedure
+\end{algorithmic}
+
+ \underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Cantidad de Sanciones}
+
+\begin{algorithmic}[1]
+\Procedure{iCantSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
+	\State $res \gets$ Obtener($c$.agentes,$pl$).sanciones \Comment $\Ogr(1)$ promedio
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Cantidad de Hippies Atrapados}
+\begin{algorithmic}[1]
+\Procedure{iCantHippiesAtrapados}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
+	\State $res \gets$ Obtener($c$.agentes,$pl$).premios \Comment $\Ogr(1)$ promedio
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Comenzar Rastrillaje}
 
 \begin{algorithmic}[1]
 \Procedure{iComenzarRastrillaje}{\texttt{in} c : \texttt{campus}, \texttt{in} d : \texttt{diccLineal(placa,posicion)}} $\to res$ : estr
@@ -250,7 +378,8 @@
 	\State $res$.sanciones $\gets$ Vacio() \Comment $\Ogr(1)$
 	\State $res$.agentes $\gets$ Vacio() \Comment $\Ogr(1)$
 	\State $res$.placasPos $\gets$ Vacio($\#$Claves($d$)) \Comment $\Ogr(1)$ %TODO, ver la complejidad
-	\State itDicc(placa,posicion) $it$ $\gets$ CrearIt($d$) \Comment $\Ogr(1)$
+	\State itDicc
+	(placa,posicion) $it$ $\gets$ CrearIt($d$) \Comment $\Ogr(1)$
 	\State $res$.masVigilante $\gets$ datosAg \Comment (datosAg por defecto) $\Ogr(1)$ 
 	\If{HaySiguiente($it$)} \Comment $\Ogr(1)$
 		\State conj(placa) $cp$ $\gets$ Vacio() \Comment $\Ogr(1)$
@@ -286,34 +415,39 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * \Ogr(n)$ = $\Ogr(h*a) + \Ogr(n)*\Ogr(n)$ 
 
 
 \begin{algorithm}[H]
-\caption{iCampus}
-
+\caption{Ingresar Estudiante}
 \begin{algorithmic}[1]
- \Procedure{iCampus}{\texttt{in} c : \texttt{estr}} $\to res$ : campus
-  \State $res \gets$ $c$.cp \Comment $\Ogr(1)$
- \EndProcedure
+\Procedure{iIngresarEstudiante}{\texttt{in/out} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}, \texttt{in} p : \texttt{posicion}}
+	\State itDicN(string,posicion) itdic $\gets$ Definir($res$.estudiantes,$n$,$p$) \Comment $\Ogr(|n_m|)$
+	\State $res$.pos.mE[X($p$)][Y($p$)] $\gets$ $\langle$ true, itdic $\rangle$ \Comment $\Ogr(1)$
+	\State conj(posicion) $cp \gets$ Vecinos($c$.cp, $p$)
+	\State Agregar($cp$,$p$) \Comment $\Ogr(1)$
+	\State enhippizar($c$, $cp$)
+	\State estudiantizar($c$, $cp$)
+	\State premiar($c$,$cp$)
+\EndProcedure
 \end{algorithmic}
-
- \underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(1)$ promedio
 \end{algorithm}
 
 
-\begin{algorithm}[H]
-\caption{iEstudiantes}
-
-\begin{algorithmic}[1]
- \Procedure{iEstudiantes}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(nombre,posicion)
-  \State $res \gets$ CrearIt($c$.estudiantes) \Comment $\Ogr(1)$
- \EndProcedure
-\end{algorithmic}
- \underline{Complejidad:} $\Ogr(1)$
-\end{algorithm}
 
 
 \begin{algorithm}[H]
+\caption{De estudiante a hippie}
 \begin{algorithmic}[1]
-	\Procedure{iHippies}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(nombre,posicion)
-	\State $res \gets$ CrearIt($c$.hippies) \Comment $\Ogr(1)$
+	\Procedure{enhippizar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} cp : \texttt{conj(posicion)}}
+	\State itConj(posicion) $itc$ $\gets$ CrearIt($cp$)
+	\While {HaySiguiente($itc$)}
+	\State posicion $p$ $\gets$ Siguiente($itc$)
+	\If{enhippizado($c$,$p$)} \Comment $\Ogr(1)$
+		\State itDicN(string,posicion) $itEaH \gets$ $res$.pos.mE[X($p$)][Y($p$)]
+		\State EliminarSiguiente($itEaH$)
+		\State $res$.pos.mE[X($p$)][Y($p$)] $\gets$ $\langle$ false, CrearIt() $\rangle$ \Comment $\Ogr(1)$
+		\State $res$.pos.mH[X($p$)][Y($p$)] $\gets$ $\langle$ true, 	Definir($res$.hippies,$n$,$p$) $\rangle$
+	\EndIf
+		\State Avanzar($itc$)
+	\EndWhile
 	\EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
@@ -321,85 +455,121 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * \Ogr(n)$ = $\Ogr(h*a) + \Ogr(n)*\Ogr(n)$ 
 
 
 \begin{algorithm}[H]
+\caption{¿Se transforma en hippie?}
 \begin{algorithmic}[1]
-	\Procedure{iAgentes}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(placa,datosAg)
-	\State $res \gets$ CrearIt($c$.agentes) \Comment $\Ogr(1)$
-	\EndProcedure
-\end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
-\end{algorithm}
-
-
-
-\begin{algorithm}[H]
-\caption{iPosEstudianteYHippie}
-
-\begin{algorithmic}[1]
-\Procedure{iPosEstudianteYHippie}{\texttt{in} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}} $\to res$ : posicion
-	\If{Definido($c$.hippies,$n$} \Comment $\Ogr(|h_m|)$
-		\State $res \gets$ Obtener($n$,$c$.hippies) \Comment $\Ogr(|h_m|)$
-	\Else
-		\If{Definido($c$.estudiantes,$n$)} \Comment $\Ogr(|e_m|)$
-			\State $res \gets$ Obtener($n$,$c$.estudiantes) \Comment $\Ogr(|e_m|)$
+	\Procedure{enhippizado}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
+	\State $res \gets$ false
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$))
+	\State nat $i \gets 0$
+	\While{HaySiguiente($itc$)}
+		\If{esHippy(Siguiente($itc$))}
+			\State $i \gets i+1$
 		\EndIf
-	\EndIf	
- \EndProcedure
+		\State Avanzar($itc$)
+	\EndWhile
+	$res \gets (i \geq 2)$
+	\EndProcedure
 \end{algorithmic}
-
-\underline{Complejidad:} $\Ogr(|n_m|)$ \\
-\underline{Justificacion:} $h_m$ y $e_m$ son el hippie y estudiante con nombre mas largo, sea cual sea la rama del if a la que se entra la complejidad llega a ser 
-$\Ogr(|n_m|)$ + $\Ogr(|n_m|)$ = $\Ogr(|n_m|)$ con $|n_m|$ = max($|h_m|$,$|e_m|$)
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{iCampus}
-\begin{algorithmic}[1]
- \Procedure{iPosAgente}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{placa}} $\to res$ : posicion
-  \State $res \gets$ Obtener($c$.agentes, $pl$) \Comment $\Ogr(1)$ promedio
- \EndProcedure
-\end{algorithmic}
-
- \underline{Complejidad:} $\Ogr(1)$ promedio
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{iCantSanciones}
-
-\begin{algorithmic}[1]
-\Procedure{iCantSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
-	\State $res \gets$ Obtener($c$.agentes,$pl$).sanciones \Comment $\Ogr(1)$ promedio
-\EndProcedure
-\end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{iCantHippiesAtrapados}
-\begin{algorithmic}[1]
-\Procedure{iCantHippiesAtrapados}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
-	\State $res \gets$ Obtener($c$.agentes,$pl$).premios \Comment $\Ogr(1)$ promedio
-\EndProcedure
-\end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
-\end{algorithm}
-
-
-\begin{algorithm}[H]
-\caption{iMasVigilante}
-
-\begin{algorithmic}[1]
-\Procedure{iMasVigilante}{\texttt{in} c : \texttt{estr}} $\to res$ : placa
-	\State $res$ $\gets$ $c$.masVigilante.pl \Comment $\Ogr(1)$
-\EndProcedure
-\end{algorithmic}
-
 \underline{Complejidad:} $\Ogr(1)$
 \end{algorithm}
 
-\end{Algoritmos}
 
-\end{Representacion}
+\begin{algorithm}[H]
+\caption{¿Es hippie?}
+\begin{algorithmic}[1]
+	\Procedure{esEstudiante}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
+	\State $res \gets$ $c$.pos.mH[X($p$)][Y($p$)].def
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
 
+
+\begin{algorithm}[H]
+\caption{De hippie a estudiante}
+\begin{algorithmic}[1]
+	\Procedure{estudiantizar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} cp : \texttt{conj(posicion)}}
+	\State itConj(posicion) $itc$ $\gets$ CrearIt($cp$)
+	\While {HaySiguiente($itc$)}
+	\State posicion $p$ $\gets$ Siguiente($itc$)
+	\If{estudiantizado($p$)} \Comment $\Ogr(1)$
+		\State itDicN(string,posicion) $itHaE \gets$ $res$.pos.mH[X($p$)][Y($p$)]
+		\State EliminarSiguiente($itHaE$)
+		\State $res$.pos.mH[X($p$)][Y($p$)] $\gets$ $\langle$ false, CrearIt() $\rangle$ \Comment $\Ogr(1)$
+		\State $res$.pos.mE[X($p$)][Y($p$)] $\gets$ $\langle$ true, Definir($res$.estudiantes,$n$,$p$) $\rangle$
+	\EndIf
+	\EndWhile
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{¿Se transforma en estudiante?}
+\begin{algorithmic}[1]
+	\Procedure{enhippizado}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
+	\State $res \gets$ false
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$))
+	\State nat $i \gets 0$
+	\While{HaySiguiente($itc$)}
+		\If{esEstudiante(Siguiente($itc$))}
+			\State $i \gets i+1$
+		\EndIf
+		\State Avanzar($itc$)
+	\EndWhile
+	$res \gets (i = 4)$
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{¿Es estudiante?}
+\begin{algorithmic}[1]
+	\Procedure{esEstudiante}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
+	\State $res \gets$ $c$.pos.mE[X($p$)][Y($p$)].def
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Premiar Agentes}
+\begin{algorithmic}[1]
+	\Procedure{premiarAgentes}{\texttt{in/out} c : \texttt{estr}, \texttt{in} cp : \texttt{conj(posicion)}}
+	\State itConj(posicion) $itc$ $\gets$ CrearIt($cp$)
+	\While {HaySiguiente($itc$)}
+	\State posicion $p$ $\gets$ Siguiente($itc$)
+		\If{rodeado($p$) $\&\&$ esHippie($p$)} \Comment $\Ogr(1)$
+			\State itConj(posicion) $itca \gets$ Agentes(Vecinos($p$))
+			\While{HaySiguiente($itca$)}
+				\State pos.mAg[X($p$)][Y($p$)].premios ++
+				\State actualizarMasVigilante($c$,pos.mAg[X($p$)][Y($p$)])
+				\State Avanzar($itca$)
+			\EndWhile
+		\EndIf
+	\EndWhile
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Actualizar mas Vigilante}
+\begin{algorithmic}[1]
+	\Procedure{actualizarVigilante}{\texttt{in/out} c : \texttt{estr}, \texttt{in} datos : \texttt{datosAg}}
+	\If{$datos$.premios $> c$.masVigilante.premios}
+		\State $c$.masVigilante $\gets$ datos
+	\EndIf
+	\If{$datos$.premios == $c$.masVigilante.premios}
+		\If{$datos$.pl $< c$.masVigilante.pl}
+			\State $c$.masVigilante $\gets$ datos			
+		\EndIf
+	\EndIf
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
