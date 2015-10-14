@@ -1,0 +1,405 @@
+\begin{Interfaz}
+	\textbf{se explica con}: \tadNombre{Campus Seguro}.
+
+	\textbf{géneros}: \TipoVariable{campusSeg}.
+
+	\tituloModulo{Operaciones básicas de campusSeg}
+
+	\InterfazFuncion{ComenzarRastrillaje}{\In{c}{campus}, \In{d}{dicc(agente,posicion)}}{campusSeg}%
+	[($\forall a$: agente)def?($a$,$d$)$\impluego$ posValida?(obtener($a$,$d$))$\land \neg$ocupada?(obtener($a$,$d$),$c$)))\\
+  $\land$($\forall a_0,a_1$: agente)((def?($a_0$,$d$)$\land$def?($a_1$,$d$)$\land a_0 \neq a_1$)$\impluego$obtener($a_0$,$d$)$\neq$obtener($a_1$,$d$))]
+	{$res \igobs $comenzarRastrillaje($c$,$d$)}%
+	[$\Ogr$($h*a + n^2$)]
+	[Inicializa toda la estructura en funcion de los datos de entrada]
+
+	\InterfazFuncion{Campus}{\In{c}{campusSeg}}{campus}
+	{alias($res \igobs $campus($c$))}
+	[$\Ogr(1)$]
+	[Devuelve el campus de Campus Seguro]
+	[El campus se devuelve por referencia]
+
+	\InterfazFuncion{Estudiantes}{\In{c}{campusSeg}}{itdicc(nombre,posicion)}
+	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
+	[$\Ogr(1)$]
+	[Devuelve Iterador de todos los estudiantes actualmente en el campus]
+	[res no es modificable, si hay un cambio en los estudiantes, el iterador puede quedar invalidado]
+  
+	\InterfazFuncion{Hippies}{\In{c}{campusSeg}}{itdicc(nombre,posicion)}
+	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
+	[$\Ogr(1)$]
+	[Devuelve Iterador de todos los hippies actualmente en el campus]
+	[res no es modificable, si hay un cambio en los hippies, el iterador puede quedar invalidado]
+
+	\InterfazFuncion{Agentes}{\In{c}{campusSeg}}{itdiccAg(nombre,datosAg)}
+	{alias(esPermutacion(SecuSuby($res$),secuenciarDic($d$)) $\land$ Vacia?(Anteriores($res$))}
+	[$\Ogr(1)$]
+	[Devuelve Iterador de todos los agentes actualmente en el campus]
+	[res no es modificable, si hay un cambio en el diccionario, se va a ver reflejado en el iterador]
+
+	\InterfazFuncion{PosEstudianteYHippie}{\In{c}{campusSeg}, \In{n}{nombre}}{posicion}
+	[$n \in$ estudiantes($c$)$\cup$hippies($c$)]
+	{$res \igobs$posEstudianteYHippie($n$,$c$)}
+	[$\Ogr(|n_m|)$ con $|n_m|$ siendo la longitud del nombre más largo de hippies y estudiantes]
+	[Devuelve la posicion del estudiante o hippie]
+
+	\InterfazFuncion{PosAgente}{\In{c}{campusSeg}, \In{p}{placa}}{posicion}
+	[$pl \in$ agentes($c$)]
+	{$res \igobs$ posAgente($pl$,$c$)}
+	[$\Ogr(1)$ en caso promedio]
+	[Devuelve la posicion del agente]
+
+	\InterfazFuncion{CantHippiesAtrapados}{\In{c}{campusSeg}, \In{pl}{placa}}{nat}
+	[$pl \in$ agentes($c$)]
+	{$res \igobs$ cantHippiesAtrapados($pl$,$c$)}
+	[$\Ogr(1)$ en caso promedio]
+	[Devuelve la cantidad de hippies que atrapo el agente]
+
+	\InterfazFuncion{CantSanciones}{\In{c}{campusSeg}, \In{pl}{placa}}{nat}
+	[$pl \in$ agentes($c$)]
+	{$res \igobs$ cantSanciones($pl$,$c$)}
+	[$\Ogr(1)$ en caso promedio]
+	[Devuelve la cantidad de sanciones del agente]
+	
+
+	
+\end{Interfaz}
+
+\begin{Representacion}
+  
+  \tituloModulo{Representación de campusSeg}
+
+  \begin{Estructura}{campusSeg}[estr]
+    \begin{Tupla}[estr]
+		\tupItem{hippies}{diccNombres(nombre,posicion)}%
+		\tupItem{estudiantes}{diccNombres(nombre,posicion)\\}
+		\tupItem{agentes}{diccH(nat,datosAg)}
+		\tupItem{sanciones}{diccSanc(nat,conj(placa))}\\
+		\tupItem{placasPos}{diccLog(nat,posicion)}\\
+		\tupItem{pos}{posiciones}
+		\tupItem{masVigilante}{datosAg}
+		\tupItem{cp}{campus}
+    \end{Tupla}
+    
+	\begin{Tupla}[posiciones]
+		\tupItem{mAg}{matriz(tupla(bool,datosAg)}\\
+		\tupItem{mH}{matriz(tupla(bool,itdicc(nombre, posicion))}\\
+		\tupItem{mE}{matriz(tupla(bool,itdicc(nombre, posicion))}
+	\end{Tupla}
+	
+    \begin{Tupla}[datosAg]
+      \tupItem{pl}{placa}
+      \tupItem{sanciones}{nat}
+      \tupItem{premios}{nat}
+      \tupItem{pos}{posicion}%
+      \tupItem{kSanc}{itdicc(nat, conj(placa)}%
+      \tupItem{mismasSanc}{itconj(placa)}%
+    \end{Tupla}
+  \end{Estructura}
+
+  \tituloModulo{Aclaraciones}
+	Dada la complejidad de la estructura, el invariante puede ser dificil de seguir, por lo que a continuacion se encuentra detallado de manera informal las lineas que se siguieron al hacer el rep.
+	
+	\begin{enumerate}
+		\item Las claves de hippies y estudiantes intersecan vacio.
+		\item No hay posiciones iguales en estudiantes, hippies y placasPos y todas se encuentran en rango.
+		\item Las placas de agentes y placasPos son iguales y igual placa, misma posicion.
+		\item Las claves de sanciones y las diferentes sanciones de agentes forman el mismo conjunto. Los conjuntos de placas de la clave i de sanciones tienen todas las placas cuyos agentes tengan i sanciones.
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador kSanc es igual a una secuencia ordenada de sanciones y la siguiente clave del iterador es la cantidad de sanciones del datosAg.
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador mismasSanc es permutacion del conjunto de placas del diccionario sanciones donde se encuentra su propia placa, y el siguiente del iterador es su misma placa.
+		\item filas+1 y columnas+1 de cp (campus) es igual al alto y ancho de las matrices de pos.
+		\item mAg, el booleano es true si y solo si hay un agente en placasPos en esa posicion.\\
+		Si es true, los datosAg son iguales para esa placa.
+		\item mH, el booleano es true si y solo si hay un hippie en esa posicion.\\
+		Si es true,la siguiente clave del iterador es el hippie en esa posicion y la secuencia subyacente es permutacion de los hippies en hippies.
+		\item mE, el booleano es true si y solo si hay un estudiante en esa posicion.\\
+		Si es true,la siguiente clave del iterador es el estudiante en esa posicion y la secuencia subyacente es permutacion de los estudiantes en estudiantes.
+		\item El mas vigilante es el de mayor sanciones de los agentes y, entre ellos, el de menor placa.
+	\end{enumerate}
+	
+	Para facilitar la lectura se renombra las matrices $e$.pos.mXX a mXX
+  \Rep[estr]{
+	\begin{enumerate}
+		\item claves($e$.hippies) $\cap$ claves(e.estudiantes) = $\emptyset$
+		\item $\land$ ($\forall p$: posicion)($\#$($p$,armarMultiPos($e$)) $\geq$ 1 $\implies$ \\
+		$\#$($p$,armarMultiPos($e$)) = 1 $\land$ posValida($p$,$e$.cp) $\yluego$ $\neg$ocupada?($p$,$e$.cp))
+		\item $\land$ (claves($e$.agentes) $=$ claves($e$.placasPos) $\yluego$ ($\forall p$: placa) (def?($p$,e.placasPos) $\impluego$ \\
+		obtener($p$,$e$.placasPos) = obtener($p$,$e$.agentes).pos))
+		\item $\land$ unionSignificados($e$.sanciones) = claves($e$.agentes)\\
+		$\land$ ($\forall n$: nat) def?($n$,$e$.sanciones) $\impluego$ \\
+		($\neg$(obtener($n$,$e$.sanciones) = $\emptyset$) $\land$ ($\forall p$: placa) ($p \in$ obtener($n$,$e$.sanciones) $\implies$ \\
+		def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pl = p $\land$ obtener($p$,$e$.agentes).sanciones = n))
+		\item $\land$ ($\forall p$: placa) def?($p$,$e$.agentes) $\impluego$ \\
+		SecuSuby(obtener($p$,$e$.agentes).kSanc) = ordenar$\pi_1$(secuenciarDic($e$.sanciones)) \\
+		$\land$ $pi_1$(Siguiente(obtener($p$,$e$.agentes).kSanc)) = obtener($p$,$e$.agentes).pl
+		\item $\land$ ($\forall p$: placa) (def?($p$,$e$.agentes) $\yluego$ def?(obtener($p$,$e$.agentes).sanciones,$e$.sanciones) $\impluego$ \\
+		esPermutacion(SecuSuby(obtener($p$,$e$.agentes).mismasSanc),\\
+		secuenciarConj(obtener(obtener($p$,$e$.agentes).sanciones,$e$.sanciones)))\\
+		$\land$ siguiente(obtener($p$,$e$.agentes).mismasSanc) = $p$
+		\item $\land$ Ancho(mAg) = columnas($e$.campus) + 1 $\land$ Alto(mAg) = filas($e$.campus) + 1 \\
+		$\land$ Ancho(mH) = Ancho(mAg) $\land$ Alto(mH) = Alto(mAg)\\
+		$\land$ Ancho(mE) = Ancho(mH) $\land$ Alto(mE) = Alto(mH)
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mAg) $\land$ 0 $< j <$ Alto(mAg) $\impluego$ \\
+		($pi_1$(Valor(mAg,$i$,$j$)) $\iff$ \\
+		($\exists n$: nombre)(def?($p$,$e$.placasPos) $\land$ def?($p$,$e$.agentes)) $\yluego$\\
+		(obtener($p$,$e$.placasPos) = $\langle i$, $j \rangle$ $\land$ $\pi_2$(Valor(mAg,$i$,$j$)) = obtener($p$,$e$.agentes)))
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mH) $\land$ 0 $< j <$ Alto(mH) $\impluego$ \\
+		($\pi_1$(Valor(mH,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.hippies) $\yluego$ \\
+		obtener($n$,$e$.hippies) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mH,$i$,$j$)))) = $n$ $\land$ \\
+		esPermutacion(SecuSuby($\pi_2$(Valor(mH,$i$,$j$)),secuenciarDic($e$.hippies)))
+		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mE) $\land$ 0 $< j <$ Alto(mE) $\impluego$ \\
+		($\pi_1$(Valor(mE,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.estudiantes) $\yluego$ \\
+		obtener($n$,$e$.estudiantes) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mE,$i$,$j$)))) = $n$ $\land$ \\
+		esPermutacion(SecuSuby($\pi_2$(Valor(mE,$i$,$j$)),secuenciarDic($e$.estudiantes)))
+		\item $\#$claves($e$.agentes) $\geq$ 1 $\implies$ ($\exists p$: placa) def?($p$,$e$.agentes) $\yluego$ \\
+		(obtener($p$,$e$.agentes) = $e$.masVigilante $\land$ \\
+		(($\forall p':$ placa) def?($p'$,$e$.agentes) $\land p \neq p' \impluego$\\
+		(obtener($p$,$e$.agentes).premios $\geq$ obtener($p'$.$e$.agentes).premios $\land$ \\
+		(obtener($p$,$e$.agentes).premios = obtener($p'$,$e$.agentes) $\implies$ $p < p'$))))
+
+	\end{enumerate}
+  }\mbox{}
+	
+	\clearpage
+
+	\tadOperacion{armarMultiPos}{estr}{multiconj(posicion)}{}
+	\tadAxioma{armarMultiPos($e$)}{multiSignificados($e$.placasPos,claves($e$.placasPos)) $\cup$ \\
+	multiSignificados($e$.hippies,claves($e$.hippies)) $\cup$ \\
+	multiSignificados($e$.estudiantes,claves($e$.estudiantes)}
+
+  ~
+
+  \tadOperacion{multiSignificados}{dicc($\beta$,$\alpha$)/d, conj($\beta$)/c}{multiconj($\alpha$)}{($\forall cl: \beta$) $cl \in c \implies$ def?(cl,d)}
+  \tadAxioma{multiSignificados($d$,$c$)}{
+  \IF $\emptyset$?($c$) THEN $\emptyset$ 
+  ELSE Ag(obtener(dameUno($c$),$d$),multiSignificados($d$,sinUno($c$)))
+  FI}
+
+  ~
+
+  \tadOperacion{unionSignificados}{dicc($\beta$,$\alpha$)/d}{conj($\alpha$)}{}
+  \tadAxioma{unionSignificados($d$)}{multiAConj(multiSignificados($d$,claves($d$)))}
+
+  ~
+
+  \tadOperacion{multiAConj}{multiconj($\alpha$)}{conj($\alpha$)}{}
+  \tadAxioma{multiAConj($mc$)}{\IF $mc$ = $\emptyset$ THEN $\emptyset$ 
+  ELSE Ag(dameUno($mc$),multiAConj(sinUno($mc$)))
+  FI}
+
+  ~
+
+  \tadOperacion{secuenciarDic}{dicc($\beta$,$\alpha$)}{secu($\langle \beta, alpha \rangle$)}{}
+  \tadAxioma{secuenciarDic($d$)}{secuenciarDicAux($d$,claves($d$)}
+
+  ~
+
+  \tadOperacion{secuenciarDicAux}{dicc($\beta$,$\alpha$)/d, conj($\beta$)/c}{secu($\langle \beta, \alpha \rangle$)}{($\forall cl: \beta$) $cl \in c \implies$ def?(cl,d)}
+  \tadAxioma{secuenciarDicAux($d$,$c$)}{
+  \IF $\emptyset$?($c$) THEN $<>$ 
+  ELSE $\langle$dameUno($c$),obtener(dameUno($c$),$d$)$\rangle$ $\bullet$ secuenciarDicAux($d$,sinUno($c$))
+  FI}
+
+  ~
+
+  \tadOperacion{ordenar$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)}{secu($\langle \beta, \alpha \rangle$)}{}
+  \tadAxioma{ordenar$\pi_1$($s$)}{
+  \IF vacia?($s$) THEN $<>$ 
+  ELSE min$\pi_1$($s$) $\bullet$ ordenar$\pi_1$(fin($s$))
+  FI}
+
+  ~
+
+  \tadOperacion{min$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
+  \tadAxioma{min$\pi_1$($s$)}{minAux$\pi_1$($s$,prim($s$)}
+
+  ~
+  
+  \tadOperacion{minAux$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s, $\langle \beta $ , $\alpha \rangle$}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
+  \tadAxioma{minAux$\pi_1$($s$,$e$}{\IF long($s$) = 1 THEN 
+  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI} 
+  ELSE minAux$\pi_1$(fin($s$),
+  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI}
+  FI}
+
+  ~
+  
+  \AbsFc[estr]{campusSeg}[e]
+  {$cs$: campusSeg $/$ e.cp = campus(cs) $\land$ claves($e$.estudiantes) = estudiantes($cs$) \\ $\land$ claves($e$.hippies) = hippies($cs$) $\land$ claves($e$.agentes) = agentes(cs) $\land$ \\
+  ($\forall a$: agente)(($a \in$ agentes($cs$) $\iff$ def?($a$,$e$.agentes)) $\yluego$ ($a \in$ agentes($cs$) $\impluego$ \\
+  (obtener($a$,$e$.agentes).sanciones = cantSanciones($a$,$cs$) $\land$\\
+  obtener($a$,$e$.agentes).premios = cantHippiesAtrapados($a$,$cs$) $\land$\\
+  obtener($a$,$e$.agentes).posicion = posAgente($a$,$cs$)))) $\yluego$ \\
+  ($\forall n:$ nombre)(def?($n$,$e$.hippies) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.hippies)) $\land$\\
+  (def?($n$,$e$.estudiantes) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.estudiantes)) }
+
+
+\begin{Algoritmos}
+
+\begin{algorithm}[H]
+\caption{iComenzarRastrillaje}
+
+\begin{algorithmic}[1]
+\Procedure{iComenzarRastrillaje}{\texttt{in} c : \texttt{campus}, \texttt{in} d : \texttt{diccLineal(placa,posicion)}} $\to res$ : estr
+	\State $res$.cp $\gets$ Copiar($c$) \Comment $\Ogr$($h*a$)
+	\State $res$.posiciones.mAg $\gets$ CrearMatriz(Filas($c$),Columnas($c$), datosAg) \Comment $\Ogr$($h*a$)
+	\State $res$.posiciones.mH $\gets$ CrearMatriz(Filas($c$),Columnas($c$), datosAg) \Comment $\Ogr$($h*a$)
+	\State $res$.posiciones.mE $\gets$ CrearMatriz(Filas($c$),Columnas($c$), datosAg) \Comment $\Ogr$($h*a$)
+	
+	\State $res$.hippies $\gets$ Vacio() \Comment $\Ogr(1)$
+	\State $res$.estudiantes $\gets$ Vacio() \Comment $\Ogr(1)$
+	\State $res$.sanciones $\gets$ Vacio() \Comment $\Ogr(1)$
+	\State $res$.agentes $\gets$ Vacio() \Comment $\Ogr(1)$
+	\State $res$.placasPos $\gets$ Vacio($\#$Claves($d$)) \Comment $\Ogr(1)$ %TODO, ver la complejidad
+	\State itDicc(placa,posicion) $it$ $\gets$ CrearIt($d$) \Comment $\Ogr(1)$
+	\State $res$.masVigilante $\gets$ datosAg \Comment (datosAg por defecto) $\Ogr(1)$ 
+	\If{HaySiguiente($it$)} \Comment $\Ogr(1)$
+		\State conj(placa) $cp$ $\gets$ Vacio() \Comment $\Ogr(1)$
+		\State itDicc(nat,conj(placa)) $itdic$ $\gets$ Definir(0,$cp$,$res$.sanciones) \Comment $\Ogr(1)$
+		\State bool $f$ $\gets$ true \Comment $\Ogr(1)$
+		\While{HaySiguiente($it$)} \Comment $n$ * $\Ogr(1)$
+	 	\State placa $pl$ $\gets$ SiguienteClave($it$) \Comment $\Ogr(1)$
+	 	\State posicion $pos$ $\gets$ CrearPosicion(X(SiguienteSignificado($it$)),Y(SiguienteSignificado($it$))) \Comment $\Ogr(1)$
+	 	\State itConj(placa) $itc$ $\gets$ Agregar($pl$,$cp$) \Comment $\Ogr(1)$
+	 	\State datosAg $ag \gets \langle pl$,0,0,$pos$,$itdic$,$itc \rangle$ \Comment $\Ogr(1)$
+	 	\State Definir($res$.placasPos,$pl$,$ag$.pos) \Comment $\Ogr(n)$
+	 	\State $res$.posiciones.mAg[X($pos$)][Y($pos$)] $\gets ag$ \Comment $\Ogr(1)$
+	 	\If{($f$ || $res$.masVigilante.placa $\geq pl$)} \Comment $\Ogr(1)$
+	 		\State $res$.masVigilante $\gets$ ag \Comment $\Ogr(1)$
+	 		\State $f \gets$ false \Comment $\Ogr(1)$
+	 	\EndIf
+	 \EndWhile
+	 \State Definir($res$.sanciones,0,$cp$) \Comment $\Ogr(1)$ %TODO: Ver la complejidad
+	 \EndIf
+\EndProcedure
+\end{algorithmic}
+
+\underline{Complejidad:} $\Ogr$($h*a + n^2$)\\
+Donde 
+\begin{itemize}
+	\item $h$ es Filas($c$)
+	\item $a$ es Columnas($c$)
+	\item $n$ es $\#$Claves($d$)
+\end{itemize}	
+\underline{Justificacion:} Sumo los $\Ogr(1)$ continuos para aclarar un poco ($C$*$\Ogr(1)$ = $\Ogr(1)$)\\
+$4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * \Ogr(n)$ = $\Ogr(h*a) + \Ogr(n)*\Ogr(n)$ = $\Ogr(h*a) + \Ogr(n^2)$ = $\Ogr(h*a + n^2)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iCampus}
+
+\begin{algorithmic}[1]
+ \Procedure{iCampus}{\texttt{in} c : \texttt{estr}} $\to res$ : campus
+  \State $res \gets$ $c$.cp \Comment $\Ogr(1)$
+ \EndProcedure
+\end{algorithmic}
+
+ \underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iEstudiantes}
+
+\begin{algorithmic}[1]
+ \Procedure{iEstudiantes}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(nombre,posicion)
+  \State $res \gets$ CrearIt($c$.estudiantes) \Comment $\Ogr(1)$
+ \EndProcedure
+\end{algorithmic}
+ \underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+	\Procedure{iHippies}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(nombre,posicion)
+	\State $res \gets$ CrearIt($c$.hippies) \Comment $\Ogr(1)$
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+	\Procedure{iAgentes}{\texttt{in} c : \texttt{estr}} $\to res$ : itdic(placa,datosAg)
+	\State $res \gets$ CrearIt($c$.agentes) \Comment $\Ogr(1)$
+	\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\caption{iPosEstudianteYHippie}
+
+\begin{algorithmic}[1]
+\Procedure{iPosEstudianteYHippie}{\texttt{in} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}} $\to res$ : posicion
+	\If{Definido($c$.hippies,$n$} \Comment $\Ogr(|h_m|)$
+		\State $res \gets$ Obtener($n$,$c$.hippies) \Comment $\Ogr(|h_m|)$
+	\Else
+		\If{Definido($c$.estudiantes,$n$)} \Comment $\Ogr(|e_m|)$
+			\State $res \gets$ Obtener($n$,$c$.estudiantes) \Comment $\Ogr(|e_m|)$
+		\EndIf
+	\EndIf	
+ \EndProcedure
+\end{algorithmic}
+
+\underline{Complejidad:} $\Ogr(|n_m|)$ \\
+\underline{Justificacion:} $h_m$ y $e_m$ son el hippie y estudiante con nombre mas largo, sea cual sea la rama del if a la que se entra la complejidad llega a ser 
+$\Ogr(|n_m|)$ + $\Ogr(|n_m|)$ = $\Ogr(|n_m|)$ con $|n_m|$ = max($|h_m|$,$|e_m|$)
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iCampus}
+\begin{algorithmic}[1]
+ \Procedure{iPosAgente}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{placa}} $\to res$ : posicion
+  \State $res \gets$ Obtener($c$.agentes, $pl$) \Comment $\Ogr(1)$ promedio
+ \EndProcedure
+\end{algorithmic}
+
+ \underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iCantSanciones}
+
+\begin{algorithmic}[1]
+\Procedure{iCantSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
+	\State $res \gets$ Obtener($c$.agentes,$pl$).sanciones \Comment $\Ogr(1)$ promedio
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iCantHippiesAtrapados}
+\begin{algorithmic}[1]
+\Procedure{iCantHippiesAtrapados}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$ : nat
+	\State $res \gets$ Obtener($c$.agentes,$pl$).premios \Comment $\Ogr(1)$ promedio
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{iMasVigilante}
+
+\begin{algorithmic}[1]
+\Procedure{iMasVigilante}{\texttt{in} c : \texttt{estr}} $\to res$ : placa
+	\State $res$ $\gets$ $c$.masVigilante.pl \Comment $\Ogr(1)$
+\EndProcedure
+\end{algorithmic}
+
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+\end{Algoritmos}
+
+\end{Representacion}
+
