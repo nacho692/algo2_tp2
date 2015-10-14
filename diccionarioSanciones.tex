@@ -24,6 +24,7 @@
 	[me retorna el conjunto de placas con $s$ sanciones del $ds$]
 
 	\InterfazFuncion{Def?}{\In{s}{nat}, \In{ds}{diccS}}{bool}
+	[def?(s, ds)]
 	{$res \igobs$ def?(s, ds)}  
 	[$\Ogr$(1)]
 	[me dice si esta definida la clave $s$ en el diccionario $ds$]
@@ -67,15 +68,33 @@
 	
 	\InterfazFuncion{SiguienteClave}{\In{its}{itS}}{nat}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its).$\pi1$)}
+	{alias($res \igobs$ siguiente(its).clave)}
 	{$\Ogr$(1)}
 	{devuelve la clave del siguiente iterador}
 	
 	\InterfazFuncion{SiguienteSignificado}{\In{its}{itS}}{conj(placa)}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its).$\pi2$)}
+	{alias($res \igobs$ siguiente(its).significado)}
 	{$\Ogr$(1)}
 	{devuelve el significado del siguiente iterador}
 
 
 \end{Interfaz}
+
+\begin{Representacion}
+	
+	\tituloModulo{Representacion del Iterador de Diccionaro de Sanciones}
+	\begin{Estructura}{itS}[it]
+		Donde $it$ es itDicc(nat, conj(placa))
+	\end{Estructura}
+	
+	\Rep[itS][it]{true}
+	
+	~
+	~
+	
+	
+	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{crearItBi(Anteriores(it), Siguientes(it))}
+	
+\end{Representacion}
+
