@@ -6,43 +6,28 @@
 
 	\tituloModulo{Operaciones básicas de diccionario de sanciones}
 
-	\InterfazFuncion{CrearDiccS}{}{diccS}
-	{$res \igobs$ vacio}
+	\InterfazFuncion{CrearDiccS}{\In{significado}{conj(placa)}}{diccS}
+	{$res \igobs$ definir($0$, significado, vacio)}
 	[$\Ogr$(1)]
-	[genera un diccionarioa vacio]
+	[genera un diccionario con todos los agentes con $0$ sanciones]
 
-	\InterfazFuncion{Definir}{\In{s}{nat}, \In{significado}{conj(placa)}, \Inout{ds}{diccS}}{its}
+	\InterfazFuncion{Definir}{\Inout{ds}{diccS}, \In{s}{nat}, \In{significado}{conj(placa)}}{its}
 	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $\geq$ i]
 	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$<$s, significado$>$ $\land$\\
 	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}%uso el definir de diccLineal
 	[$\Ogr$(1)]
 	[defino la clave $s$ con el significado $significado$ en mi diccionario $ds$]
 	
-	\InterfazFuncion{Obtener}{\In{s}{nat}, \In{ds}{diccS}}{conj(placa)}
+	\InterfazFuncion{Obtener}{\Inout{ds}{diccS}, \In{s}{nat}}{conj(placa)}
 	{$res \igobs$ obtener(s, ds)}
 	[$\Ogr$(1)]
 	[me retorna el conjunto de placas con $s$ sanciones del $ds$]
 
-	\InterfazFuncion{Def?}{\In{s}{nat}, \In{ds}{diccS}}{bool}
+	\InterfazFuncion{Def?}{\In{ds}{diccS}, \In{s}{nat}}{bool}
+	[def?(s, ds)]
 	{$res \igobs$ def?(s, ds)}  
 	[$\Ogr$(1)]
 	[me dice si esta definida la clave $s$ en el diccionario $ds$]
-
-	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
-	{$res \igobs$ alto(m)}  
-	[$\Ogr$(1)]
-	[retorna la altura de la matriz $m$]
-
-	\InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
-	{$res \igobs$ ancho(m)}  
-	[$\Ogr$(1)]
-	[retorna el ancho de la matriz $m$]
-
-	\InterfazFuncion{PosValida}{\In{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{nat}
-	{$res \igobs$ posValida(m, ancho, alto)}  
-	[$\Ogr$(1)]
-	[devuelve si es una posicion valida de mi matriz o no]
-	
 	
 	
 	\tituloModulo{Operaciones básicas de iterador de sanciones}
@@ -67,15 +52,233 @@
 	
 	\InterfazFuncion{SiguienteClave}{\In{its}{itS}}{nat}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its).$\pi1$)}
+	{alias($res \igobs$ siguiente(its).clave)}
 	{$\Ogr$(1)}
 	{devuelve la clave del siguiente iterador}
 	
 	\InterfazFuncion{SiguienteSignificado}{\In{its}{itS}}{conj(placa)}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its).$\pi2$)}
-	{$\Ogr$(1)}
-	{devuelve el significado del siguiente iterador}
+	{alias($res \igobs$ siguiente(its).significado)}
+	[$\Ogr$(1)]
+	[devuelve el significado del siguiente iterador]
+	
+	\InterfazFuncion{Avanzar}{\Inout{its}{itS}}{itS}
+	[it$=$it$_0$ $\land$ haySiguiente?(its)]
+	{it $\igobs$ avanzar(it$_0$)}
+	[$\Ogr$(1)]
+	[avanza en uno el iterador]
+
+	\InterfazFuncion{EliminarSiguiente}{\Inout{its}{itS}}{}
+	[it$=$it$_0$ $\land$ haySiguiente?(its)]
+	{it $\igobs$ eliminarSiguiente(it$_0$)}
+	[$\Ogr$(1)]
+	[elimina la clave del elemento que se encuentra en la posicion siguiente]
 
 
 \end{Interfaz}
+
+\begin{Representacion}
+	
+	\tituloModulo{Representacion del Diccionaro de Sanciones}
+	\begin{Estructura}{diccS}
+		\begin{Tupla}
+			\tupItem{diccLineal}{dicc(nat, conj(placa))}
+			\tupItem{diccLog}{diccLog(nat, con(placa))}
+			\tupItem{actualizar}{bool}
+		\end{Tupla}
+	\end{Estructura}
+	
+	\Rep{$\neg$e.actualizar $\Rightarrow$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ claves(e.diccLineal))$\land_l$ ($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)$\iff$ cp$=$obtener(n, e.diccLineal))
+		\\
+		$\land$e.actualizar$\Rightarrow$ Union(Significados(e.diccLog))$=$Union(Significados(e.diccLineal))}
+	
+	\tadOperacion{Significados}{dicc(nat, conj(placa))}{conj(conj((placa)))}{}
+	\tadAxioma{Significados(d)}{\IF $\#$claves(d)$=0$
+		THEN $\emptyset$
+		ELSE Ag(obtener(dameUno(claves(d)), Significados(borrar(dameUno(claves(d)),d)))
+		FI}
+	Uso el Significados(dicc(nat, conj(placa))) para mi diccLineal y diccLog aunque deberia hacer uno especifico para el diccLog, pero es trivial y es mas amigable a la vista
+	
+	~	
+	
+	\tadOperacion{Union}{conj(conj(plc))}{conj(plc)}{}
+	\tadAxioma{Union(c)}{\IF $\#$c$=0$
+		THEN $\emptyset$
+		ELSE dameUno(c)$\cup$Union(sinUno(c))
+		FI}
+	
+	~
+	~
+	
+	
+	\AbsFc{diccS}{d : diccS $/$ \\
+		($\forall$ n : nat) n$\in$claves(e.diccLineal) $\Rightarrow_L$ obtener(n, e.diccLineal$=$obtener(n, d))\\
+		$\land$ def?(n, e.diccLineal) $=$ Def?(n, d) }
+	
+	~
+	~
+	
+	
+	\tituloModulo{Representacion del Iterador de Diccionaro de Sanciones}
+	\begin{Estructura}{itS}[itDic]
+		Donde $itDic$ es itDicc(nat, conj(placa))
+	\end{Estructura}
+	
+	\Rep[itS][it]{true}
+	
+	~
+	~
+	
+	
+	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{crearItBi(Anteriores(it), Siguientes(it))}
+
+\begin{Algoritmos}
+	
+	\begin{algorithm}[H]
+		\caption{iCrearDiccS}
+		\begin{algorithmic}[1]
+			\Procedure{iCrearDiccS}{\texttt{in} sig : \texttt{conj(placa)}} $\to res$ : estr
+			\State $res$.diccLog$\leftarrow$ Vacio($\#$(sig)) //vacio de diccionario logaritmico \Comment $\Ogr$(1)
+			\State $res$.diccLineal$\leftarrow$ Vacio() //vacio de diccionario lineal \Comment $\Ogr$(1)
+			\State $res$.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinir}
+		\begin{algorithmic}[1]
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itDic
+			\State it$\leftarrow$ Definir(e.diccLineal, s, sig) //definir de diccLineal \Comment $\Ogr$($\#$sig)
+			\State $res \leftarrow$ it \Comment $\Ogr$(1)
+			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$(sig))
+	\end{algorithm}
+
+	\begin{algorithm}[H]
+		\caption{iObtener}
+		\begin{algorithmic}[1]
+			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : conj(placa)
+			\If{e.actualizar} \Comment $\Ogr$(1)
+				\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
+				\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de claves de diccLineal veces \Comment $\Ogr$($\#$claves(e.diccLineal))
+					\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
+					\State avanzar(it) \Comment $\Ogr$(1) 
+				\EndWhile
+				\State e.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\EndIf
+			\State Obtener(e.diccLog, s) $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		\\
+		\underline{Justificacion:} $\Ogr$($\#$claves(e.diccLineal))+$\Ogr$(log $\#$claves(e.diccLineal)). En el peor de los casos sera la $\Ogr$($\#$claves(e.diccLineal)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.diccLineal)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.diccLineal)) puesto que nunca entraremos en el while.
+	\end{algorithm}	
+	
+	\begin{algorithm}[H]
+		\caption{iDef?}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
+			\State $res \leftarrow$ Definido?(e.diccLineal, s) //uso el definido de diccLineal \Comment $\Ogr$($\#$claves(e.diccLineal))
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDef?}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
+			\State $res \leftarrow$ Definido?(e.diccLineal, s) //uso el definido de diccLineal \Comment $\Ogr$($\#$claves(e.diccLineal))
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iCrearIt}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ itDic
+			\State $res \leftarrow$ CrearIt(e.diccLineal) //uso el crearIt de diccLineal \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iHaySiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iHaySiguiente}{\texttt{in} itd : \texttt{itDic}} $\to res$ bool
+			\State $res \leftarrow$ HaySiguiente(itd) //uso el HaySiguiente de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguiente}{\texttt{in} itd : \texttt{itDic}} $\to res$ $<$nat, conj(placa)$>$
+			\State $res \leftarrow$ Siguiente(itd) //uso el Siguiente de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteClave}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguienteClave}{\texttt{in} itd : \texttt{itDic}} $\to res$ nat
+			\State $res \leftarrow$ SiguienteClave(itd) //uso el SiguienteClave de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteSignificado}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguienteSignificado}{\texttt{in} itd : \texttt{itDic}} $\to res$ conj(placa)
+			\State $res \leftarrow$ SiguienteSignificado(itd) //uso el SiguienteSignificado de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAvanzar}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iAvanzar}{\texttt{in/out} itd : \texttt{itDic}} $\to res$ itDic
+			\State $res \leftarrow$ Avanzar(itd) //uso el Avanzar de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iEliminarSiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iEliminarSiguiente}{\texttt{in/out} itd : \texttt{itDic}, \texttt{in/out} e : \texttt{estr}}
+			\State EliminarSiguiente(itd) //uso el EliminarSiguiente de itDicc \Comment $\Ogr$(1)
+			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
+	
+\end{Algoritmos}
+\end{Representacion}
