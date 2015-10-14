@@ -59,14 +59,20 @@
 	\InterfazFuncion{SiguienteSignificado}{\In{its}{itS}}{conj(placa)}
 	[haySiguiente?(its)]
 	{alias($res \igobs$ siguiente(its).significado)}
-	{$\Ogr$(1)}
-	{devuelve el significado del siguiente iterador}
+	[$\Ogr$(1)]
+	[devuelve el significado del siguiente iterador]
 	
 	\InterfazFuncion{Avanzar}{\Inout{its}{itS}}{itS}
 	[it$=$it$_0$ $\land$ haySiguiente?(its)]
 	{it $\igobs$ avanzar(it$_0$)}
-	{$\Ogr$(1)}
-	{avanza en uno el iterador}
+	[$\Ogr$(1)]
+	[avanza en uno el iterador]
+
+	\InterfazFuncion{EliminarSiguiente}{\Inout{its}{itS}}{}
+	[it$=$it$_0$ $\land$ haySiguiente?(its)]
+	{it $\igobs$ eliminarSiguiente(it$_0$)}
+	[$\Ogr$(1)]
+	[elimina la clave del elemento que se encuentra en la posicion siguiente]
 
 
 \end{Interfaz}
@@ -262,6 +268,17 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
+	\begin{algorithm}[H]
+		\caption{iEliminarSiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iEliminarSiguiente}{\texttt{in/out} itd : \texttt{itDic}, \texttt{in/out} e : \texttt{estr}}
+			\State EliminarSiguiente(itd) //uso el EliminarSiguiente de itDicc \Comment $\Ogr$(1)
+			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
 	
 \end{Algoritmos}
 \end{Representacion}
