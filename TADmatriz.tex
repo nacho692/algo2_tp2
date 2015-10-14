@@ -1,0 +1,43 @@
+\begin{tad}{\tadNombre{Matriz($\alpha$)}}
+\tadIgualdadObservacional{m}{m'}{matriz($\alpha$)}{ancho(m) $\igobs$ ancho(m') $\land$ alto(m) $\igobs$ alto(m') \\
+$\yluego$ ($\forall c, f$: nat ) valor(m, c, f) $\igobs$ valor(m', c, f)}
+
+\tadParametrosFormales{
+    \tadEncabezadoInline{géneros}{$\alpha$}
+}
+
+\tadGeneros{matriz($\alpha$)}
+\tadExporta{matriz($\alpha$), generadores, observadores, posValida}
+\tadUsa{\tadNombre{$\alpha$, Bool, Nat}}
+
+%notar la importancia de agrupar el ultimo parametro, para la coma
+\tadAlinearFunciones{posValida}{columa/nat,fila/nat,$\alpha$,{matriz($\alpha$)}/m}
+
+\tadObservadores 
+\tadOperacion{ancho}{matriz($\alpha$)}{nat}{} 
+\tadOperacion{alto}{matriz($\alpha$)}{nat}{}
+\tadOperacion{valor}{{matriz($\alpha$)}/m,columna/nat,fila/nat}{$\alpha$}{posValida(m, columna, fila)}
+
+\tadGeneradores
+\tadOperacion{crear}{ancho/nat,alto/nat,$\alpha$}{matriz($\alpha$)}{ancho$>0$ $\land$ alto$>0$} 
+\tadOperacion{definir}{columna/nat,fila/nat,$\alpha$,{matriz($\alpha$)}/m}{matriz($\alpha$)}{posValida(m, columna, fila)}
+
+\tadOtrasOperaciones
+\tadOperacion{posValida}{{matriz($\alpha$)}/m,columna/nat,fila/nat}{bool)}{columna$\geq0$ $\land$ fila$\geq0$}
+
+\tadAxiomas[\paratodo{matriz($\alpha$)}{m}, \paratodo{nat}{an, al}, \paratodo{$\alpha$}{a}]
+\tadAlinearAxiomas{valor(definir($c$, $f$, $a$, $m$), $c'$, $f'$)}
+
+\tadAxioma{ancho(crear($an$, $al$, $a$))}{$an$}
+\tadAxioma{ancho(definir($c$, $f$, $a$, $m$))}{ancho($m$)}
+
+\tadAxioma{alto(crear($an$, $al$, $a$))}{$al$}
+\tadAxioma{alto(definir($c$, $f$, $a$, $m$))}{alto($m$)}
+
+\tadAxioma{valor(crear($an$, $al$, $a$), $c$, $f$)}{$a$}
+\tadAxioma{valor(definir($c$, $f$, $a$, $m$), $c'$, $f'$)}{\IF $f=f' \land c=c'$ THEN $a$ ELSE valor($m$,$c'$,$f'$) FI}
+
+\tadAxioma{posValida($m$, $c$, $f$)}{$f <$alto($m$) $\land$ $c <$ ancho($m$)}
+
+
+\end{tad}
