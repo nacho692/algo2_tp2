@@ -1,0 +1,81 @@
+\begin{Interfaz}
+
+	\textbf{se explica con}: \tadNombre{Diccionario(nat, conj(placa)), Iterador Bidireccional($\alpha$)}.
+
+	\textbf{géneros}: \TipoVariable{diccS, its}.
+
+	\tituloModulo{Operaciones básicas de diccionario de sanciones}
+
+	\InterfazFuncion{CrearDiccS}{}{diccS}
+	{$res \igobs$ vacio}
+	[$\Ogr$(1)]
+	[genera un diccionarioa vacio]
+
+	\InterfazFuncion{Definir}{\In{s}{nat}, \In{significado}{conj(placa)}, \Inout{ds}{diccS}}{its}
+	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $\geq$ i]
+	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$<$s, significado$>$ $\land$\\
+	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}%uso el definir de diccLineal
+	[$\Ogr$(1)]
+	[defino la clave $s$ con el significado $significado$ en mi diccionario $ds$]
+	
+	\InterfazFuncion{Obtener}{\In{s}{nat}, \In{ds}{diccS}}{conj(placa)}
+	{$res \igobs$ obtener(s, ds)}
+	[$\Ogr$(1)]
+	[me retorna el conjunto de placas con $s$ sanciones del $ds$]
+
+	\InterfazFuncion{Def?}{\In{s}{nat}, \In{ds}{diccS}}{bool}
+	{$res \igobs$ def?(s, ds)}  
+	[$\Ogr$(1)]
+	[me dice si esta definida la clave $s$ en el diccionario $ds$]
+
+	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
+	{$res \igobs$ alto(m)}  
+	[$\Ogr$(1)]
+	[retorna la altura de la matriz $m$]
+
+	\InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
+	{$res \igobs$ ancho(m)}  
+	[$\Ogr$(1)]
+	[retorna el ancho de la matriz $m$]
+
+	\InterfazFuncion{PosValida}{\In{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{nat}
+	{$res \igobs$ posValida(m, ancho, alto)}  
+	[$\Ogr$(1)]
+	[devuelve si es una posicion valida de mi matriz o no]
+	
+	
+	
+	\tituloModulo{Operaciones básicas de iterador de sanciones}
+	
+	Para simplificar las cosas usaremos clave y significado en vez de $\Pi1$ y $\Pi2$ cuanto utilicemos una tupla(nat, conj(placa))
+	
+	\InterfazFuncion{CrearIts}{\In{ds}{diccS}}{itS}
+	{SecuSuby($res$)$\igobs$ordenar$\pi1$(secuenciarDic(ds))}
+	[$\Ogr$(1)]
+	[crea iterador de sanciones]
+	
+	\InterfazFuncion{HaySiguiente}{\In{its}{itS}}{bool}
+	{$res \igobs$ haySiguiente?(its)}
+	[$\Ogr$(1)]
+	[me retorna true si hay quedan elementos para avanzar]
+	
+	\InterfazFuncion{Siguiente}{\In{its}{itS}}{tupla(nat, conj(placa))}
+	[haySiguiente?(its)]
+	{alias($res \igobs$ siguiente(its))}
+	[$\Ogr$(1)]
+	[devuelve el elemento siguiente del iterador]
+	
+	\InterfazFuncion{SiguienteClave}{\In{its}{itS}}{nat}
+	[haySiguiente?(its)]
+	{alias($res \igobs$ siguiente(its).$\pi1$)}
+	{$\Ogr$(1)}
+	{devuelve la clave del siguiente iterador}
+	
+	\InterfazFuncion{SiguienteSignificado}{\In{its}{itS}}{conj(placa)}
+	[haySiguiente?(its)]
+	{alias($res \igobs$ siguiente(its).$\pi2$)}
+	{$\Ogr$(1)}
+	{devuelve el significado del siguiente iterador}
+
+
+\end{Interfaz}
