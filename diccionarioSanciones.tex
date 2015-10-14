@@ -83,6 +83,46 @@
 
 \begin{Representacion}
 	
+	\tituloModulo{Representacion del Diccionaro de Sanciones}
+	\begin{Estructura}{diccS}
+		\begin{Tupla}
+			\tupItem{diccLineal}{dicc(nat, conj(placa))}
+			\tupItem{diccLog}{diccLog(nat, con(placa))}
+			\tupItem{actualizar}{bool}
+		\end{Tupla}
+	\end{Estructura}
+	
+	\Rep{$\neg$e.actualizar $\Rightarrow$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ claves(e.diccLineal))$\land_l$ ($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)$\iff$ cp$=$obtener(n, e.diccLineal))
+		\\
+		$\land$e.actualizar$\Rightarrow$ Union(Significados(e.diccLog))$=$Union(Significados(e.diccLineal))}
+	
+	\tadOperacion{Significados}{dicc(nat, conj(placa))}{conj(conj((placa)))}{}
+	\tadAxioma{Significados(d)}{\IF $\#$claves(d)$=0$
+		THEN $\emptyset$
+		ELSE Ag(obtener(dameUno(claves(d)), Significados(borrar(dameUno(claves(d)),d)))
+		FI}
+	Uso el Significados(dicc(nat, conj(placa))) para mi diccLineal y diccLog aunque deberia hacer uno especifico para el diccLog, pero es trivial y es mas amigable a la vista
+	
+	~	
+	
+	\tadOperacion{Union}{conj(conj(plc))}{conj(plc)}{}
+	\tadAxioma{Union(c)}{\IF $\#$c$=0$
+		THEN $\emptyset$
+		ELSE dameUno(c)$\cup$Union(sinUno(c))
+		FI}
+	
+	~
+	~
+	
+	
+	\AbsFc{diccS}{d : diccS $/$ \\
+		($\forall$ n : nat) n$\in$claves(e.diccLineal) $\Rightarrow_L$ obtener(n, e.diccLineal$=$obtener(n, d))\\
+		$\land$ def?(n, e.diccLineal) $=$ Def?(n, d) }
+	
+	~
+	~
+	
+	
 	\tituloModulo{Representacion del Iterador de Diccionaro de Sanciones}
 	\begin{Estructura}{itS}[it]
 		Donde $it$ es itDicc(nat, conj(placa))
@@ -95,6 +135,7 @@
 	
 	
 	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{crearItBi(Anteriores(it), Siguientes(it))}
+
 	
 \end{Representacion}
 
