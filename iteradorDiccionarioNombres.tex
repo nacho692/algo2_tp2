@@ -21,6 +21,7 @@
 	{alias(esPermutacion(secuSuby(res),d)) $\land$ vacia?(Anteriores(res))}
 	[$\Ogr$(1)]
 	[Devuelve un iterador al diccionario]
+	[El iterador se invalida si se elimina el siguiente sin utilizar la funcion EliminarSiguiente. Los anteriores y siguientes pueden modificarse sin que se invalide el iterador]
 	
 	\InterfazFuncion{HaySiguiente}{\In{it}{itDiccNom(string,$\sigma$)}}{bool}
 	{res $\igobs$ hayMas(it)}	
@@ -31,21 +32,28 @@
 	[hayMas(it)]
 	{alias(res $\igobs$ prim(Siguiente(it)))}
 	[$\Ogr$(1)]
+	[Devuelve el siguiente del iterador]
+	[res.siguiente es modificable si y solo si el iterador es modificable. res.clave no es modificable]
 	
 	\InterfazFuncion{SiguienteClave}{\In{it}{itDiccNom(string,$\sigma$)}}{string}
 	[hayMas(it)]
-	{alias(res $\igobs$ $\Pi_1$(prim(Siguiente(it))))}
+	{res $\igobs$ $\Pi_1$(prim(Siguiente(it)))}
 	[$\Ogr$(1)]
+	[Devuelve la siguiente clave]
+	[res no es modificable]
 	
 	\InterfazFuncion{SiguienteSignificado}{\In{it}{itDiccNom(string,$\sigma$)}}{$\sigma$}
 	[hayMas(it)]
 	{alias(res $\igobs$ $\Pi_2$(prim(Siguiente(it))))}
 	[$\Ogr$(1)]
+	[Devuelve el siguiente significado del iterador]
+	[res es modificable si y solo si el iterador es modificable]
 		
 	\InterfazFuncion{Avanzar}{\Inout{it}{itDiccNom(string,$\sigma$)}}{}
 	[hayMas(it) $\land$ it=$it_0$]
 	{it = avanzar($it_0$)}	
 	[$\Ogr$(1)]
+	[Avanza una posicion el iterador]
 	
 	\InterfazFuncion{EliminarSiguiente}{\Inout{it}{itDiccNom(string,$\sigma$)}}{}
 	[hayMas(it) $\land$ it=$it_0$]
@@ -74,7 +82,7 @@
 %%%
 %%
 
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iCrearIt}
 		\begin{algorithmic}
 			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ : $ite$
@@ -84,7 +92,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iHaySiguiente}
 		\begin{algorithmic}
 			\Procedure{iHaySiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $bool$
@@ -94,7 +102,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iSiguiente}
 		\begin{algorithmic}
 			\Procedure{iSiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $tupla<string,\sigma>$
@@ -104,7 +112,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iSiguienteClave}
 		\begin{algorithmic}
 			\Procedure{iSiguienteClave}{\texttt{in} it : \texttt{ite}} $\to res$ : $string$
@@ -114,7 +122,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iSiguienteSignificado}
 		\begin{algorithmic}
 			\Procedure{iSiguienteSignificado}{\texttt{in} it : \texttt{ite}} $\to res$ : $\sigma$
@@ -124,7 +132,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iAvanzar}
 		\begin{algorithmic}
 			\Procedure{iAvanzar}{\texttt{in/out} it : \texttt{ite}}
@@ -134,7 +142,7 @@
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}
 	
-	\begin{algorithm}
+	\begin{algorithm}[H]
 		\caption{iEliminarSiguiente}
 		\begin{algorithmic}
 			\Procedure{iEliminarSiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $tupla<string,\sigma>$

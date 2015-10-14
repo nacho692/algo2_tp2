@@ -154,14 +154,14 @@
 						\State $piso \gets$ iBuscar(c[i], piso).prox \Comment $\Ogr$(1)
 					\Else
 						\State AgregarAdelante(piso, <c[i],NULL,Vacio()>) \Comment $\Ogr$(1)
-						\State $piso \gets$ piso[0].prox
+						\State $piso \gets$ piso[0].prox \Comment $\Ogr$(1)
 					\EndIf
 					\State i++ \Comment $\Ogr$(1)
 				\EndWhile
-				\If{iEsta(c[i],piso) \Comment $\Ogr$(1)}
-					\State iBuscar(c[i],piso).significado $\gets$ puntero(s) \Comment $\Ogr$(1)
+				\If{iEsta(c[i],piso)} \Comment $\Ogr$(1)
+					\State iBuscar(c[i],piso).significado $\gets$ puntero(SiguienteSignificado(res)) \Comment $\Ogr$(1)
 				\Else
-					\State AgregarAdelante(piso, <c[i],puntero(s),Vacio()>)
+					\State AgregarAdelante(piso, <c[i],puntero(SiguienteSignificado(res)),Vacio()>) \Comment $\Ogr$(1)
 				\EndIf
 			\EndProcedure
 		\end{algorithmic}
@@ -198,7 +198,8 @@
 		\begin{algorithmic}
 			\Procedure{iEsta}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $bool$
 				\State $it \gets$ crearIr(t) \Comment $\Ogr$(1)
-				\While{haySiguiente(it) $\land$ Siguiente(it).letra $\neq$ c} \Comment Se repite a lo sumo la cantidad de char, que es una constate $\Rightarrow$ $\Ogr$(1)
+				\While{haySiguiente(it) $\land$ Siguiente(it).letra $\neq$ c} \Comment Se repite a lo sumo la cantidad de char,\\
+				 \hfill que es una constate $\Rightarrow$ $\Ogr$(1)
 					\State Avanzar(it) \Comment $\Ogr$(1)
 				\EndWhile
 				\State $res \gets$ (HaySiguiente(it)) \Comment $\Ogr$(1)
