@@ -6,44 +6,28 @@
 
 	\tituloModulo{Operaciones básicas de diccionario de sanciones}
 
-	\InterfazFuncion{CrearDiccS}{}{diccS}
-	{$res \igobs$ vacio}
+	\InterfazFuncion{CrearDiccS}{\In{significado}{conj(placa)}}{diccS}
+	{$res \igobs$ definir($0$, significado, vacio)}
 	[$\Ogr$(1)]
-	[genera un diccionarioa vacio]
+	[genera un diccionario con todos los agentes con $0$ sanciones]
 
-	\InterfazFuncion{Definir}{\In{s}{nat}, \In{significado}{conj(placa)}, \Inout{ds}{diccS}}{its}
+	\InterfazFuncion{Definir}{\Inout{ds}{diccS}, \In{s}{nat}, \In{significado}{conj(placa)}}{its}
 	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $\geq$ i]
 	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$<$s, significado$>$ $\land$\\
 	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}%uso el definir de diccLineal
 	[$\Ogr$(1)]
 	[defino la clave $s$ con el significado $significado$ en mi diccionario $ds$]
 	
-	\InterfazFuncion{Obtener}{\In{s}{nat}, \In{ds}{diccS}}{conj(placa)}
+	\InterfazFuncion{Obtener}{\Inout{ds}{diccS}, \In{s}{nat}}{conj(placa)}
 	{$res \igobs$ obtener(s, ds)}
 	[$\Ogr$(1)]
 	[me retorna el conjunto de placas con $s$ sanciones del $ds$]
 
-	\InterfazFuncion{Def?}{\In{s}{nat}, \In{ds}{diccS}}{bool}
+	\InterfazFuncion{Def?}{\In{ds}{diccS}, \In{s}{nat}}{bool}
 	[def?(s, ds)]
 	{$res \igobs$ def?(s, ds)}  
 	[$\Ogr$(1)]
 	[me dice si esta definida la clave $s$ en el diccionario $ds$]
-
-	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
-	{$res \igobs$ alto(m)}  
-	[$\Ogr$(1)]
-	[retorna la altura de la matriz $m$]
-
-	\InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
-	{$res \igobs$ ancho(m)}  
-	[$\Ogr$(1)]
-	[retorna el ancho de la matriz $m$]
-
-	\InterfazFuncion{PosValida}{\In{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{nat}
-	{$res \igobs$ posValida(m, ancho, alto)}  
-	[$\Ogr$(1)]
-	[devuelve si es una posicion valida de mi matriz o no]
-	
 	
 	
 	\tituloModulo{Operaciones básicas de iterador de sanciones}
@@ -136,6 +120,52 @@
 	
 	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{crearItBi(Anteriores(it), Siguientes(it))}
 
+\begin{Algoritmos}
 	
-\end{Representacion}
+	\begin{algorithm}[H]
+		\caption{iCrearDiccS}
+		\begin{algorithmic}[1]
+			\Procedure{iCrearDiccS}{\texttt{in} sig : \texttt{conj(placa)}} $\to res$ : estr
+			\State $res$.diccLog$\leftarrow$ Vacio($\#$(sig)) //vacio de diccionario logaritmico \Comment $\Ogr$(1)
+			\State $res$.diccLineal$\leftarrow$ Vacio() //vacio de diccionario lineal \Comment $\Ogr$(1)
+			\State $res$.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinir}
+		\begin{algorithmic}[1]
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itS
+			\State it$\leftarrow$ Definir(e.diccLineal, s, sig) //definir de diccLineal \Comment $\Ogr$($\#$sig)
+			\State $res \leftarrow$ it \Comment $\Ogr$(1)
+			\State $res$.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$(sig))
+	\end{algorithm}
 
+	\begin{algorithm}[H]
+		\caption{iObtener}
+		\begin{algorithmic}[1]
+			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : conj(placa)
+			\If{e.actualizar} \Comment $\Ogr$(1)
+				\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
+				\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de claves de diccLineal veces \Comment $\Ogr$($\#$claves(e.diccLineal))
+					\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
+					\State avanzar(it) \Comment $\Ogr$(1) 
+				\EndWhile
+				\State e.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\EndIf
+			\State Obtener(e.diccLog, s) $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		\\
+		\underline{Justificacion:} $\Ogr$($\#$claves(e.diccLineal))+$\Ogr$(log $\#$claves(e.diccLineal)). En el peor de los casos sera la $\Ogr$($\#$claves(e.diccLineal)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.diccLineal)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.diccLineal)) puesto que nunca entraremos en el while.
+	\end{algorithm}	
+	
+	
+\end{Algoritmos}
+\end{Representacion}
