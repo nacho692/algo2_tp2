@@ -72,9 +72,9 @@
     \begin{Tupla}[estr]
 		\tupItem{hippies}{diccNombres(nombre,posicion)}%
 		\tupItem{estudiantes}{diccNombres(nombre,posicion)\\}
-		\tupItem{agentes}{diccAg(placa,datosAg)}
+		\tupItem{agentes}{diccH(nat,datosAg)}
 		\tupItem{sanciones}{diccSanc(nat,conj(placa))}\\
-		\tupItem{placasPos}{diccLog(placa,posicion)}\\
+		\tupItem{placasPos}{diccLog(nat,posicion)}\\
 		\tupItem{pos}{posiciones}
 		\tupItem{masVigilante}{datosAg}
 		\tupItem{cp}{campus}
@@ -261,7 +261,7 @@
 	 	\State posicion $pos$ $\gets$ CrearPosicion(X(SiguienteSignificado($it$)),Y(SiguienteSignificado($it$))) \Comment $\Ogr(1)$
 	 	\State itConj(placa) $itc$ $\gets$ Agregar($pl$,$cp$) \Comment $\Ogr(1)$
 	 	\State datosAg $ag \gets \langle pl$,0,0,$pos$,$itdic$,$itc \rangle$ \Comment $\Ogr(1)$
-	 	\State Definir($res$.placasPos,$pl$,$pos$) \Comment $\Ogr(n)$
+	 	\State Definir($res$.placasPos,$pl$,$ag$.pos) \Comment $\Ogr(n)$
 	 	\State $res$.posiciones.mAg[X($pos$)][Y($pos$)] $\gets ag$ \Comment $\Ogr(1)$
 	 	\If{($f$ || $res$.masVigilante.placa $\geq pl$)} \Comment $\Ogr(1)$
 	 		\State $res$.masVigilante $\gets$ ag \Comment $\Ogr(1)$
