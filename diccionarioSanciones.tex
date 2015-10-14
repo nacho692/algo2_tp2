@@ -61,6 +61,12 @@
 	{alias($res \igobs$ siguiente(its).significado)}
 	{$\Ogr$(1)}
 	{devuelve el significado del siguiente iterador}
+	
+	\InterfazFuncion{Avanzar}{\Inout{its}{itS}}{itS}
+	[it$=$it$_0$ $\land$ haySiguiente?(its)]
+	{it $\igobs$ avanzar(it$_0$)}
+	{$\Ogr$(1)}
+	{avanza en uno el iterador}
 
 
 \end{Interfaz}
@@ -108,8 +114,8 @@
 	
 	
 	\tituloModulo{Representacion del Iterador de Diccionaro de Sanciones}
-	\begin{Estructura}{itS}[it]
-		Donde $it$ es itDicc(nat, conj(placa))
+	\begin{Estructura}{itS}[itDic]
+		Donde $itDic$ es itDicc(nat, conj(placa))
 	\end{Estructura}
 	
 	\Rep[itS][it]{true}
@@ -137,10 +143,10 @@
 	\begin{algorithm}[H]
 		\caption{iDefinir}
 		\begin{algorithmic}[1]
-			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itS
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itDic
 			\State it$\leftarrow$ Definir(e.diccLineal, s, sig) //definir de diccLineal \Comment $\Ogr$($\#$sig)
 			\State $res \leftarrow$ it \Comment $\Ogr$(1)
-			\State $res$.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
+			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$($\#$(sig))
@@ -165,6 +171,96 @@
 		\\
 		\underline{Justificacion:} $\Ogr$($\#$claves(e.diccLineal))+$\Ogr$(log $\#$claves(e.diccLineal)). En el peor de los casos sera la $\Ogr$($\#$claves(e.diccLineal)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.diccLineal)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.diccLineal)) puesto que nunca entraremos en el while.
 	\end{algorithm}	
+	
+	\begin{algorithm}[H]
+		\caption{iDef?}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
+			\State $res \leftarrow$ Definido?(e.diccLineal, s) //uso el definido de diccLineal \Comment $\Ogr$($\#$claves(e.diccLineal))
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDef?}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
+			\State $res \leftarrow$ Definido?(e.diccLineal, s) //uso el definido de diccLineal \Comment $\Ogr$($\#$claves(e.diccLineal))
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iCrearIt}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ itDic
+			\State $res \leftarrow$ CrearIt(e.diccLineal) //uso el crearIt de diccLineal \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iHaySiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iHaySiguiente}{\texttt{in} itd : \texttt{itDic}} $\to res$ bool
+			\State $res \leftarrow$ HaySiguiente(itd) //uso el HaySiguiente de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguiente}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguiente}{\texttt{in} itd : \texttt{itDic}} $\to res$ $<$nat, conj(placa)$>$
+			\State $res \leftarrow$ Siguiente(itd) //uso el Siguiente de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteClave}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguienteClave}{\texttt{in} itd : \texttt{itDic}} $\to res$ nat
+			\State $res \leftarrow$ SiguienteClave(itd) //uso el SiguienteClave de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteSignificado}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iSiguienteSignificado}{\texttt{in} itd : \texttt{itDic}} $\to res$ conj(placa)
+			\State $res \leftarrow$ SiguienteSignificado(itd) //uso el SiguienteSignificado de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAvanzar}
+		
+		\begin{algorithmic}[1]
+			\Procedure{iAvanzar}{\texttt{in/out} itd : \texttt{itDic}} $\to res$ itDic
+			\State $res \leftarrow$ Avanzar(itd) //uso el Avanzar de itDicc \Comment $\Ogr$(1)
+			\EndProcedure 
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
 	
 	
 \end{Algoritmos}
