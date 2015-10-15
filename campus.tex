@@ -228,7 +228,7 @@
 					\State $it_2 \gets$ CrearIt($vec_2$) \Comment $\Ogr$(1)
 					\While{HaySiguiente($it_2$)} \Comment Se repite 4 veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(1)
 						\If{Siguiente($it_1$) $=$ Siguiente($it_2$)} \Comment $\Ogr$(1)
-							\State AgregarRapido(res, Siguiente($it_1$))
+							\State AgregarRapido(res, Siguiente($it_1$)) \Comment $\Ogr$(1)
 						\EndIf
 						\State Avanzar($it_2$) \Comment $\Ogr$(1)
 					\EndWhile
@@ -290,10 +290,14 @@
 		\caption{iCopiar}
 		\begin{algorithmic}[1]
 			\Procedure{iCopiar}{\texttt{in} e : \texttt{estr}} $\to res$ : $estr$
-				\State $res \gets$ Copiar(e) \Comment $\Ogr$(Copiar(e)) $=$ $\Ogr$(Ancho(e) * Alto(e))
+				\State $res \gets$ Copiar(e) \Comment $\Ogr$(Copiar(e))
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(Ancho(e) * Alto(e))
+		\underline{Complejidad:} $\Ogr$(Ancho(e) * Alto(e))\\
+		\underline{Justificación:} e src Matriz(bool)\\
+		\tab $\Rightarrow$ Copiar(e) usa el copiar de matriz\\
+		\tab $\Rightarrow$ $\Ogr$(Copiar(e)) $=$ $\Ogr$(Ancho(e) * Alto(e) * copy(bool)) \tab \tab Además $\Ogr$(bool) $=$ $\Ogr$(1)\\
+		\tab $\Rightarrow$ $\Ogr$(Copiar(e)) $=$ $\Ogr$(Ancho(e) * Alto(e))
 	\end{algorithm}	
 	
 \end{Algoritmos}
