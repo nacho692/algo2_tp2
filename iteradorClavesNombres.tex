@@ -1,0 +1,68 @@
+\begin{Interfaz}
+
+		\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\sigma$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{s}{$\sigma$}}{$\sigma$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(s))$]
+		[función de copia de $\sigma$'s]
+	}
+	
+	\textbf{se explica con}: \tadNombre{Iterador Unidireccional (tupla<string, $\sigma$>)}
+	
+	\textbf{usa}: nat, bool, DiccionarioNombre(string,$\sigma$), IteradorDiccionario(tupla<string,$\sigma$>)
+	
+	\textbf{géneros}: \TipoVariable{itClavesDiccN(string)}
+	
+	\tituloModulo{Operaciones de Iterador de Claves  de DiccionarioNombres(string)}
+
+	\InterfazFuncion{CrearIt}{\Inout{it}{itDiccNom(tupla<string,$\sigma$>)}}{itClavesDiccN(string)}
+	{res $\igobs$ CrearItUni(Primeros(secuSuby(it)))}
+	[$\Ogr$(1)]
+	[Crea un iterador no modificable de las claves del diccionario modificable del diccionario nombre]
+	
+	\tadOperacion{Primeros}{secu(tupla<$\alpha$,$\beta$>)}{secu($\alpha$)}{}
+	\tadAxioma{Primeros(s)}{
+		\IF vacio?(s)
+			THEN <>
+			ELSE $\Pi_1$(prim(s)) $\bullet$ Primeros(fin(s))
+		FI}	
+	
+	\InterfazFuncion{HaySiguiente}{\In{it}{itClavesDiccN(tupla<string,$\sigma$>)}}{bool}
+	{res $\igobs$ HayMas?(it)}
+	[$\Ogr$(1)]
+	[Devuelve verdadero si y sólo si el iterador tiene un siguiente elemento]
+	
+	\InterfazFuncion{SiguienteClave}{\In{it}{itClavesDiccN(tupla<string,$\sigma$>)}}{string}
+	[HayMas?(it)]
+	{res $\igobs$ $\Pi_1$(Actual(it))}
+	[$\Ogr$(1)]
+	[Devuelve la siguiente clave del diccionario]
+	[res no es modificable]
+	
+	\InterfazFuncion{Avanzar}{\In{it}{itClavesDiccN(tupla<string,$\sigma$>)}}{}
+	[HayMas?(it) $\land$ it=$it_0$ ]
+	{it $\igobs$ Avanzar($it_0$)}
+	[$\Ogr$(1)]
+	[Avanza el iterador]
+	
+	
+\end{Interfaz}
+
+\begin{Representacion}
+
+	\begin{Estructura}{itClavesDiccN(string)}[ite]
+		Donde $ite$ es $it$ : itDiccNom(tupla<string,$\sigma$>)
+	\end{Estructura}
+	
+~
+	
+	\Rep[ite][i]{Rep(ite.it)}
+	
+~
+
+	\AbsFc[ite]{itClavesDiccN(string)}[i]{Abs(i.it)}
+	
+
+\end{Representacion}
