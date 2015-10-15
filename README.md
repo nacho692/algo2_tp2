@@ -22,7 +22,7 @@ Como hacer una Interfaz
 \begin{Interfaz}
 
 
-//Parametero Formal
+//Parámetro Formal
 
 	\textbf{parámetros formales}\hangindent=2\parindent\\
 	\parbox{1.7cm}{\textbf{géneros}} $\alpha$\\
