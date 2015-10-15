@@ -1,0 +1,135 @@
+\begin{Interfaz}
+
+	\textbf{se explica con}: \tadNombre{Iterador Unidireccional (nat)}
+	
+	\textbf{usa}: nat, bool, DiccionarioLog(nat,$\sigma$)
+	
+	\textbf{géneros}: \TipoVariable{itClavesDiccLog(nat)}
+	
+	\tituloModulo{Operaciones de Iterador de Claves  de DiccionarioPlacas(nat)}
+
+	\InterfazFuncion{CrearIt}{\In{d}{diccLog(nat,$\sigma$)}}{itClavesDiccLog(nat)}
+	{Permutacion( Siguientes(res), Secuenciar(claves(d)) )}
+	[$\Ogr$(1)]
+	[Crea un iterador no modificable de las claves del diccionario  de entrada. El iterador se invalida si se modifica el diccionario.]
+
+~
+	
+	\tadOperacion{Secuenciar}{conj(string)}{secu(string)}{}
+	\tadAxioma{Secuenciar(cs)}{
+		\IF $\emptyset$?(cs)
+			THEN <>
+			ELSE dameUno(cs) $\bullet$ Secuenciar(sinUno(cs))
+		FI}	
+
+~
+	
+	\tadOperacion{Permutacion}{secu(nat),secu(nat)}{bool}{}
+	\tadAxioma{Permutacion(s,t)}{ Iguales( MultiConjuntizar(s), MultiConjuntizar(t) )}
+
+~
+	
+	\tadOperacion{MultiConjuntizar}{secu(nat)}{multiconj(nat)}{}
+	\tadAxioma{MultiConjuntizar(s)}{
+		\IF vacio?(s)
+			THEN $\emptyset$
+			ELSE Ag(prim(s), MultiConjuntizar(fin(s)) )
+		FI}
+
+~
+
+	\tadOperacion{Iguales}{multiconj(nat),multiconj(nat)}{bool}{}
+	\tadAxioma{Iguales(m$_1$, m$_2$)}{$\#$(dameUno(m$_1$),m$_1$) $=$ $\#$(dameUno(m$_1$),m$_1$)\\
+		$\land$ Iguales(sinUno(m$_1$), m$_2$ $-\{$dameUno(m$_1$)$\}$ )}
+		
+
+~
+	
+	\InterfazFuncion{HaySiguiente}{\In{it}{itClavesDiccLog(nat)}}{bool}
+	{res $\igobs$ HayMas?(it)}
+	[$\Ogr$(1)]
+	[Devuelve verdadero si y sólo si el iterador tiene un siguiente elemento]
+	
+	\InterfazFuncion{SiguienteClave}{\In{it}{itClavesDiccLog(nat)}}{string}
+	[HayMas?(it)]
+	{res $\igobs$ $\Pi_1$(Actual(it))}
+	[$\Ogr$(1)]
+	[Devuelve la siguiente clave del diccionario]
+	[res no es modificable]
+	
+	\InterfazFuncion{Avanzar}{\Inout{it}{itClavesDiccLog(nat)}}{}
+	[HayMas?(it) $\land$ it=$it_0$ ]
+	{it $\igobs$ Avanzar($it_0$)}
+	[$\Ogr$(1)]
+	[Avanza el iterador]	
+	
+\end{Interfaz}
+
+\begin{Representacion}
+
+	\begin{Estructura}{itClavesDiccLog(nat)}[ite]
+		Donde $ite$ es $pos$ : $nat$
+	\end{Estructura}	
+	
+~	
+
+	\Rep[ite][i]{pos $\leq$ e.proxADefinir}
+	
+~
+
+	\Abs[ite]{itClavesDiccLog(nat)}[i]{itC}{Siguientes(itC) $\igobs$ SecuenciarClavesArreglo(e.valores, e.tamaño, i.pos)}
+	
+~
+
+	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>),nat,nat}{secu(nat)}{}
+	\tadAxioma{SecuenciaClavesArreglo(var,tam,pos)}{
+		\IF pos $\igobs$ tam
+			THEN <>
+			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var,tam,pos $+$ 1 )
+		FI}	
+	
+\end{Representacion}
+
+\begin{Algoritmos}
+	
+	\begin{algorithm}[H]
+		\caption{iCrearIt}
+		\begin{algorithmic}
+			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ : $ite$
+				\State $	res.pos \gets$ 0 \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
+
+	\begin{algorithm}[H]
+		\caption{iHaySiguiente}
+		\begin{algorithmic}
+			\Procedure{iHaySiguiente}{\texttt{in} i : \texttt{ite}} $\to res$ : $bool$
+				\State $res \gets$ ( i.pos = e.tamaño )	
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteClave}
+		\begin{algorithmic}
+			\Procedure{iSiguienteClave}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
+				\State $res \gets$ e.valores[i.pos] \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAvanzar}
+		\begin{algorithmic}
+			\Procedure{iAvanzar}{\texttt{in/out} i : \texttt{ite}}
+				\State $i.pos \gets$ i.pos $+$ 1 \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+\end{Algoritmos}

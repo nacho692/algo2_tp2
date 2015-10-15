@@ -153,7 +153,8 @@
 			\Procedure{iObtener}{\texttt{in} e : \texttt{estr}, \texttt{in} c : \texttt{nat}} $\to res$ : $\sigma$
 				\State $arriba \gets$ e.proxADefinir - 1 \Comment $\Ogr$(1)
 				\State $abajo \gets$ 0 \Comment $\Ogr$(1)
-				\While{arriba $>$ abajo} \Comment Se repite log e.proxADefinir veces y lo de adentro es $\Ogr$(1) $\Rightarrow$ $\Ogr$(log e.proxADefinir)
+				\While{arriba $>$ abajo} \Comment Se repite log e.proxADefinir veces y lo de adentro es $\Ogr$(1)\\
+				 \hfill $\Rightarrow$ $\Ogr$(log e.proxADefinir)
 					\State $	medio \gets$ (arriba $+$ abajo) $/$ 2 \Comment $\Ogr$(1)
 					\If{e.valores[medio].clave $<$ c} \Comment $\Ogr$(1)
 						\State $abajo \gets$ medio \Comment $\Ogr$(1)
