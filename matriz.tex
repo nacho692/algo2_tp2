@@ -10,71 +10,72 @@
 
 	\textbf{se explica con}: \tadNombre{Matriz$(\alpha)$}.
 
-	\textbf{géneros}: \TipoVariable{mat$(\alpha)$}.
+	\textbf{géneros}: \TipoVariable{matriz$(\alpha)$}.
 
 	\tituloModulo{Operaciones básicas de matriz}
 
-	\InterfazFuncion{CrearMatriz}{\In{alto}{nat}, \In{ancho}{nat}, \In{a}{($\alpha$)}}{matriz($\alpha$)}
-	[ancho $> 0 \land$ alto $>0$]
-	{$res \igobs$ Crear(ancho, alto, a)}
-	[$\Ogr$($ancho$ x $alto$)]
-	[genera una matriz de $ancho$*$alto$ que contenga todos $a$]
+	\InterfazFuncion{CrearMatriz}{\In{alto}{nat}, \In{ancho}{nat}, \In{a}{$\alpha$}}{matriz($\alpha$)}
+	[ancho $>$ 0 $\land$ alto $>$ 0]
+	{res $\igobs$ Crear(ancho, alto, a)}
+	[$\Ogr$($ancho$ x $alto$ x copy($\sigma$))]
+	[Genera una matriz de $ancho$*$alto$ que contenga todos $a$.]
 
 	\InterfazFuncion{Definir}{\Inout{m}{matriz($\alpha$), \In{ancho}{nat}, \In{alto}{nat}, \In{a}{$\alpha$}}}{}
 	[posValida(m, ancho, alto) $\land$ m$_0$=m]
 	{m $\igobs$ definir(alto, ancho, a, m$_0$)}
-	[$\Ogr$(1)]
-	[defino el elemento $a$ en la matriz]
+	[$\Ogr$(copy($\sigma$))]
+	[Defino el elemento $a$ en la matriz.]
 	
 	\InterfazFuncion{$\bullet$[$\bullet$][$\bullet$]}{\Inout{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{$\alpha$}
 	[posValida(m, ancho, alto)]
 	{alias($res \igobs$ valor(m, ancho, alto))}
 	[$\Ogr$(1)]
-	[devuelve el elemento en la posicion $ancho$*$alto$ de la matriz $m$ con alias]
-	[el elemento se retorna con aliasing y se podra modificar]
+	[Devuelve el elemento en la posicion $ancho$*$alto$ de la matriz $m$ con alias.]
+	[res es modificable si y sólo si $\sigma$ es modificable.]
 
 	\InterfazFuncion{Copiar}{\In{m}{matriz($\alpha$)}}{matriz($\alpha$)}
 	{$res \igobs$ m}  
-	[$\Ogr$($ancho$ x $alto$)]
-	[crea una copia de la matriz $m$]
+	[$\Ogr$($ancho$ x $alto$ x copy($\sigma$))]
+	[Crea una copia de la matriz $m$.]
 
 	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
 	{$res \igobs$ alto(m)}  
 	[$\Ogr$(1)]
-	[retorna la altura de la matriz $m$]
+	[Retorna la altura de la matriz $m$.]
 
 	\InterfazFuncion{Ancho}{\In{m}{matriz($\alpha$)}}{nat}
 	{$res \igobs$ ancho(m)}  
 	[$\Ogr$(1)]
-	[retorna el ancho de la matriz $m$]
+	[Retorna el ancho de la matriz $m$.]
 
 	\InterfazFuncion{PosValida}{\In{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{nat}
 	{$res \igobs$ posValida(m, ancho, alto)}  
 	[$\Ogr$(1)]
-	[devuelve si es una posicion valida de mi matriz o no]
+	[Devuelve si es una posición válida de mi matriz o no.]
 	
 \end{Interfaz}
 
 \begin{Representacion}
 	
-	\tituloModulo{Representación de la campus}
+	\tituloModulo{Representación de la matriz}
 	
 	\begin{Estructura}{matriz($\alpha$)}
 		 \begin{Tupla}[estr]
-			\tupItem{matriz}{arreglo\_dimensionable de arreglo\_dimensionable de $\alpha$}%
+			\tupItem{matriz}{arreglo\_dimensionable de arreglo\_dimensionable de $\alpha$}\\
+			
 			\tupItem{ancho}{nat}
 			\tupItem{alto}{nat}
 		\end{Tupla}
 	\end{Estructura}
 	
-	\Rep[estr]{$e$.ancho $>$ $0$ $\land$ $e$.alto $>$ $0$ tamaño($e$.matriz) = $e$.ancho $\land$ ($\forall$ i : nat) i $\geq$ $0$ $\land$ i $<$ $e$.ancho $\impluego$\\
-	tamaño($e$.matriz[i]) = $e$.alto }
+	\Rep[estr]{$e$.ancho $>$ $0$ $\land$ $e$.alto $>$ $0$ $\land$ tamaño($e$.matriz) = $e$.ancho $\land$ \\
+	($\forall$ i : nat)( i $<$ $e$.ancho $\impluego$ tamaño($e$.matriz[i]) = $e$.alto )}
 	
 	~	
 	
 	\AbsFc{matriz($\alpha$)}
 	{mat: matriz($\alpha$) $|$ $e$.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\yluego$\\
-	($\forall$ i, j: nat) i $\geq$ $0$ $\land$ i $<$ $e$.ancho $\land$ j $\geq$ $0$ $\land$ j $<$ $e$.alto $\impluego$ e.matriz[i][j] = Valor?(mat, i, j) }
+	($\forall$ i, j: nat)( (i $<$ $e$.ancho $\land$ j $<$ $e$.alto) $\impluego$ e.matriz[i][j] = Valor?(mat, i, j) )}
 	
 \begin{Algoritmos}
 	
@@ -83,22 +84,22 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iCrearMatriz}{\texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $estr$
-			\State $res$ $\leftarrow$ Crear(ancho) //crear de arreglo \Comment $\Ogr$(1)
+			\State $res$ $\leftarrow$ CrearArreglo(ancho) de arreglos\_dimensionables de $\sigma$ \Comment $\Ogr$(1)
 			\State i $\leftarrow$ $0$ \Comment $\Ogr$(1)
-			\While{i $<$ ancho} \Comment $\Ogr$(alto) ancho de veces $\implies$ $\Ogr$(ancho x alto)
+			\While{i $<$ ancho} \Comment $\Ogr$(alto x copy($\sigma$)) ancho de veces $\implies$ $\Ogr$(ancho x alto x copy($\sigma$))
 				\State j $\leftarrow$ $0$ \Comment $\Ogr$(1)
-				\State $res$[i] $\leftarrow$ Crear(alto) //crear de arreglo\Comment $\Ogr$(1)
-				\While{j $<$ alto} \Comment $\Ogr$(1) alto de veces $\implies$  $\Ogr$(alto)
-					\State $res$[i][j] $\leftarrow$ a \Comment $\Ogr$(1)
+				\State $res$[i] $\leftarrow$ CrearArreglo(alto) de $\sigma$ \Comment $\Ogr$(1)
+				\While{j $<$ alto} \Comment $\Ogr$( copy($\sigma$) ) alto de veces $\implies$  $\Ogr$(alto x copy($\sigma$))
+					\State $res$[i][j] $\leftarrow$ Copiar(a) \Comment $\Ogr$( copy($\sigma$))
 					\State j $\leftarrow$ j$+1$ \Comment $\Ogr$(1)
 				\EndWhile
 				\State i $\leftarrow$ i$+1$ \Comment $\Ogr$(1)
 			\EndWhile
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(ancho x alto)
+		\underline{Complejidad:} $\Ogr$(ancho x alto x copy($\sigma$))
 		\\
-		\underline{Justificacion:} $\Ogr$(1)+$\Ogr$(1)+$\Ogr$(ancho x alto) $\implies \Ogr$(ancho x alto)
+		\underline{Justificacion:} $\Ogr$(1)+$\Ogr$(1)+$\Ogr$(ancho x alto x copy($\sigma$)) $\implies \Ogr$(ancho x alto x copy($\sigma$))
 		
 	\end{algorithm}
 	
@@ -107,19 +108,19 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $\alpha$
-			\State (e.matriz[ancho])[alto] $\leftarrow$ a \Comment $\Ogr$(1)+$\Ogr$(1) $\Rightarrow \Ogr$(1)
+			\State (e.matriz[ancho])[alto] $\leftarrow$ Copiar(a) \Comment $\Ogr$(1) $\Rightarrow \Ogr$(copy($\sigma$))
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(1)
+		\underline{Complejidad:} $\Ogr$(copy($\sigma$))
 		
 	\end{algorithm}
 	
 	\begin{algorithm}[H]
-		\caption{iValor}
+		\caption{$\bullet$[$\bullet$][$\bullet$]}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iValor}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : $\alpha$
-			\State $res \leftarrow$ (e.matriz[ancho])[alto] \Comment $\Ogr$(1)+$\Ogr$(1) $\Rightarrow \Ogr$(1)
+			\Procedure{$\bullet$[$\bullet$][$\bullet$]}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : $\alpha$
+			\State $res \leftarrow$ (e.matriz[ancho])[alto] \Comment $\Ogr$(1) $\Rightarrow \Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -131,7 +132,7 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iCopiar}{\texttt{in} e : \texttt{estr}} $\to res$ : $estr$
-			\State $res$ $\leftarrow$ CrearMatriz(e.alto, e.ancho, e[0][0]) \Comment $\Ogr$(e.ancho x e.alto)
+			\State $res$ $\leftarrow$ CrearMatriz(e.alto, e.ancho, e[0][0]) \Comment $\Ogr$(e.ancho x e.alto x copy($\alpha$))
 			\State i $\leftarrow$ $0$ \Comment $\Ogr$(1)
 			\While{i $<$ e.ancho} \Comment $\Ogr$(alto x $copy$($\alpha$)) e.ancho de veces $\implies$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
 				\State j $\leftarrow$ $0$ \Comment $\Ogr$(1)
@@ -145,7 +146,7 @@
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
 		\\
-		\underline{Justificacion:} Llamo $\alpha$ a el tipo de elemento de e.matriz. $\Ogr$(e.ancho x e.alto) + $\Ogr$(1) + $\Ogr$(e.ancho x e.alto x $copy$($\alpha$)) $\implies$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+		\underline{Justificacion:} Llamo $\alpha$ a el tipo de elemento de e.matriz. $\Ogr$(e.ancho x e.alto x copy($\alpha$)) + $\Ogr$(1) + $\Ogr$(e.ancho x e.alto x $copy$($\alpha$)) $=$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
 		
 	\end{algorithm}
 	
@@ -153,7 +154,7 @@
 		\caption{iAlto}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iAlto}{\texttt{in} e : \texttt{estr}} $\to res$ : estr
+			\Procedure{iAlto}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
 			\State $res \leftarrow$ e.alto \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -165,7 +166,7 @@
 		\caption{iAncho}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iAncho}{\texttt{in} e : \texttt{estr}} $\to res$ : estr
+			\Procedure{iAncho}{\texttt{in} e : \texttt{estr}} $\to res$ : $nat$
 			\State $res \leftarrow$ e.ancho \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -178,11 +179,7 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iPosValida}{\texttt{in} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : bool
-			\If{ancho $> 0$ $\land$ alto $> 0$} \Comment $\Ogr$(1)$+$$\Ogr$(1)+$+$$\Ogr$(1) $\implies$ $\Ogr$(1)
-				\State $res \leftarrow$ true
-			\Else	\Comment $\Ogr$(1)
-				\State $res \leftarrow$ false
-				\EndIf
+				\State ancho $<$ e.ancho $\land$ alto $<$ e.alto \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)

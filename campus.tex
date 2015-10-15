@@ -9,31 +9,32 @@
 	\tituloModulo{Operaciones de Campus}
 
 	\InterfazFuncion{CrearCampus}{\In{ancho}{nat}, \In{alto}{nat}}{campus}
+	[ancho $>$ 0 $\land$ alto $>$ 0]
 	{res $\igobs$ crearCampus(ancho,alto)}
 	[$\Ogr$(alto x ancho)]
-	[Crea un campus sin obstaculos]
+	[Crea un campus sin obstáculos.]
 	
 	\InterfazFuncion{AgregarObstaculo}{\Inout{c}{campus}, \In{p}{posicion}}{}
 	[posValida?(p,c) $\land$ $\neg$ocupada(p, c) $\land$ c = $c_{0}$]
 	{c $\igobs$ agregarObstáculo(p, $c_{0}$)}
 	[$\Ogr$(1)]
-	[Agrega un obstáculo en la posición dada]
+	[Agrega un obstáculo en la posición dada.]
 	
 	\InterfazFuncion{Filas}{\In{c}{campus}}{nat}
 	{res $\igobs$ filas(c)}
 	[$\Ogr$(1)]
-	[Indica la cantidad de filas del campus dado]
+	[Indica la cantidad de filas del campus dado.]
 	
 	\InterfazFuncion{Columnas}{\In{c}{campus}}{nat}
 	{res $\igobs$ columnas(c)}
 	[$\Ogr$(1)]
-	[Indica la cantidad de columnas del campus dado]	
+	[Indica la cantidad de columnas del campus dado.]	
 	
 	\InterfazFuncion{Ocupada}{\In{c}{campus}, \In{p}{posicion}}{bool}
 	[posValida?(p,c)]
 	{res $\igobs$ ocupada(p,c)}
 	[$\Ogr$(1)]
-	[Indica si la posición dada tiene un obstáculo]
+	[Indica si la posición dada tiene un obstáculo.]
 	
 	\InterfazFuncion{PosValida}{\In{c}{campus}, \In{p}{posicion}}{bool}
 	{res $\igobs$ posValida?(p,c)}
@@ -51,39 +52,40 @@
 	{res $\igobs$ esIngreso?(p,c)}
 	[$\Ogr$(1)]
 	
-	\InterfazFuncion{Vecinos}{\In{c}{campus}, \In{p}{posicion}}{con(posicion)}
+	\InterfazFuncion{Vecinos}{\In{c}{campus}, \In{p}{posicion}}{conj(posicion)}
 	[posValida?(p,c)]
 	{res $\igobs$ vecinos?(p,c)}
 	[$\Ogr$(1)]
-	[Dada una posición, devuelve las 4 posiciones vecinas]
+	[Dada una posición, devuelve las 4 posiciones vecinas.]
 		
 	\InterfazFuncion{VecinosComunes}{\In{c}{campus}, \In{p_1}{posicion}, \In{p_2}{posicion}}{conj(posicion)}
 	[posValida?($p_1$,c) $\land$ posValida?($p_1$,c)]
 	{res $\igobs$ vecinosComunes($p_1$,$p_2$,c)}
 	[$\Ogr$(1)]
+	[Dadas dos posiciones, devuelve las posiciones que son vecinas de ambas.]
 	
 	\InterfazFuncion{VecinosValidos}{\In{c}{campus}, \Inout{cp}{conj(posicion)}}{}
 	[c = $c_0$]
 	{c $\igobs$ vecinosValidos}
 	[$\Ogr$( |cp| )]
-	[Dado un conjunto de posiciones devuelve el conjunto resultado de quitar las posiciones no validas]
+	[Dado un conjunto de posiciones, devuelve el conjunto resultado de quitar las posiciones no válidas.]
 	
 	\InterfazFuncion{ProxPosicion}{\In{c}{campus}, \In{p}{posicion}, \In{d}{direccion}}{posicion}
 	[posValida?(p,c)]
 	{res $\igobs$ proxPosición(p,d,c)}
 	[$\Ogr$(1)]
-	[Devuelve el resultado de mover la posición indicada en la dirección dada]
+	[Devuelve el resultado de mover la posición indicada en la dirección dada.]
 		
 	\InterfazFuncion{IngresosMasCercanos}{\In{c}{campus}, \In{p}{posicion}}{conj(posicion)}
 	[posValida?(p,c)]
 	{res $\igobs$ ingresosMásCercanos(p,c)}
 	[$\Ogr$(1)]
-	[Devuelve el conjunto de ingresos más cercanos a la posición dada]
+	[Devuelve el conjunto de ingresos más cercanos a la posición dada.]
 	
 	\InterfazFuncion{Copiar}{\In{c}{campus}}{campus}
 	{res $\igobs$ c}
 	[$\Ogr$(Filas(c) * Columnas(c))]
-	[Crea una copia del campus]
+	[Crea una copia del campus.]
 				
 \end{Interfaz}
 
@@ -99,37 +101,34 @@
 ~	
 	\AbsFc{campus}{c $:$ campus $/$\\
 	filas(c) $=$ Alto(e) $\land$ columnas(c) $=$ Ancho(e)\\
-	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[p.X $-$ 1][p.Y $-$ 1] )
+	$\land$ ($\forall$ p : posicion)( posValida?(p,c) $\impluego$ ocupada?(p,c) = e[X(p) $-$ 1][Y(p) $-$ 1] )
 	}
 	
 	
 \begin{Algoritmos}
 
 	\begin{algorithm}[H]
-		\caption{iCrearCampus}
-		
+		\caption{iCrearCampus}		
 		\begin{algorithmic}[1]
 			\Procedure{iCrearCampus}{\texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}} $\to res$ : $estr$
-				\State $res \gets$ Crear(ancho,alto,false) \Comment $\Ogr$(ancho x alto)
-			
+				\State $res \gets$ Crear(ancho,alto,false) \Comment $\Ogr$(ancho x alto x copy(bool))			
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(ancho * alto)
-				
+		\underline{Justificación:} $\Ogr$(copy(bool)) $=$ $\Ogr$(1)				
 	\end{algorithm}
+	
 	
 	\begin{algorithm}[H]
 		\caption{iAgregar}
 		\begin{algorithmic}[1]
 			\Procedure{iAgregar}{\texttt{in/out} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
-				\State e[p.X $-$ 1][p.Y $-$ 1] $\gets$ true \Comment $\Ogr$(1)
-			
+				\State e[X(p) $-$ 1][Y(p) $-$ 1] $\gets$ true \Comment $\Ogr$(1)			
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(1)
-	
-	
+		\underline{Complejidad:} $\Ogr$(1)	
 	\end{algorithm}	
+	
 	
 	\begin{algorithm}[H]
 		\caption{iFila}
@@ -156,7 +155,7 @@
 		\caption{iOcupada}
 		\begin{algorithmic}[1]
 			\Procedure{iOcupada}{\texttt{in} e : \texttt{estr}, \texttt{in} p: \texttt{posicion}} $\to res$ : $bool$	
-				\State $res \gets$ e[p.X $-$ 1][e.Y $-$ 1] \Comment $\Ogr$(1)
+				\State $res \gets$ e[X(p) $-$ 1][Y(p) $-$ 1] \Comment $\Ogr$(1)
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -166,7 +165,7 @@
 		\caption{iPosValida}
 		\begin{algorithmic}
 			\Procedure{iPosValida}{\texttt{in} e: \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
-				\State 0 $<$ p.X $\land$ p.X $\leq$ Ancho(e) $\land$ 0 $<$ p.Y $\land$ p.Y $\leq$ Alto(e) \Comment $\Ogr$(1)
+				\State 0 $<$ X(p) $\land$ X(p) $\leq$ Ancho(e) $\land$ 0 $<$ Y(p) $\land$ Y(p) $\leq$ Alto(e) \Comment $\Ogr$(1)
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -175,8 +174,8 @@
 	\begin{algorithm}[H]
 		\caption{iIngresoSuperior}
 		\begin{algorithmic}[1]
-			\Procedure{iIngresoSuperior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
-				\State $res \gets$ (p.Y $=$ 1) \Comment $\Ogr$(1)		
+			\Procedure{iIngresoSuperior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
+				\State $res \gets$ (Y(p) $=$ 1) $\land$ iPosValida(e,p) \Comment $\Ogr$(1)		
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -185,8 +184,8 @@
 	\begin{algorithm}[H]
 		\caption{iIngresoInferior}
 		\begin{algorithmic}[1]
-			\Procedure{iIngresoInferior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $to res$ : $bool$
-				\State $res \gets$ (p.Y $=$ Alto()) \Comment $\Ogr$(1)		
+			\Procedure{iIngresoInferior}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
+				\State $res \gets$ (Y(p) $=$ Alto(e)) $\land$ iPosValida(e,p) \Comment $\Ogr$(1)		
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -196,7 +195,7 @@
 		\caption{iEsIngreso}
 		\begin{algorithmic}[1]
 			\Procedure{iEsIngreso}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $bool$
-				\State $res \gets$ (iEsIngresoSuperior(e,p) $\land$ iEsIngresoInferior(e,p)) \Comment $\Ogr$(1)
+				\State $res \gets$ (iEsIngresoSuperior(e,p) $\lor$ iEsIngresoInferior(e,p)) \Comment $\Ogr$(1)
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -207,10 +206,10 @@
 		\begin{algorithmic}[1]
 			\Procedure{iVecinos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
 				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
-				\State AgregarRapido(res, <p.X $-$ 1, p.Y>) \Comment $\Ogr$(1)
-				\State AgregarRapido(res, <p.X $+$ 1, p.Y>) \Comment $\Ogr$(1)
-				\State AgregarRapido(res, <p.X, p.Y $-$ 1>) \Comment $\Ogr$(1)
-				\State AgregarRapido(res, <p.X, p.Y $+$ 1>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <X(p) $-$ 1, Y(p)>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <X(p) $+$ 1, Y(p)>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <X(p), Y(p) $-$ 1>) \Comment $\Ogr$(1)
+				\State AgregarRapido(res, <X(p), Y(p) $+$ 1>) \Comment $\Ogr$(1)
 				\State $res \gets$ iVecinosValidos(e, res) \Comment $\Ogr$($\#$res) $=$ $\Ogr$(4) $=$ $\Ogr$(1)				
 			\EndProcedure		
 		\end{algorithmic}
@@ -261,7 +260,7 @@
 		\caption{iProxPosicion}
 		\begin{algorithmic}[1]
 			\Procedure{iProxPosicion}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}, \texttt{in} dir : \texttt{direccion}} $\to res$ : $posicion$
-				\State $res \gets$ <p.X $+$ $\beta$(dir $=$ der) $-$ $\beta$(dir $= $ izq), p.Y $+$ $\beta$(dir $=$ abajo) $-$ $\beta$(dir $=$ arriba)> \Comment $\Ogr$(1)
+				\State $res \gets$ <X(p) $+$ $\beta$(dir $=$ der) $-$ $\beta$(dir $= $ izq), Y(p) $+$ $\beta$(dir $=$ abajo) $-$ $\beta$(dir $=$ arriba)> \Comment $\Ogr$(1)
 			\EndProcedure		
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -272,14 +271,14 @@
 		\begin{algorithmic}[1]
 			\Procedure{iIngresosMasCercanos}{\texttt{in} e : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : $conj(posicion)$
 				\State $res \gets$ Vacio() //vacio de conjunto \Comment $\Ogr$(1)
-				\If{Dist(p, <p.X, 1>) $<$ Dist(p, <p.Y, iFilas(e)>)} \Comment $\Ogr$(1)
-					\State AgregarRapido(res, <p.X, 1>) \Comment $\Ogr$(1)
+				\If{Dist(p, <X(p), 1>) $<$ Dist(p, <Y(p), iFilas(e)>)} \Comment $\Ogr$(1)
+					\State AgregarRapido(res, <X(p), 1>) \Comment $\Ogr$(1)
 				\Else
-					\If{Dist(p, <p.X, 1>) $>$ Dist(p, <p.Y, iFilas(e)>)} \Comment $\Ogr$(1)
-						\State AgregarRapido(res, <p.X, iFilas(e)>) \Comment $\Ogr$(1)
+					\If{Dist(p, <X(p), 1>) $>$ Dist(p, <Y(p), iFilas(e)>)} \Comment $\Ogr$(1)
+						\State AgregarRapido(res, <X(p), iFilas(e)>) \Comment $\Ogr$(1)
 					\Else
-						\State AgregarRapido(res, <p.X, 1>) \Comment $\Ogr$(1)
-						\State AgregarRapido(res, <p.X, iFilas(e)>) \Comment $\Ogr$(1)
+						\State AgregarRapido(res, <X(p), 1>) \Comment $\Ogr$(1)
+						\State AgregarRapido(res, <X(p), iFilas(e)>) \Comment $\Ogr$(1)
 					\EndIf				
 				\EndIf
 			\EndProcedure		

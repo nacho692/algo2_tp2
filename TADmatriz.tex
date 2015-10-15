@@ -19,11 +19,11 @@ $\yluego$ ($\forall c, f$: nat ) valor(m, c, f) $\igobs$ valor(m', c, f)}
 \tadOperacion{valor}{{matriz($\alpha$)}/m,columna/nat,fila/nat}{$\alpha$}{posValida(m, columna, fila)}
 
 \tadGeneradores
-\tadOperacion{crear}{ancho/nat,alto/nat,$\alpha$}{matriz($\alpha$)}{ancho$>0$ $\land$ alto$>0$} 
+\tadOperacion{crear}{ancho/nat,alto/nat,$\alpha$}{matriz($\alpha$)}{ancho $>$ 0 $\land$ alto $>$ 0} 
 \tadOperacion{definir}{columna/nat,fila/nat,$\alpha$,{matriz($\alpha$)}/m}{matriz($\alpha$)}{posValida(m, columna, fila)}
 
 \tadOtrasOperaciones
-\tadOperacion{posValida}{{matriz($\alpha$)}/m,columna/nat,fila/nat}{bool)}{columna$\geq0$ $\land$ fila$\geq0$}
+\tadOperacion{posValida}{matriz($\alpha$),columna,fila}{bool}{}
 
 \tadAxiomas[\paratodo{matriz($\alpha$)}{m}, \paratodo{nat}{an, al}, \paratodo{$\alpha$}{a}]
 \tadAlinearAxiomas{valor(definir($c$, $f$, $a$, $m$), $c'$, $f'$)}
@@ -37,7 +37,7 @@ $\yluego$ ($\forall c, f$: nat ) valor(m, c, f) $\igobs$ valor(m', c, f)}
 \tadAxioma{valor(crear($an$, $al$, $a$), $c$, $f$)}{$a$}
 \tadAxioma{valor(definir($c$, $f$, $a$, $m$), $c'$, $f'$)}{\IF $f=f' \land c=c'$ THEN $a$ ELSE valor($m$,$c'$,$f'$) FI}
 
-\tadAxioma{posValida($m$, $c$, $f$)}{$f <$alto($m$) $\land$ $c <$ ancho($m$)}
+\tadAxioma{posValida($m$, $c$, $f$)}{$f$ $<$ alto($m$) $\land$ $c$ $<$ ancho($m$)}
 
 
 \end{tad}

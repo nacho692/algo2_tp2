@@ -9,11 +9,11 @@
 		[función de copia de $\sigma$'s]
 	}
 	
-	\textbf{se explica con}: \tadNombre{diccionario(k,$\sigma$)}
+	\textbf{se explica con}: \tadNombre{diccionarioAcotado(nat,$\sigma$)}
 	
 	\textbf{usa}: nat, bool, arreglo Dimensionable
 	
-	\textbf{géneros}: \TipoVariable{dicch(nat, $\sigma$)}
+	\textbf{géneros}: \TipoVariable{dicch(nat,$\sigma$)}
 	
 	\tituloModulo{Operaciones de Dicch(nat,$\sigma$)}
 	
@@ -32,7 +32,7 @@
 	{}
 	[$\neg$def?(clave,dicc) $\land$ dicc=$dicc_0$]
 	{dicc $\igobs$ Definir(clave,significado,$dicc_0$)}
-	[$\Ogr(1) promedio$ ]
+	[$\Ogr(1)$ en caso promedio]
 	[Agrega un elemento al diccionario.]	
 	
 	\InterfazFuncion
@@ -41,8 +41,9 @@
 	{$\sigma$}
 	[def?(clave,dicc) $\land$ dicc=$dicc_0$]
 	{alias(res $\igobs$ obtener(clave,dicc)) 
-		$\land$\\ ($\forall$ clave' : nat)( clave' $\in$ claves(dicc) $\impluego$ obtener(clave',dicc) $\igobs$ obtener(clave',$dicc_0$) )}
-	[$\Ogr(1) promedio$]
+		$\land$\\ 
+		($\forall$ clave' : nat)( (clave' $\in$ claves(dicc) $\land$ clave $\neq$ clave' )$\impluego$ obtener(clave',dicc) $\igobs$ obtener(clave',$dicc_0$) )}
+	[$\Ogr(1)$ en caso promedio]
 	
 \end{Interfaz}
 
@@ -60,7 +61,7 @@
 	
 	\Rep{ e.cant $\igobs$ Tamaño(e.valores) $\yluego$ \\ 
 	($\forall$ i, j : nat) 
-	( i <\ e.cant $\land$ j <\ e.cant $\land$ i $\neq$ j ) 
+	( i <\ e.cant $\land$ j <\ e.cant $\land$ i $\neq$ j $\land$ definido(e.valores,i) $\land$ definido(e.valores,j)) \\
 	$\impluego$ e.valores[i].clave $\neq$ e.valores[j].clave
 	}
 	
@@ -71,10 +72,11 @@
 	{dic : dicch(nat, $\sigma$) $/$ \\
 		($\forall$ clave : nat) \\
 		( Def?(clave,dic) $\Leftrightarrow$ ($\exists$ i : nat)
-		( 0 <= i <\ e.cant $\land$ Definido( e.valores, i ) 
+		( 0 $\leq$ i <\ e.cant $\land$ Definido( e.valores, i ) 
 		$\yluego$ e.valores[i].clave = clave )) 
-		\\	$\land$ ( Def?(clave,dic) $\impluego$ Obtener(clave,dic) $\igobs$ 
-		e.valores[ mod( hash(clave, e ) + corrimiento(clave, e) , cant) ].significado}
+		\\	$\land$ ( Def?(clave,dic) 	\\
+		$\impluego$ Obtener(clave,dic) $\igobs$ 
+		e.valores[ mod( hash(clave, e ) + corrimiento(hash(clave, e), e) , cant) ].significado}
 ~
 	\tadOperacion{hash}{nat,estr}{nat}{}
 	\tadAxioma{hash(clave, e)}{mod(clave, e.cant)}		
@@ -98,8 +100,7 @@
 			{\texttt{in} n : nat} $\to res$ : estr
 				\State var $e$ : estr
 				\State $e.cant \gets$ n \Comment $\Theta$(1)
-				\State $e.valores \gets$ CrearArreglo($n$)
-				\Comment $\Ogr$(n)
+				\State $e.valores \gets$ CrearArreglo($n$) \Comment $\Ogr$(1)
 				\State $res \gets$ e \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -114,15 +115,15 @@
 			{\texttt{in} clave : \texttt{nat}, \texttt{in} significado : \texttt{$\sigma$, \texttt{in/out} e : \texttt{estr}}}
 				\State var $h$ : nat
 				\State $h \gets$ mod(clave, e.cant) \Comment $\Ogr$(1)
-				\While{Definido(e.valores, h)} \Comment en promedio no se entra al ciclo
+				\While{Definido(e.valores, h)} \Comment En promedio no se entra al ciclo
 						\State $h \gets$ mod(h+1, e.cant) \Comment $\Ogr$(1)
 				\EndWhile
-				\State $e.valores[h] \gets$ significado \Comment $\Ogr$(1)
+				\State $e.valores[h] \gets$ tupla<clave, significado> \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1) promedio
-		\\ \\
-		\underline{Comentario:} sabiendo que hay una distribución uniforme de "claves", podemos asumir que en promedio no se entraría al ciclo, cerrando en promedio una suma de operaciones de complejidad $\Ogr$(1).
+		\\
+		\underline{Justificación:} sabiendo que hay una distribución uniforme de 'claves', podemos asumir que en promedio no se entraría al ciclo, cerrando en promedio una suma de operaciones de complejidad $\Ogr$(1).
 	\end{algorithm}
 	
 	\begin{algorithm}
@@ -134,13 +135,14 @@
 				\State var $h$ : nat				
 				\State $h \gets$ mod(clave, e.cant) \Comment $\Ogr$(1)
 				\While{e.valores[h].clave $\neq$ clave} 
-				\Comment Se repite en promedio 0 veces
+				\Comment En promedio no se entra al ciclo
 					\State $h \gets$  mod(h+1, e.cant) \Comment $\Ogr$(1)
 				\EndWhile
 				\State $res \gets$ e.valores[h].significado \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(1) promedio
+		\underline{Complejidad:} $\Ogr$(1) promedio \\
+		\underline{Justificación:} Misma justificación que el algoritmo anterior
 	\end{algorithm}
 	
 \end{Algoritmos}

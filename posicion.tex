@@ -24,20 +24,20 @@
 	[Hay aliasing entre el resultado de la función y el valor "Y" de la instancia posicion.]
 	
 	\InterfazFuncion{SumarPosiciones}
-	{\In{p1}{posicion},\In{p2}{posicion}}{posicion}
-	{$res \igobs$ <X(p1) + X(p2), Y(p1) + Y(p2)>}
+	{\In{p_1}{posicion},\In{p_2}{posicion}}{posicion}
+	{$res \igobs$ <X(p$_1$) $+$ X(p$_2$), Y(p$_1$) $+$ Y(p$_2$)>}
 	[$\Theta$(1)]
 	[Devuelve una nueva instancia del tipo posicion, resultado de sumar ambas X's e Y's.]
 	
 	\InterfazFuncion{RestarPosiciones}
-	{\In{p1}{posicion},\In{p2}{posicion}}{posicion}
-	[Y(p2) < Y(p1) $\land$ X(p2) < X(p1)]
-	{$res \igobs$ <X(p1) - X(p2), Y(p1) - Y(p2)>}
+	{\In{p_1}{posicion},\In{p_2}{posicion}}{posicion}
+	[Y(p$_2$) $<$ Y(p$_1$) $\land$ X(p$_2$) $<$ X(p$_1$)]
+	{$res \igobs$ <X(p$_1$) $-$ X(p$_2$), Y(p$_1$) $-$ Y(p$_2$)>}
 	[$\Theta$(1)]
 	[Devuelve una nueva instancia del tipo posicion, resultado de sumar ambas X's e Y's.]
 	
-	\InterfazFuncion{DistanciaPosiciones}{\In{p1}{posicion},\In{p2}{posicion}}{nat}
-	{$res  \igobs$ (Max(X(p1), X(p2)) - Min(X(p1),X(p2))) + (Max(Y(p1),Y(p2)) - Max(Y(p1),Y(p2))) )}
+	\InterfazFuncion{DistanciaPosiciones}{\In{p_1}{posicion},\In{p_2}{posicion}}{nat}
+	{$res  \igobs$ Max(X(p$_1$), X(p$_2$)) - Min(X(p$_1$),X(p$_2$)) $+$ Max(Y(p$_1$),Y(p$_2$)) - Max(Y(p$_1$),Y(p$_2$)) }
 	[$\Theta$(1)]
 	[Devuelve el resultado de calcular la distancia entre dos instancias de posicion, en base a sus obserdores X e Y.]
 	
@@ -63,7 +63,7 @@
 	
 	~
 	
-	\tadOperacion{Max}{Nat,Nat}{Nat}{}
+	\tadOperacion{Max}{nat,nat}{nat}{}
 	\tadAxioma{Max(x,y)}{	
 		\IF x >\ y
 		THEN x
@@ -72,7 +72,7 @@
 	
 	~
 	
-	\tadOperacion{Min}{Nat,Nat}{Nat}{}
+	\tadOperacion{Min}{nat,nat}{nat}{}
 	\tadAxioma{Min(x,y)}{	
 		\IF x >\ y
 		THEN y
@@ -87,7 +87,7 @@
 		\caption{iCrearPosicion}
 		\begin{algorithmic}
 			\Procedure{iCrearPosicion}
-			{\texttt{in} x : \texttt{Nat}, \texttt{in} y : \texttt{Nat}} $\to res$ : estr
+			{\texttt{in} x : \texttt{nat}, \texttt{in} y : \texttt{nat}} $\to res$ : estr
 			\State var pos : estr
 			\State $pos.x \gets$ x \Comment $\Theta$(1)
 			\State $pos.y \gets$ y \Comment $\Theta$(1)
@@ -100,7 +100,7 @@
 	\begin{algorithm}[H]
 		\caption{iX}
 		\begin{algorithmic}
-			\Procedure{iX}{\texttt{in} pos : \texttt{estr}} $\to res$ : $Nat$
+			\Procedure{iX}{\texttt{in} pos : \texttt{estr}} $\to res$ : $nat$
 			\State $res \gets$ pos.x \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -110,7 +110,7 @@
 	\begin{algorithm}[H]
 		\caption{iY}
 		\begin{algorithmic}
-			\Procedure{iY}{\texttt{in} pos : \texttt{estr}} $\to res$ : $Nat$
+			\Procedure{iY}{\texttt{in} pos : \texttt{estr}} $\to res$ : $nat$
 			\State $res \gets$ pos.y \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -121,9 +121,9 @@
 		\caption{iSumarPosiciones}
 		\begin{algorithmic}
 			\Procedure{iSumarPosicion}
-			{\texttt{in} pos1 : \texttt{estr}, \texttt{in} pos2 : \texttt{estr}} $\to res$ : estr
+			{\texttt{in} pos$_1$ : \texttt{estr}, \texttt{in} pos$_2$ : \texttt{estr}} $\to res$ : estr
 			\State var pos : estr
-			\State $pos \gets$ iCrearPosicion(pos1.x + pos2.x, pos1.y + pos2.y) \Comment $\Theta$(1)
+			\State $pos \gets$ iCrearPosicion(pos$_1$.x $+$ pos$_2$.x, pos$_1$.y $+$ pos$_2$.y) \Comment $\Theta$(1)
 			\State $res \gets$ pos \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -135,9 +135,9 @@
 		
 		\begin{algorithmic}
 			\Procedure{iRestarPosiciones}
-			{\In{pos1}{estr}, \In{pos2}{estr}} $\to res$ : $estr$
+			{\texttt{in} pos$_1$ : \texttt{estr}, \texttt{in} pos$_2$ : \texttt{estr}} $\to res$ : $estr$
 			\State var pos : estr
-			\State $pos \gets$ iCrearPosicion(pos1.x-pos2.x,pos1.y-pos2.y) \Comment $\Theta$(1)
+			\State $pos \gets$ iCrearPosicion(pos$_1$.x $-$ pos$_2$.x, pos$_1$.y $-$ pos$_2$.y) \Comment $\Theta$(1)
 			\State $res \gets$ pos \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
@@ -148,9 +148,9 @@
 		\caption{iDistanciaPosiciones}
 		\begin{algorithmic}
 			\Procedure{iDistanciaPosiciones}
-			{\In{pos1}{estr}, \In{pos2}{estr}} $\to res$ : $Nat$
-			\State var pos : Nat
-			\State $pos \gets$ Max(pos1.x,pos2.x) - Min(pos1.x,pos2.x) + Max(pos1.y,pos2.y) - Min(pos1.y,pos2.y) \Comment $\Theta$(1)
+			{\texttt{in} pos$_1$ : \texttt{estr}, \texttt{in} pos$_2$ : \texttt{estr}} $\to res$ : $nat$
+			\State var pos : nat
+			\State $pos \gets$ Max(pos$_1$.x, pos$_2$.x) $-$ Min(pos$_1$.x, pos$_2$.x) + Max(pos$_1$.y, pos$_2$.y) $-$ Min(pos$_1$.y,pos$_2$.y) \Comment $\Theta$(1)
 			\State $res \gets$ pos \Comment $\Theta$(1)
 			\EndProcedure
 		\end{algorithmic}
