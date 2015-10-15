@@ -17,7 +17,7 @@
 	
 	\tituloModulo{Operaciones de Iterador de Claves  de DiccionarioNombres(string)}
 
-	\InterfazFuncion{CrearIt}{\Inout{it}{itDiccNom(tupla<string,$\sigma$>)}}{itClavesDiccN(string)}
+	\InterfazFuncion{CrearIt}{\Inout{it}{diccNom(string,$\sigma$)}}{itClavesDiccN(string)}
 	{res $\igobs$ CrearItUni(Primeros(secuSuby(it)))}
 	[$\Ogr$(1)]
 	[Crea un iterador no modificable de las claves del diccionario modificable del diccionario nombre]
@@ -41,7 +41,7 @@
 	[Devuelve la siguiente clave del diccionario]
 	[res no es modificable]
 	
-	\InterfazFuncion{Avanzar}{\In{it}{itClavesDiccN(tupla<string,$\sigma$>)}}{}
+	\InterfazFuncion{Avanzar}{\Inout{it}{itClavesDiccN(tupla<string,$\sigma$>)}}{}
 	[HayMas?(it) $\land$ it=$it_0$ ]
 	{it $\igobs$ Avanzar($it_0$)}
 	[$\Ogr$(1)]
@@ -66,3 +66,47 @@
 	
 
 \end{Representacion}
+
+\begin{Algoritmos}
+
+	\begin{algorithm}[H]
+		\caption{iCrearIt}
+		\begin{algorithmic}
+			\Procedure{iCrearIt}{\texttt{in} d : \texttt{diccNom(string,$\sigma$)}} $\to res$ : $ite$
+				\State $res \gets$ CrearIt(d) // crearIt del iterador de Diccionario Nombre \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
+	
+	\begin{algorithm}[H]
+		\caption{iHaySiguiente}
+		\begin{algorithmic}
+			\Procedure{iHaySiguiente}{\texttt{in} it : \texttt{ite}} $\to res$ : $bool$
+				\State $res \gets$ HaySiguiente(it) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteClave}
+		\begin{algorithmic}
+			\Procedure{iSiguienteClave}{\texttt{in} it : \texttt{ite}} $\to res$ : $string$
+				\State $res \gets$ SiguienteClave(ite) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iAvanzar}
+		\begin{algorithmic}
+			\Procedure{iAvanzar}{\texttt{in/out} it : \texttt{ite}}
+				\State Avanzar(ite) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
+	
+\end{Algoritmos}
