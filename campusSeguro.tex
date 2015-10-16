@@ -1,6 +1,5 @@
 
-Dadas las contradicciones de la especificacion, para las funciones que proveen movimientos tanto de estudiantes, de agentes o de hippies voy a seguir el siguiente orden.
-
+Se sigue el siguiente orden para las funciones que proveen los movimientos de estudiantes, agentes o hippies.
 \begin{enumerate}
 	\item Apariciones y Movimientos
 	\item Enhippizacion (Estudiantes en hippies)
@@ -433,14 +432,15 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \begin{algorithmic}[1]
 \Procedure{iIngresarEstudiante}{\texttt{in/out} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}, \texttt{in} p : \texttt{posicion}}
 	\State $c$.pos.mE[X($p$)][Y($p$)] $\gets$ $\langle$true, Definir($c$.estudiantes,$n$,$p$)$\rangle$ \Comment $\Ogr(|e_m|)$
-	\State enhippizar($c$, $p$)
-	\State estudiantizar($c$, $p$)
-	\State premiar($c$,$p$)
-	\State capturar($c$,$p$)
-	\State sancionar($c$,$p$)
+	\State enhippizar($c$, $p$) \Comment $\Ogr(|h_m|)$
+	\State estudiantizar($c$, $p$) \Comment $\Ogr(|e_m|)$
+	\State premiar($c$,$p$) \Comment $\Ogr(1)$
+	\State capturar($c$,$p$) \Comment $\Ogr(|h_m|)$
+	\State sancionar($c$,$p$) \Comment $\Ogr(1)$
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(|n_m|)$\\
+\underline{Justificacion:} $\Ogr(|e_m|) + \Ogr(|h_m|) + \Ogr(|e_m|) + \Ogr(|h_m|)$ =  $\Ogr(2|e_m|) + \Ogr(|2h_m|)$ = $\Ogr(2max(|e_m|,|h_m|))$ = $\Ogr(|n_m|)$
 \end{algorithm}
 
 
@@ -449,37 +449,39 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \begin{algorithmic}[1]
 \Procedure{iIngresarHippie}{\texttt{in/out} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}, \texttt{in} p : \texttt{posicion}}
 	\State $c$.pos.mH[X($p$)][Y($p$)] $\gets$ $\langle$true, Definir($c$.hippies,$n$,$p$) $\rangle$ \Comment $\Ogr(1)$
-	\State enhippizar($c$, $p$)
-	\State premiar($c$,$p$)
-	\State capturar($c$,$p$)
-	\State sancionar($c$,$p$)
+	\State enhippizar($c$, $p$) \Comment $\Ogr(|h_m|)$
+	\State premiar($c$,$p$) \Comment $\Ogr(1)$
+	\State capturar($c$,$p$) \Comment $\Ogr(1)$
+	\State sancionar($c$,$p$) \Comment $\Ogr(1)$
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(|n_m|)$ \\
+\underline{Justificacion:} $\Ogr(|h_m|)$ = $\Ogr(|n_m|)$
 \end{algorithm}
 
 \begin{algorithm}[H]
 \caption{Mover Estudiante}
 \begin{algorithmic}[1]
 \Procedure{iMoverEstudiante}{\texttt{in/out} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}, \texttt{in} d : \texttt{direccion}}
-	\State posicion $p \gets$ PosEstudianteYHippie($c$,$n$)
+	\State posicion $p \gets$ PosEstudianteYHippie($c$,$n$) \Comment $\Ogr(|n_m|)$
 	\State $c$.pos.mE[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
-	\State posicion $proxp \gets$ ProxPosicion($c$.cp,$p$)
-	\If{EsIngreso($c$.cp,$proxp$)}
-		\State EliminarSiguiente($c$.pos.mE[X($p$)][Y($p$)].dato)
+	\State posicion $proxp \gets$ ProxPosicion($c$.cp,$p$,$d$) \Comment $\Ogr(1)$
+	\If{EsIngreso($c$.cp,$proxp$)} \Comment $\Ogr(1)$
+		\State EliminarSiguiente($c$.pos.mE[X($p$)][Y($p$)].dato) \Comment $\Ogr(|e_m|)$
 	\Else
 		\State $c$.pos.mE[X($proxp$)][Y($proxp$)].def $\gets$ true \Comment $\Ogr(1)$
-		\State $c$.pos.mE[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mE[X($p$)][Y($p$)].dato
+		\State $c$.pos.mE[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mE[X($p$)][Y($p$)].dato \Comment $\Ogr(1)$
 	
-		\State enhippizar($c$, $p$)
-		\State estudiantizar($c$, $p$)
-		\State premiar($c$,$p$)
-		\State capturar($c$,$p$)
-		\State sancionar($c$,$p$)
+		\State enhippizar($c$, $p$) \Comment $\Ogr(|h_m|)$
+		\State estudiantizar($c$, $p$) \Comment $\Ogr(|e_m|)$
+		\State premiar($c$,$p$) \Comment $\Ogr(1)$
+		\State capturar($c$,$p$) \Comment $\Ogr(|h_m|)$
+		\State sancionar($c$,$p$) \Comment $\Ogr(1)$
 	\EndIf
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(|n_m|)$\\
+\underline{Justificacion:} $\Ogr(|n_m|) + \Ogr(|h_m|) + \Ogr(|e_m|) + \Ogr(|h_m|)$ = $\Ogr(|n_m|) + \Ogr(2|h_m|) + \Ogr(|e_m|)$ = $\Ogr(|n_m|) + \Ogr(|e_m| + |h_m|)$ = $\Ogr(|n_m|) + \Ogr(|n_m|)$ = $\Ogr(|n_m|)$
 \end{algorithm}
 
 
@@ -487,19 +489,20 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \caption{Mover Hippie}
 \begin{algorithmic}[1]
 \Procedure{iMoverHippie}{\texttt{in/out} c : \texttt{estr}, \texttt{in} n : \texttt{nombre}}
-	\State posicion $p \gets$ PosEstudianteYHippie($c$,$n$)
+	\State posicion $p \gets$ PosEstudianteYHippie($c$,$n$) \Comment $\Ogr(|n_m|)$
 	\State $c$.pos.mH[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
-	\State posicion $proxp \gets$ nuevaPosHippieOAgente($c$,$p$,CrearIt($c$.estudiantes))
+	\State posicion $proxp \gets$ nuevaPosHippieOAgente($c$,$p$,CrearIt($c$.estudiantes)) \Comment $\Ogr(N_e)$
 	\State $c$.pos.mH[X($proxp$)][Y($proxp$)].def $\gets$ true \Comment $\Ogr(1)$
-	\State $c$.pos.mH[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mH[X($p$)][Y($p$)].dato
+	\State $c$.pos.mH[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mH[X($p$)][Y($p$)].dato \Comment $\Ogr(1)$
 	
-	\State enhippizar($c$, $p$)
-	\State premiar($c$,$p$)
-	\State capturar($c$,$p$)
-	\State sancionar($c$,$p$)
+	\State enhippizar($c$, $p$) \Comment $\Ogr(|h_m|)$
+	\State premiar($c$,$p$) \Comment $\Ogr(1)$
+	\State capturar($c$,$p$) \Comment $\Ogr(|h_m|)$
+	\State sancionar($c$,$p$) \Comment $\Ogr(1)$
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(|n_m|) + \Ogr(N_e)$\\
+\underline{Justificacion:} $\Ogr(|n_m|) + \Ogr(N_e) + \Ogr(|h_m|) + \Ogr(|h_m|)$ = $\Ogr(n_m) + \Ogr(N_e) +2\Ogr(|h_m|)$ = $\Ogr(|n_m|) + \Ogr(N_e) + 2\Ogr(|n_m|)$ = $3\Ogr(|n_m|) + \Ogr(N_e)$ = $\Ogr(|n_m|) + \Ogr(N_e)$
 \end{algorithm}
 
 
@@ -507,18 +510,18 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \caption{Mover Agente}
 \begin{algorithmic}[1]
 \Procedure{iMoverAgente}{\texttt{in/out} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}}
-	\State posicion $p \gets$ Obtener($c$.agentes,$pl$)
+	\State posicion $p \gets$ Obtener($c$.agentes,$pl$) \Comment $\Ogr(log N_a)$
 	\State $c$.pos.mAg[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
-	\State posicion $proxp \gets$ nuevaPosHippieOAgente($c$,$p$,CrearIt($c$.hippies))
+	\State posicion $proxp \gets$ nuevaPosHippieOAgente($c$,$p$,CrearIt($c$.hippies)) \Comment $\Ogr(N_h)$
 	\State $c$.pos.mAg[X($proxp$)][Y($proxp$)].def $\gets$ true \Comment $\Ogr(1)$
-	\State $c$.pos.mAg[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mAg[X($p$)][Y($p$)].dato
+	\State $c$.pos.mAg[X($proxp$)][Y($proxp$)].dato $\gets$ $c$.pos.mAg[X($p$)][Y($p$)].dato \Comment $\Ogr(1)$
 	
-	\State premiar($c$,$p$)
-	\State capturar($c$,$p$)
-	\State sancionar($c$,$p$)
+	\State premiar($c$,$p$) \Comment $\Ogr(1)$
+	\State capturar($c$,$p$) \Comment $\Ogr(|h_m|)$
+	\State sancionar($c$,$p$) \Comment $\Ogr(1)$
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(|n_m|) + \Ogr(log N_a) + \Ogr(N_h)$
 \end{algorithm}
 
 
@@ -527,32 +530,40 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \caption{Nueva Posicion Hippie o Agente}
 \begin{algorithmic}[1]
 \Procedure{nuevaPosHippieOAgente}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}, \texttt{in/out} itObj : \texttt{itDiccN(string,posicion)}}  $\to res$ : posicion
-	\State nat $min \gets$ 0
-	\State posicion $objetivo$
-	\While{HaySiguiente($itObj$)}
-		\If{$min$ == 0 || $min \geq$ DistanciaPosiciones($p$,SiguienteSignificado($itObj$))}
-			\State $min \gets$ DistanciaPosiciones($p$,SiguienteSignificado($itObj$))
-			\State $objetivo \gets$ SiguienteSignificado($itObj$)
+	\State nat $min \gets$ 0 \Comment $\Ogr(1)$
+	\State posicion $objetivo$ \Comment $\Ogr(1)$
+	\While{HaySiguiente($itObj$)} \Comment $n*\Ogr(1)$
+		\If{$min$ == 0 || $min \geq$ DistanciaPosiciones($p$,SiguienteSignificado($itObj$))} \Comment $\Ogr(1)$
+			\State $min \gets$ DistanciaPosiciones($p$,SiguienteSignificado($itObj$)) \Comment $\Ogr(1)$
+			\State $objetivo \gets$ SiguienteSignificado($itObj$) \Comment $\Ogr(1)$
 		\EndIf
-		\State Avanzar($itObj$)
+		\State Avanzar($itObj$) \Comment $\Ogr(1)$
 	\EndWhile
-	\If{$min$ == 0}
-		\State $objetivo \gets$ Siguiente(CrearIt(IngresosMasCercanos($c$.cp,$p$)))		
+	\If{$min$ == 0} \Comment $\Ogr(1)$
+		\State $objetivo \gets$ Siguiente(CrearIt(IngresosMasCercanos($c$.cp,$p$)))	 \Comment $\Ogr(1)$	
 	\EndIf
 	
-	\State conj(posicion) $vecinosLibres \gets$ libres($c$,Vecinos($c$.cp,$p$))
-	\State itconj(posicion) $itVL \gets$ CrearIt($vecinosLibres$)
-	\State $min \gets$ 0
-	\While{HaySiguiente($itVL$)}
+	\State conj(posicion) $vecinosLibres \gets$ libres($c$,Vecinos($c$.cp,$p$)) \Comment $\Ogr(k)$
+	\State itconj(posicion) $itVL \gets$ CrearIt($vecinosLibres$) \Comment $\Ogr(1)$
+	\State $min \gets$ 0 \Comment $\Ogr(1)$
+	\While{HaySiguiente($itVL$)} \Comment $m*\Ogr(1)$
 		\If{$min$ == 0 || $min \geq$ DistanciaPosiciones($objetivo$,Siguiente($itVL$))}
-			\State $min \gets$ DistanciaPosiciones($objetivo$,Siguiente($itVL$))
-			\State $res \gets$ Siguiente($itVL$)
+			\State $min \gets$ DistanciaPosiciones($objetivo$,Siguiente($itVL$)) \Comment $\Ogr(1)$
+			\State $res \gets$ Siguiente($itVL$) \Comment $\Ogr(1)$
 		\EndIf
-		\State Avanzar($itVL$)
+		\State Avanzar($itVL$) \Comment $\Ogr(1)$
 	\EndWhile
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(n)$ siendo $n$ la cantidad de iteraciones de $itObj$ \\
+\underline{Justificacion:} $n*Ogr(1)+\Ogr(k)+\Ogr(m)$ = $\Ogr(n+k+m)$\\
+Donde
+\begin{itemize}
+	\item $n$ es la cantidad de iteraciones de $itObj$
+	\item $m$ es la cantidad de posiciones libres de vecinos de una posicion, acotado por 4
+	\item $k$ es la cantidad de vecinos de una posicion, acotado por 4
+\end{itemize}
+$\Ogr(n + 4 + 4)$ = $\Ogr(n + 8)$ = $\Ogr(n)$
 \end{algorithm}
 
 
@@ -560,17 +571,17 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \caption{Posiciones Libres}
 \begin{algorithmic}[1]
 \Procedure{libres}{\texttt{in} c : \texttt{estr}, \texttt{in} cp : \texttt{conj(posicion)}}  $\to res$ : conj(posicion)
-	\State itconj(posicion) $itc \gets$ CrearIt($cp$)
-	\State $res \gets$ Vacio()
-	\While{HaySiguiente($itc$)}
-		\If{!ocupada($c$,Siguiente($p$))}
-			\State AgregarRapido($res$,Siguiente($p$))
+	\State itconj(posicion) $itc \gets$ CrearIt($cp$) \Comment $\Ogr(1)$
+	\State $res \gets$ Vacio() \Comment $\Ogr(1)$
+	\While{HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+		\If{!ocupada($c$,Siguiente($p$))} \Comment $\Ogr(1)$
+			\State AgregarRapido($res$,Siguiente($p$)) \Comment $\Ogr(1)$
 		\EndIf
-		\State Avanzar($itc$)
+		\State Avanzar($itc$) \Comment $\Ogr(1)$
 	\EndWhile
 \EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$ promedio
+\underline{Complejidad:} $\Ogr(n)$ siendo n $\#$Claves($cp$)
 \end{algorithm}
 
 
@@ -624,9 +635,9 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 \begin{algorithm}[H]
 \caption{Premiar Agentes}
 \begin{algorithmic}[1]
-	\Procedure{premiarAgentes}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
-	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$))} \Comment $\Ogr(1)$
-			\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$)) \Comment $\Ogr(1)$
+	\Procedure{premiar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
+	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$))} \Comment $\Ogr(k)$
+			\State itConj(posicion) $itca \gets$ agentes($c$,Vecinos($c$.cp,$p$)) \Comment $\Ogr(k)$
 			\While{HaySiguiente($itca$)} \Comment $n*\Ogr(1)$
 				\State Siguiente($c$.pos.mAg[X($p$)][Y($p$)]).premios ++ \Comment $\Ogr(1)$
 				\State actualizarMasVigilante($c$,pos.mAg[X($p$)][Y($p$)]) \Comment $\Ogr(1)$
@@ -637,7 +648,7 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 	\While {HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
 	\State posicion $p$ $\gets$ Siguiente($itc$) \Comment $\Ogr(1)$
 		\If{rodeado($p$) $\&\&$ esHippie($p$)} \Comment $\Ogr(1)$
-			\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$)) \Comment $\Ogr(1)$
+			\State itConj(posicion) $itca \gets$ agentes($c$,Vecinos($c$.cp,$p$)) \Comment $\Ogr(k)$
 			\While{HaySiguiente($itca$)} \Comment $m*\Ogr(1)$
 				\State $pa \gets$ Siguiente($itca$) \Comment $\Ogr(1)$
 				\State Siguiente(pos.mAg[X($pa$)][Y($pa$)]).premios ++ \Comment $\Ogr(1)$
@@ -649,9 +660,15 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 	\EndIf
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
-\underline{Justificacion:} $\Ogr(1) + n*\Ogr(1)*m\Ogr(1)$ = $\Ogr(n*m)$ donde n es la cantidad de vecinos de una posicion y m es la cantidad de agentes vecinos a una posicion, ambas acotadas por 4.\\
-$\Ogr(4*4)$ = $\Ogr(16)$ = $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(1)$\\
+\underline{Justificacion:} $\Ogr(1) + n*\Ogr(1)*(\Ogr(k) + m\Ogr(1))$ = $\Ogr(n*(k + m))$\\
+Donde
+\begin{itemize}
+	\item $n$ es la cantidad de vecinos de una posicion, acotado por 4
+	\item $m$ es la cantidad de agentes vecinos de una posicion, acotado por 4
+	\item $k$ es la cantidad de vecinos de una posicion, acotado por 4
+\end{itemize}
+$\Ogr(4*(4+4))$ = $\Ogr(32)$ = $\Ogr(1)$
 \end{algorithm}
 
 
@@ -659,26 +676,34 @@ $\Ogr(4*4)$ = $\Ogr(16)$ = $\Ogr(1)$
 \caption{Capturar Hippies}
 \begin{algorithmic}[1]
 	\Procedure{capturar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
-	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$)) $\geq$ 1} \Comment $\Ogr(1)$
+	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$)) $\geq$ 1} \Comment $\Ogr(k)$
 			\State itDiccN(string,posicion) $itH \gets$ $res$.pos.mH[X($p$)][Y($p$)] \Comment $\Ogr(1)$
 			\State EliminarSiguiente($itH$) \Comment $\Ogr(|h_m|)$
 			\State $res$.pos.mE[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
 	\Else
-	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp,$p$))
-	\While {HaySiguiente($itc$)}
-		\State posicion $p$ $\gets$ Siguiente($itc$)
-		\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes(Vecinos($c$.cp,$p$))} \Comment $\Ogr(1)$
-			\State itDiccN(string,posicion) $itH \gets$ $c$.pos.mH[X($p$)][Y($p$)]
-			\State EliminarSiguiente($itH$)
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp,$p$)) \Comment $\Ogr(1)$
+	\While {HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+		\State posicion $p$ $\gets$ Siguiente($itc$) \Comment $\Ogr(1)$
+		\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$))) $\geq$ 1} \Comment $\Ogr(k)$
+			\State itDiccN(string,posicion) $itH \gets$ $c$.pos.mH[X($p$)][Y($p$)] \Comment $\Ogr(1)$
+			\State EliminarSiguiente($itH$) \Comment $\Ogr(|h_m|)$
 			\State $c$.pos.mE[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
 		\EndIf
-		\State Avanzar($itc$)
+		\State Avanzar($itc$) \Comment $\Ogr(1)$
 	\EndWhile
 	
 	\EndIf
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(|h_m|)$\\
+\underline{Justificacion:} $\Ogr(k) + n*\Ogr(1)*(\Ogr(|h_m|) + \Ogr(k))$ = $\Ogr(k) + \Ogr(n)*\Ogr(|h_m|+ k)$ = $\Ogr(k) + \Ogr(n*|h_m| + n*k)$ = $\Ogr(n*|h_m| + n*k)$ ($n*k > k$)\\
+Donde
+\begin{itemize}
+	\item $n$ es la cantidad de vecinos de una posicion, acotado por 4
+	\item $|h_m|$ es el hippie con nombre mas largo
+	\item $k$ es la cantidad de vecinos de una posicion, acotado por 4
+\end{itemize}
+$\Ogr(4*|h_m| + 4*4)$ = $\Ogr(4*|h_m| + 16)$ = $\Ogr(4*|h_m|)$ = $\Ogr(|h_m|)$
 \end{algorithm}
 
 \begin{algorithm}[H]
@@ -686,34 +711,43 @@ $\Ogr(4*4)$ = $\Ogr(16)$ = $\Ogr(1)$
 \begin{algorithmic}[1]
 	\Procedure{sancionar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
 	
-	\State itConj(posicion) $itc$ $\gets$ CrearIt(AgregarRapido($p$,Vecinos($c$.cp,$p$))
-	\While {HaySiguiente($itc$)}
-		\State posicion $p$ $\gets$ Siguiente($itc$)
-		\State conj(posicion) $cag \gets$ agentes(Vecinos($p$)
-		\If{rodeado($p$) $\&\&$ esEstudiante($p$) $\&\&$ $\#$Claves($cag$) $\geq$ 1} \Comment $\Ogr(1)$
-		\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$))
-			\While{HaySiguiente($itca$)}
-				\State posicion $pa \gets$ Siguiente($itca$)
-				\State Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato).sanciones ++
-				\State datosAg $datos \gets$ Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato
-				\State EliminarSiguiente($datos$.mismasSanc)
-				\If{$\#$(SiguienteSignificado($datos$.kSanc)) = 0}
-					\State EliminarSiguiente($datos$.kSanc)
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(AgregarRapido($p$,Vecinos($c$.cp,$p$)) \Comment $\Ogr(1)$
+	\While {HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+		\State posicion $p$ $\gets$ Siguiente($itc$) \Comment $\Ogr(1)$
+		\State conj(posicion) $cag \gets$ agentes($c$,Vecinos($c$.cp,$p$) \Comment $\Ogr(k)$
+		\If{rodeado($c$,$p$) $\&\&$ esEstudiante($c$,$p$) $\&\&$ $\#$Claves($cag$) $\geq$ 1} \Comment $\Ogr(1)$
+		\State itConj(posicion) $itca \gets cag$ \Comment $\Ogr(1)$
+			\While{HaySiguiente($itca$)} \Comment $m*\Ogr(1)$
+				\State posicion $pa \gets$ Siguiente($itca$) \Comment $\Ogr(1)$
+				\State Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato).sanciones ++ \Comment $\Ogr(1)$
+				\State datosAg $datos \gets$ Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato \Comment $\Ogr(1)$
+				\State EliminarSiguiente($datos$.mismasSanc) \Comment $\Ogr(1)$
+				\If{$\#$(SiguienteSignificado($datos$.kSanc)) == 0} \Comment $\Ogr(1)$
+					\State EliminarSiguiente($datos$.kSanc) \Comment $\Ogr(1)$
 				\EndIf
-				\If{$datos$.sanciones $<$ SiguienteClave($datos$.kSanc)}
-					\State InsertarAdelante($datos$.kSanc,$datos$.sanciones,Vacio())
+				\If{$datos$.sanciones $<$ SiguienteClave($datos$.kSanc)} \Comment $\Ogr(1)$
+					\State InsertarAdelante($datos$.kSanc,$datos$.sanciones,Vacio()) \Comment $\Ogr(1)$
 				\Else
-					\State Avanzar($datos$.kSanc)
+					\State Avanzar($datos$.kSanc) \Comment $\Ogr(1)$
 				\EndIf
-				\State $datos$.mismasSanc $\gets$ AgregarRapido(SiguienteSignificado($datos$.kSanc),$datos$.pl)
+				\State $datos$.mismasSanc $\gets$ AgregarRapido(SiguienteSignificado($datos$.kSanc),$datos$.pl) \Comment $\Ogr(1)$
 			\EndWhile
 			
 		\EndIf
-		\State Avanzar($itc$)
+		\State Avanzar($itc$) \Comment $\Ogr(1)$
 	\EndWhile
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(1)$\\
+\underline{Justificacion:} $n*(\Ogr(k) + m*\Ogr(1))$ = $\Ogr(n)*\Ogr(k+m)$ = $\Ogr(n*k + n*m)$\\
+Donde
+\begin{itemize}
+	\item $n$ es la cantidad de vecinos de una posicion + 1, acotado por 5
+	\item $m$ es la cantidad de agentes vecinos de una posicion, acotado por 4
+	\item $k$ es la cantidad de vecinos de una posicion, acotado por 4
+\end{itemize}
+$\Ogr(5*4 + 5*4)$ = $\Ogr(40)$ = $\Ogr(1)$
+
 \end{algorithm}
 
 
@@ -754,19 +788,21 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{¿Se transforma en estudiante?}
 \begin{algorithmic}[1]
 	\Procedure{enhippizado}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
-	\State $res \gets$ false
-	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$))
-	\State nat $i \gets 0$
-	\While{HaySiguiente($itc$)}
-		\If{esEstudiante(Siguiente($itc$))}
-			\State $i \gets i+1$
+	\State $res \gets$ false \Comment $\Ogr(1)$
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$)) \Comment $\Ogr(1)$
+	\State nat $i \gets 0$ \Comment $\Ogr(1)$
+	\While{HaySiguiente($itc$)}  \Comment $n*\Ogr(1)$
+		\If{esEstudiante(Siguiente($itc$))}  \Comment $\Ogr(1)$
+			\State $i \gets i+1$  \Comment $\Ogr(1)$
 		\EndIf
-		\State Avanzar($itc$)
+		\State Avanzar($itc$)  \Comment $\Ogr(1)$
 	\EndWhile
-	$res \gets (i = 4)$
+	$res \gets (i = 4)$  \Comment $\Ogr(1)$
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(1)$\\
+\underline{Justificacion:} $\Ogr(1) + n * \Ogr(1)$ =  $\Ogr(n)$ siendo $n$ la cantidad de vecinos, que como maximo es 4 \\
+$\Ogr(4)$ = $\Ogr(1)$
 \end{algorithm}
 
 
@@ -774,7 +810,7 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{¿Es estudiante?}
 \begin{algorithmic}[1]
 	\Procedure{esEstudiante}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
-	\State $res \gets$ $c$.pos.mE[X($p$)][Y($p$)].def
+	\State $res \gets$ $c$.pos.mE[X($p$)][Y($p$)].def \Comment $\Ogr(1)$
 	\EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
@@ -785,18 +821,20 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{¿Esta Rodeado?}
 \begin{algorithmic}[1]
 	\Procedure{rodeado}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
-	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$))
-	\State nat $i \gets$ 0
-		\While{HaySiguiente($itc$)}
-			\If{ocupado(Siguiente($p$))}
-				\State $i$++
+	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$)) \Comment $\Ogr(1)$
+	\State nat $i \gets$ 0 \Comment $\Ogr(1)$
+		\While{HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+			\If{ocupado(Siguiente($p$))} \Comment $\Ogr(1)$
+				\State $i$++ \Comment $\Ogr(1)$
 			\EndIf
-			Avanzar($itc$)
+			Avanzar($itc$) \Comment $\Ogr(1)$
 		\EndWhile
-		$res \gets (i==4)$
+		$res \gets (i==4)$ \Comment $\Ogr(1)$
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(1)$\\
+\underline{Justificacion:} $n*\Ogr(1)$ = $\Ogr(n)$ siendo n la cantidad de vecinos de una posicion, con cota 4\\
+$\Ogr(4)$ = $\Ogr(1)$
 \end{algorithm}
 
 
@@ -805,7 +843,7 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{¿Esta Ocupado?}
 \begin{algorithmic}[1]
 	\Procedure{rodeado}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
-	\State $res \gets$ (esHippie($c$,$p$) || esAgente($c$,$p$) || esEstudiante($c$,$p$) || Ocupada($c$.cp,$p$))
+	\State $res \gets$ (esHippie($c$,$p$) || esAgente($c$,$p$) || esEstudiante($c$,$p$) || Ocupada($c$.cp,$p$)) \Comment $\Ogr(1)$
 	\EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
@@ -815,17 +853,17 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{Agentes en posiciones}
 \begin{algorithmic}[1]
 	\Procedure{agentes}{\texttt{in} c : \texttt{estr}, \texttt{in} cp : \texttt{conj(posicion)}} $\to res$ : conj(posicion)
-	\State itConj(posicion) $itc$ $\gets$ CrearIt($cp$)
+	\State itConj(posicion) $itc$ $\gets$ CrearIt($cp$) \Comment $\Ogr(1)$
 	$res \gets $Vacio();
-	\While{HaySiguiente($itc$)}
-			\If{esAgente(Siguiente($p$))}
-				\State AgregarRapido($res$,$p$)
+	\While{HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+			\If{esAgente(Siguiente($p$))} \Comment $\Ogr(1)$
+				\State AgregarRapido($res$,$p$) \Comment $\Ogr(1)$
 			\EndIf
-			Avanzar($itc$)
+			Avanzar($itc$) \Comment $\Ogr(1)$
 		\EndWhile
 	\EndProcedure
 \end{algorithmic}
-\underline{Complejidad:} $\Ogr(1)$
+\underline{Complejidad:} $\Ogr(n)$ siendo $n$ = $\#$(Claves($cp$))
 \end{algorithm}
 
 
@@ -833,7 +871,7 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{¿Es agente?}
 \begin{algorithmic}[1]
 	\Procedure{esAgente}{\texttt{in} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}} $\to res$ : bool
-	\State $res \gets$ $c$.pos.mAg[X($p$)][Y($p$)].def
+	\State $res \gets$ $c$.pos.mAg[X($p$)][Y($p$)].def \Comment $\Ogr(1)$
 	\EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
@@ -844,14 +882,14 @@ $\Ogr(4)$ = $\Ogr(1)$
 \caption{Actualizar mas Vigilante}
 \begin{algorithmic}[1]
 	\Procedure{actualizarVigilante}{\texttt{in/out} c : \texttt{estr}, \texttt{in} datos : \texttt{datosAg}}
-	\If{$datos$.premios $> c$.masVigilante.premios}
-		\State $c$.masVigilante.pl $\gets datos$.pl			
-		\State $c$.masVigilante.premios $\gets datos$.premios
+	\If{$datos$.premios $> c$.masVigilante.premios} \Comment $\Ogr(1)$
+		\State $c$.masVigilante.pl $\gets datos$.pl	\Comment $\Ogr(1)$		
+		\State $c$.masVigilante.premios $\gets datos$.premios \Comment $\Ogr(1)$
 	\EndIf
-	\If{$datos$.premios == $c$.masVigilante.premios}
-		\If{$datos$.pl $< c$.masVigilante.pl}
-			\State $c$.masVigilante.pl $\gets datos$.pl			
-			\State $c$.masVigilante.premios $\gets datos$.premios
+	\If{$datos$.premios == $c$.masVigilante.premios} \Comment $\Ogr(1)$
+		\If{$datos$.pl $< c$.masVigilante.pl} \Comment $\Ogr(1)$
+			\State $c$.masVigilante.pl $\gets datos$.pl	\Comment $\Ogr(1)$		
+			\State $c$.masVigilante.premios $\gets datos$.premios \Comment $\Ogr(1)$
 		\EndIf
 	\EndIf
 	\EndProcedure
