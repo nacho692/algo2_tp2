@@ -1,0 +1,104 @@
+\begin{Interfaz}
+
+	\textbf{parámetros formales}\hangindent=2\parindent\\
+	\parbox{1.7cm}{\textbf{géneros}} $\sigma$\\
+	\parbox[t]{1.7cm}{\textbf{función}}\parbox[t]{\textwidth-2\parindent-1.7cm}{%
+		\InterfazFuncion{Copiar}{\In{s}{$\sigma$}}{$\sigma$}
+	    	{$res \igobs a$}
+		[$\Theta(copy(s))$]
+		[función de copia de $\sigma$'s]
+	}
+	
+	\textbf{se explica con}: \tadNombre{Iterador Unidireccional Modificable(tupla<nat,$\sigma$>)}
+	
+	\textbf{usa}: nat, bool, diccionarioLog(nat,$\sigma$)
+	
+	\textbf{géneros}: \TipoVariable{itDiccLog(tupla<nat, $\sigma$>)}
+	
+	\tituloModulo{Operaciones de Iterador DiccionarioLog(nat, $\sigma$)}
+
+
+	\InterfazFuncion{HaySiguiente}{\In{it}{itDiccLog(tupla<nat,$\sigma$>)}}{bool}
+	{res $\igobs$ HayMas?(it)}
+	[$\Ogr$(1)]
+	[Devuelve verdadero si y sólo si quedan elementos que recorrer en el iterador.]
+	
+	\InterfazFuncion{SiguienteClave}{\In{it}{itDiccLog(tupla<nat, $\sigma$>)}}{nat}
+	[HayMas?(it)]
+	{res $\igobs$ $\Pi_1$(Siguiente(it))}
+	[$\Ogr$(1)]
+	[Devuelve la clave del siguiente elemento del iterador.]
+	[res no es modificable.]
+	
+	\InterfazFuncion{SiguienteSignificado}{\Inout{it}{itDiccLog(tupla<nat, $\sigma$>)}}{$\sigma$}
+	[HayMas?(it)]
+	{alias(res $\igobs$ $\Pi_2$(Siguiente(it)))}
+	[$\Ogr$(1)]
+	[Devuelve el siguiente del siguiente elemento del iterador.]
+	[res es modificable si y sólo si $\sigma$ es modificable.]
+
+\end{Interfaz}	
+
+\begin{Representacion}
+	
+	\begin{Estructura}{itDiccLog(tupla<nat, $\sigma$>)}
+		\begin{Tupla}
+			\tupItem{pos}{nat}
+			\tupItem{dic}{puntero(estr)}
+		\end{Tupla}
+	\tab \hspace{1.2mm}donde $estr$ es la representación del diccionarioLog(nat,$\sigma$)
+	\end{Estructura}
+		
+~
+	
+	\Rep[ite][i]{i.pos $\leq$ *dic.proxADefinir}
+
+~
+
+	\Abs[ite]{itDiccLog(tupla<nat,$\sigma$>)}[i]{itL}{Siguientes(itL) $\igobs$ \\
+	SecuenciarClavesArreglo(*dic.valores, *dic.tamaño, i.pos)}
+	
+~
+
+	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>),nat,nat}{secu(nat)}{}
+	\tadAxioma{SecuenciaClavesArreglo(var,tam,pos)}{
+		\IF pos $\igobs$ tam
+			THEN <>
+			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var,tam,pos $+$ 1 )
+		FI}	
+	
+\end{Representacion}
+
+\begin{Algoritmos}
+	
+	\begin{algorithm}[H]
+		\caption{iHaySiguiente}
+		\begin{algorithmic}
+			\Procedure{iHaySiguiente}{\texttt{in} i : \texttt{ite}} $\to res$ : $bool$
+				\State $res \gets$ (i.pos $<$ *(i.dic).tamaño) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+
+	\begin{algorithm}[H]
+		\caption{iSiguienteClave}
+		\begin{algorithmic}
+			\Procedure{iSiguienteClave}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
+				\State $res \gets$ *(i.dic).valores[i.pos].clave \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iSiguienteSignificado}
+		\begin{algorithmic}
+			\Procedure{iSiguienteClave}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
+				\State $res \gets$ *(i.dic).valores[i.pos].significado \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}
+	
+\end{Algoritmos}
