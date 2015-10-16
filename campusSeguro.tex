@@ -626,7 +626,7 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 \begin{algorithmic}[1]
 	\Procedure{premiarAgentes}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
 	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$))} \Comment $\Ogr(1)$
-	\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$)) \Comment $\Ogr(1)$
+			\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$)) \Comment $\Ogr(1)$
 			\While{HaySiguiente($itca$)} \Comment $n*\Ogr(1)$
 				\State Siguiente($c$.pos.mAg[X($p$)][Y($p$)]).premios ++ \Comment $\Ogr(1)$
 				\State actualizarMasVigilante($c$,pos.mAg[X($p$)][Y($p$)]) \Comment $\Ogr(1)$
@@ -634,15 +634,15 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 			\EndWhile
 	\Else
 	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp, $p$)) \Comment $\Ogr(1)$
-	\While {HaySiguiente($itc$)}
-	\State posicion $p$ $\gets$ Siguiente($itc$)
+	\While {HaySiguiente($itc$)} \Comment $n*\Ogr(1)$
+	\State posicion $p$ $\gets$ Siguiente($itc$) \Comment $\Ogr(1)$
 		\If{rodeado($p$) $\&\&$ esHippie($p$)} \Comment $\Ogr(1)$
-			\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$))
-			\While{HaySiguiente($itca$)}
-				\State $pa \gets$ Siguiente($itca$)
-				\State Siguiente(pos.mAg[X($pa$)][Y($pa$)]).premios ++
-				\State actualizarMasVigilante($c$,pos.mAg[X($pa$)][Y($pa$)])
-				\State Avanzar($itca$)
+			\State itConj(posicion) $itca \gets$ agentes(Vecinos($p$)) \Comment $\Ogr(1)$
+			\While{HaySiguiente($itca$)} \Comment $m*\Ogr(1)$
+				\State $pa \gets$ Siguiente($itca$) \Comment $\Ogr(1)$
+				\State Siguiente(pos.mAg[X($pa$)][Y($pa$)]).premios ++ \Comment $\Ogr(1)$
+				\State actualizarMasVigilante($c$,pos.mAg[X($pa$)][Y($pa$)]) \Comment $\Ogr(1)$
+				\State Avanzar($itca$) \Comment $\Ogr(1)$
 			\EndWhile
 		\EndIf
 	\EndWhile
@@ -650,6 +650,8 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 	\EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
+\underline{Justificacion:} $\Ogr(1) + n*\Ogr(1)*m\Ogr(1)$ = $\Ogr(n*m)$ donde n es la cantidad de vecinos de una posicion y m es la cantidad de agentes vecinos a una posicion, ambas acotadas por 4.\\
+$\Ogr(4*4)$ = $\Ogr(16)$ = $\Ogr(1)$
 \end{algorithm}
 
 
@@ -658,8 +660,8 @@ $\Ogr(5)*2\Ogr(|e_m|)$ = $\Ogr(|e_m|)$
 \begin{algorithmic}[1]
 	\Procedure{capturar}{\texttt{in/out} c : \texttt{estr}, \texttt{in} p : \texttt{posicion}}
 	\If{rodeado($c$,$p$) $\&\&$ esHippie($c$,$p$) $\&\&$ $\#$Claves(agentes($c$,Vecinos($c$.cp,$p$)) $\geq$ 1} \Comment $\Ogr(1)$
-			\State itDiccN(string,posicion) $itH \gets$ $res$.pos.mH[X($p$)][Y($p$)]
-			\State EliminarSiguiente($itH$)
+			\State itDiccN(string,posicion) $itH \gets$ $res$.pos.mH[X($p$)][Y($p$)] \Comment $\Ogr(1)$
+			\State EliminarSiguiente($itH$) \Comment $\Ogr(|h_m|)$
 			\State $res$.pos.mE[X($p$)][Y($p$)].def $\gets$ false \Comment $\Ogr(1)$
 	\Else
 	\State itConj(posicion) $itc$ $\gets$ CrearIt(Vecinos($c$.cp,$p$))
