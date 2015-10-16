@@ -38,44 +38,51 @@
 	\tituloModulo{Representacion del Diccionaro de Sanciones}
 	\begin{Estructura}{diccS}
 		\begin{Tupla}
-			\tupItem{lista}{lista(tupla(nat, conj(placa)))}
+			\tupItem{lista}{lista(tupla(c : nat,s :conj(placa)))}
 			\tupItem{diccLog}{diccLog(nat, con(placa))}
 			\tupItem{actualizar}{bool}
 		\end{Tupla}
 	\end{Estructura}
 	
-	Para simplificar las cosas usaremos clave y significado en vez de $\Pi1$ y $\Pi2$ cuanto utilicemos una tupla(nat, conj(placa))
-	\\
+	\begin{enumerate}
+		\item La lista esta ordenada por su primer elemento
+		\item No hay repetidos en la lista del primer elemento de la tupla
+		\item Si actualizar esta en false, las tuplas de la lista son tuplas clave, significado del diccionario logaritmico y vice versa
+	\end{enumerate}
 	
-	\Rep{ClavesOrdenadas(e.lista) $land$ SinClavesRepetidas(e.lista)$\land$\\
-	($\neg$e.actualizar $\Rightarrow$ (longitud(e.lista) $\igobs$ $\#$(claves(e.diccLog)) \\
-	$\yluego$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ Claves(e.lista))\\
-	$\yluego$ (($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)\\
-	$\iff$ ($\exists$ i: nat) cp$=$significado(e.lista[i]) $\land$ n $\igobs$ clave(e.lista[i])))))
-	}
+	\Rep{
+	($\forall i$: nat)($i \leq$longitud(e.lista)-2)$\pi_1$(e.lista[$i$]) < $\pi_1$($e$.lista[$i+1$]) $\land$ \\
+	$\neg e$.actualizar $\implies$ \\
+	($\forall c$: nat)($\forall s$:conj(nat))(esta?($\langle$c,s$\rangle)$,e.lista) $\iff$ def?($c$,$e$.diccLog) $\yluego s$ = obtener($c$,$e$.diccLog))}
 	
-	\tadOperacion{Significados}{diccLog(nat, conj(placa))}{conj(conj((placa)))}{}
-	\tadAxioma{Significados(d)}{\IF $\#$claves(d)$=0$
-		THEN $\emptyset$
-		ELSE Ag(obtener(dameUno(claves(d)), Significados(borrar(dameUno(claves(d)),d)))
-		FI}
-
-	
-	~	
-	
-	\tadOperacion{Union}{conj(conj(plc))}{conj(plc)}{}
-	\tadAxioma{Union(c)}{\IF $\#$c$=0$
-		THEN $\emptyset$
-		ELSE dameUno(c)$\cup$Union(sinUno(c))
-		FI}
-	
-	~
+%	\Rep{ClavesOrdenadas(e.lista) $land$ SinClavesRepetidas(e.lista)$\land$\\
+%	($\neg$e.actualizar $\Rightarrow$ (longitud(e.lista) $\igobs$ %$\#$(claves(e.diccLog)) \\
+%	$\yluego$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ %Claves(e.lista))\\
+%	$\yluego$ (($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)\\
+%	$\iff$ ($\exists$ i: nat) cp$=$significado(e.lista[i]) $\land$ n $\igobs$ %clave(e.lista[i])))))
+	%}
+%	
+%	\tadOperacion{Significados}{diccLog(nat, conj(placa))}{conj(conj((placa)))}{}
+%	\tadAxioma{Significados(d)}{\IF $\#$claves(d)$=0$
+%		THEN $\emptyset$
+%		ELSE Ag(obtener(dameUno(claves(d)), Significados(borrar(dameUno(claves(d)),d)))
+%		FI}
+%
+%	
+%	~	
+%	
+%	\tadOperacion{Union}{conj(conj(plc))}{conj(plc)}{}
+%	\tadAxioma{Union(c)}{\IF $\#$c$=0$
+%		THEN $\emptyset$
+%		ELSE dameUno(c)$\cup$Union(sinUno(c))
+%		FI}
+%	
 	~
 	
 	
 	\AbsFc{diccS}{d : diccS $/$ \\
-		($\forall$ n : nat) (n$\in$ClavesLista(e.lista) $\iff$ Def?(n, d)) \\
-		$\yluego$ (Def?(n, d) $\Rightarrow_L$ ($\exists$ i: nat) (n $=$ clave(e.lista[i]) $\implies$ significado(e.lista[i])  $=$ obtener(n, d))) }
+		($\forall n$ : nat)($\forall s$ : conj(placa) (esta?($\langle$c,s$\rangle)$,e.lista) $\iff$ def?($n$, $d$)) \\
+		$\yluego$ (def?($c$, $d$) $\impluego$ obtener($d$) = $s$))}
 	
 
 \begin{Algoritmos}
@@ -96,9 +103,9 @@
 		\caption{iDefinir}
 		\begin{algorithmic}[1]
 			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itDic
-			\State it$\leftarrow$ AgregarAtras(e.lista, s, sig) //agregar atras de lista enlazada \Comment $\Ogr$($\#$sig)
-			\State $res \leftarrow$ it \Comment $\Ogr$(1)
-			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
+			\State itLista $it \gets$ AgregarAtras(e.lista, s, sig) //agregar atras de lista enlazada \Comment $\Ogr$($\#$sig)
+			\State $res \gets$ it \Comment $\Ogr$(1)
+			\State e.actualizar $\gets$ true \Comment $\Ogr$(1) 
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$($\#$(sig))
@@ -109,18 +116,18 @@
 		\begin{algorithmic}[1]
 			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : conj(placa)
 			\If{e.actualizar} \Comment $\Ogr$(1)
-				\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
+				\State it $\gets$ CrearIt(e) \Comment $\Ogr$(1)
 				\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de clavesDeLista veces \Comment $\Ogr$($\#$Claves(e.lista))
-					\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
+					\State e.diccLog $\gets$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
 					\State avanzar(it) \Comment $\Ogr$(1) 
 				\EndWhile
-				\State e.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+				\State e.actualizar $\gets$ false \Comment $\Ogr$(1) 
 			\EndIf
 			\State Obtener(e.diccLog, s) $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista))
-		\\
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista)) o $\Ogr$($log$ $\#$claves(e.lista))\\
+		
 		\underline{Justificacion:} $\Ogr$($\#$claves(e.lista))+$\Ogr$(log $\#$claves(e.lista)). En el peor de los casos sera la $\Ogr$($\#$claves(e.lista)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.lista)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.lista)) puesto que nunca entraremos en el while.
 	\end{algorithm}	
 	
@@ -130,12 +137,12 @@
 		\begin{algorithmic}[1]
 			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
 			\If{e.actualizar} \Comment $\Ogr$(1)
-			\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
+			\State it $\gets$ CrearIt(e) \Comment $\Ogr$(1)
 			\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de clavesDeLista veces \Comment $\Ogr$($\#$Claves(e.lista))
-			\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
+			\State e.diccLog $\gets$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
 			\State avanzar(it) \Comment $\Ogr$(1) 
 			\EndWhile
-			\State e.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\State e.actualizar $\gets$ false \Comment $\Ogr$(1) 
 			\EndIf
 			\State Definido(e.diccLog, s) //Definido? de diccLog$\Ogr$(1)
 			\EndProcedure
