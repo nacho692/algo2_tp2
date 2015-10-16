@@ -16,7 +16,7 @@
 \usepackage[colorlinks=true, linkcolor=blue]{hyperref}
 \usepackage{calc}
 \usepackage{lastpage}
-
+\usepackage{titlesec}
 
 \newcommand{\tituloModulo}[1]{
   \vspace*{1ex}\par\noindent\textbf{\large #1}\par
@@ -37,6 +37,11 @@
 \newcommand{\Aplicar}[2]{\NombreFuncion{#1}(#2)}
 
 \newcommand{\DRef}{\ensuremath{\rightarrow}}
+
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\Large}
+
 
 % Acomodo fancyhdr.
 \pagestyle{fancy}
@@ -71,8 +76,52 @@
 
 
 \clearpage
-\section{Tad Diccionario Acotado(nat,$\sigma$)}
-\input{diccionarioNombres.tex}
+\section{Modulos}
+\subsection{Modulo Campus Seguro}
+\input{campusSeguro.tex}
 
+\subsection{Campus}
+\input{campus.tex}
+
+\subsection{Diccionario de Nombres}
+\input{diccionarioNombres.tex}
+\subsubsection{Iterador de Diccionario de Nombres}
+\input{iteradorDiccionarioNombres.tex}
+\subsubsection{Iterador de Claves de Diccionario de Nombres}
+\input{iteradorClavesNombres.tex}
+
+
+\subsection{Diccionario Logaritmico}
+\input{diccionarioLog.tex}
+\subsubsection{Iterador de Diccionario Logaritmico}
+%\input{iteradorDiccionarioLog.tex}
+\subsubsection{Iterador de Claves de Diccionario Logaritmico}
+\input{iteradorClavesPlacas.tex}
+
+
+\subsection{Diccionario de Sanciones}
+\input{diccionarioSanciones.tex}
+\subsubsection{Iterador de Diccionario de Sanciones}
+\input{iteradorDiccionarioSanciones.tex}
+
+\subsection{Diccionario$_H$}
+\input{diccionarioHash.tex}
+
+\subsection{Posicion}
+\input{posicion.tex}
+
+\subsection{Matriz($\alpha$)}
+\input{matriz.tex}
+
+
+\section{Tads}
+\subsection{Posicion}
+\input{TADposicion.tex}
+
+\subsection{Matriz}
+\input{TADmatriz.tex}
+
+\subsection{Diccionario Acotado}
+\input{TADdiccionarioAcotado.tex}
 
 \end{document}
