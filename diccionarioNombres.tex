@@ -20,35 +20,42 @@
 	\InterfazFuncion{Vacio}{}{diccNom(string, $\sigma$)}
 	{res $\igobs$ vacio}
 	[$\Ogr$(1)]
-	[Crea un diccionario vacio]
+	[Crea un diccionario vacio.]
 	
 	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom(string,$\sigma$)}
 	[$\neg$def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <k,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
 	[$\Ogr$(|c| + copy(s))]
-	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento]	
+	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento.]	
 	
 	\InterfazFuncion{Definido}{\In{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{bool}
 	{res $\igobs$ def?(c,d)}
 	[$\Ogr$(|c|)]
-	[Devuelve verdadero si y sólo si la clave de entrada esta definida en el diccionario]	
+	[Devuelve verdadero si y sólo si la clave de entrada esta definida en el diccionario.]	
 	
 	\InterfazFuncion{Borrar}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{}
 	[def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ borrar(c,$d_0$)}
 	[$\Ogr$($\#$claves(d) $+$ |c|)]
-	[Borra el elemento correspondiente a la clave c del diccionario]
+	[Borra el elemento correspondiente a la clave c del diccionario.]
 	
 	\InterfazFuncion{BorrarRapido}{\Inout{d}{diccNom(string,$\sigma$)}, \In{it}{itDiccNom(string,$\sigma$)}}{}
 	[def?(c,d) $\land$ d=$d_0$]
 	{d $\igobs$ borrar(c,$d_0$)}
 	[$\Ogr$(|c|)]
-	[Borra el elemento correspondiente a la clave c del diccionario. c es la clave correspondiente al siguiente del iterador]
+	[Borra el elemento correspondiente a la clave c del diccionario. c es la clave correspondiente al siguiente del iterador.]
 	
 	\InterfazFuncion{Obtener}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}}{$\sigma$}
 	[def?(c,d) $\land$ d=$d_0$]
 	{alias(res $\igobs$ obtener(c,d)) $\land$ ($\forall$ c' : string)( c' $\in$ claves(s) $\impluego$ obtener(c,d) $\igobs$ obtener(c,$d_0$) )}
 	[$\Ogr$(|c|)]
+	[Devuelve el significado de la clave dada en el diccionario]
+	[res es modificable si y solo si $\sigma$ es modificable]
+	
+	\InterfazFuncion{$\#$Claves}{\In{d}{diccNom(string,$\sigma$)}}{nat}
+	{res $\igobs$ $\#$claves(d)}
+	[$\Ogr$(1)]
+	[Devuelve la cantidad de claves definidas en el diccionario]
 	
 \end{Interfaz}
 
@@ -191,7 +198,7 @@
 		[esta(c,t)]
 		{res $\igobs$ estaLetra(c,t)}
 		[$\Ogr$(1)]
-		[Devuelve verdadero si y sólo si el char de entrada esta en alguno de los elementos de la lista]
+		[Devuelve verdadero si y sólo si el char de entrada esta en alguno de los elementos de la lista.]
 
 ~
 		
@@ -215,8 +222,8 @@
 		[esta(c,t)]
 		{alias(res $\igobs$ buscar(c,t))}
 		[$\Ogr$(1)]
-		[Busca el elemento de la lista que este caracterizado con el char de entrada]
-		[El resultado queda ligado con aliasing]
+		[Busca el elemento de la lista que este caracterizado con el char de entrada.]
+		[El resultado queda ligado con aliasing.]
 		
 ~	
 
@@ -273,7 +280,17 @@
 				\State EliminarSiguiente(it) \Comment c es la clave asociada al siguiente del iterador $\Ogr$(|c|)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(|clave|) donde clave es la clave del siguiente del iterador
+		\underline{Complejidad:} $\Ogr$(|clave|) donde clave es la clave del siguiente del iterador.
 	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{i$\#$Claves}
+		\begin{algorithmic}
+			\Procedure{i$\#$Claves}{\texttt{in} e : \texttt{estr}}
+				\State $res \gets$ $\#$claves(e.lineal) \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$(1)
+	\end{algorithm}	
 	
 \end{Algoritmos}

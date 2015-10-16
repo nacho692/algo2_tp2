@@ -39,8 +39,12 @@
 ~
 
 	\tadOperacion{Iguales}{multiconj(nat),multiconj(nat)}{bool}{}
-	\tadAxioma{Iguales(m$_1$, m$_2$)}{$\#$(dameUno(m$_1$),m$_1$) $=$ $\#$(dameUno(m$_1$),m$_1$)\\
-		$\land$ Iguales(sinUno(m$_1$), m$_2$ $-\{$dameUno(m$_1$)$\}$ )}
+	\tadAxioma{Iguales(m$_1$, m$_2$)}{
+		\IF $\#$m$_1$ = 0
+			THEN ($\#$m$_2$ = 0)
+			ELSE $\#$(dameUno(m$_1$),m$_1$) $=$ $\#$(dameUno(m$_1$),m$_2$)\\
+		$\land$ Iguales(sinUno(m$_1$), m$_2$ $-\{$dameUno(m$_1$)$\}$ )
+		FI}
 		
 
 ~
@@ -54,30 +58,35 @@
 	[HayMas?(it)]
 	{res $\igobs$ $\Pi_1$(Actual(it))}
 	[$\Ogr$(1)]
-	[Devuelve la siguiente clave del diccionario]
-	[res no es modificable]
+	[Devuelve la siguiente clave del diccionario.]
+	[res no es modificable.]
 	
 	\InterfazFuncion{Avanzar}{\Inout{it}{itClavesDiccLog(nat)}}{}
 	[HayMas?(it) $\land$ it=$it_0$ ]
 	{it $\igobs$ Avanzar($it_0$)}
 	[$\Ogr$(1)]
-	[Avanza el iterador]	
+	[Avanza el iterador.]	
 	
 \end{Interfaz}
 
 \begin{Representacion}
 
 	\begin{Estructura}{itClavesDiccLog(nat)}[ite]
-		Donde $ite$ es $pos$ : $nat$
+		\begin{Tupla}[ite]
+			\tupItem{pos}{nat}
+			\tupItem{dic}{puntero(estr)}
+		\end{Tupla}
+	\tab \hspace{1.2mm}donde $estr$ es la representación del diccionarioLog
 	\end{Estructura}	
 	
 ~	
 
-	\Rep[ite][i]{pos $\leq$ e.proxADefinir}
+	\Rep[ite][i]{i.pos $\leq$ e.proxADefinir $\land$ i.dic $\neq$ NULL}
 	
 ~
 
-	\Abs[ite]{itClavesDiccLog(nat)}[i]{itC}{Siguientes(itC) $\igobs$ SecuenciarClavesArreglo(e.valores, e.tamaño, i.pos)}
+	\Abs[ite]{itClavesDiccLog(nat)}[i]{itC}{\\
+	Siguientes(itC) $\igobs$ SecuenciarClavesArreglo(*dic.valores, *dic.tamaño, i.pos)}
 	
 ~
 
@@ -97,6 +106,7 @@
 		\begin{algorithmic}
 			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ : $ite$
 				\State $	res.pos \gets$ 0 \Comment $\Ogr$(1)
+				\State $res.dic \gets$ puntero(e) \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -106,7 +116,7 @@
 		\caption{iHaySiguiente}
 		\begin{algorithmic}
 			\Procedure{iHaySiguiente}{\texttt{in} i : \texttt{ite}} $\to res$ : $bool$
-				\State $res \gets$ ( i.pos = e.tamaño )	
+				\State $res \gets$ ( i.pos $<$ *(i.dic).tamaño )	\Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -116,7 +126,7 @@
 		\caption{iSiguienteClave}
 		\begin{algorithmic}
 			\Procedure{iSiguienteClave}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
-				\State $res \gets$ e.valores[i.pos] \Comment $\Ogr$(1)
+				\State $res \gets$ *(i.dic).valores[i.pos] \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)

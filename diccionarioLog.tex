@@ -20,12 +20,21 @@
 	\InterfazFuncion{Vacio}{\In{tam}{nat}}{diccLog(nat, $\sigma$)}
 	{res $\igobs$ vacio(tam)}
 	[$\Ogr$(1)]
-	[Crea un diccionario vacío con tam como límite de claves]
+	[Crea un diccionario vacío con tam como límite de claves.]
 	
-	\InterfazFuncion{Definir}{\Inout{d}{diccLog(nat, $\sigma$)}, \In{c}{nat}, \In{s}{$\sigma$}}{}
+	\InterfazFuncion{Definir}{\Inout{d}{diccLog(nat, $\sigma$)}, \In{c}{nat}, \In{s}{$\sigma$}}{itDiccLog(tupla<nat,$\sigma$>)}
 	[($\forall$ c' : nat)( c' $\in$ claves(d) $\Rightarrow$ c $>$ c') $\land$ d=$d_0$ $\land$ $\#$claves(d) $<$ tamaño(d)]
-	{d $\igobs$ Definir(c,s,$d_0$)}
+	{d $\igobs$ Definir(c,s,$d_0$) $\land$ alias(Siguiente(res) $\igobs$ tupla<c,s>)}
 	[$\Ogr$(1)]
+	[Agrega la clave c con significado s, y devuelve un iterador apuntando a esta nueva difinición.]
+	[Del siguiente de res sólo puedo modificarse el significado (si $\sigma$ es modificable).]
+	
+	\InterfazFuncion{DefinirLento}{\Inout{d}{diccLog(nat, $\sigma$), \In{c}{nat}, \In{s}{$\sigma$}}}{itDiccLog(tupla<nat,$\sigma$>)}
+	[$\neg$ def(c,d) $\land$ d=d$_0$ $\land$ $\#$claves(d) $\leq$ tamaño(d)]
+	{d $\igobs$ definir(c,s,d$_0$) $\land$ alias(Siguiente(res) $\igobs$ tupla<c,s>)}
+	[$\Ogr$($\#$claves(d))]
+	[Agrega la clave c con significado s, y devuelve un iterador apuntando a esta nueva difinición.]
+	[Del siguiente de res sólo puedo modificarse el significado (si $\sigma$ es modificable).]
 	
 	\InterfazFuncion{Definido}{\Inout{d}{diccLog(nat,$\sigma$)}, \In{c}{nat}}{bool}
 	{res $\igobs$ def?(c,d)}
@@ -36,6 +45,8 @@
 	{alias(res $\igobs$ obtener(c,d)) $\land$ ($\forall$ c' : nat)( (c' $\in$ claves(d) $\land$ c $\neq$ c') 
 	$\Rightarrow$ obtener(c',d) $\igobs$ obtener(c,d) )}
 	[$\Ogr$(log $\#$claves(d))]
+	[Devuelve el significado de la clave c.]
+	[res es modificable si y sólo si $\sigma$ modificable.]
 	
 \end{Interfaz}
 
@@ -52,7 +63,9 @@
 	\end{Estructura}
 	
 	\Rep{SinRepetidos(Claves(e.valores)) $\land$ Ordenada(Claves(e.valores))\\
-		e.tamaño $\igobs$ tamaño(e.valores) $\land$ e.proxADefinir $\leq$ e.tamaño}
+		e.tamaño $\igobs$ tamaño(e.valores) $\land$ e.proxADefinir $\leq$ e.tamaño\\
+		$\land$ ($\forall$ i : nat)( (i $<$ e.tamaño $\land$ $\neg$definido(e.valores, i)) $\impluego$  \\
+		\tab \tab \tab \tab ( ($\forall$ j : nat)( (i $<$ j $\land$ j $<$ e.tamaño ) $\impluego$ $\neg$definido(e.valores, i)))}
 		
 ~
 	\tadOperacion{SinRepetidos}{secu(nat)}{bool}{}
@@ -63,6 +76,8 @@
 		FI}
 	
 ~	
+\\
+
 	val es arreglo dimensionable de tupla<$clave$ : nat, $significado$ : $\sigma$>
 	\tadOperacion{Claves}{val}{secu(nat)}{}
 	\tadAxioma{Claves(v)}{
@@ -118,12 +133,15 @@
 	\begin{algorithm}[H]
 		\caption{iDefinir}
 		\begin{algorithmic}
-			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{nat}, \texttt{in} s : \texttt{$\sigma$}}
-				\State $e.valores[e.proxADef] \gets$ tupla<c,s> \Comment $\Ogr$(1)
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{nat}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $ite$
+				\State $e.valores[e.proxADef].clave \gets$ c \Comment $\Ogr$(1)
+				\State $e.valores[e.proxADef].signficado \gets$ Copiar(s) \Comment $\Ogr$(copy(s))
+				\State $res.pos \gets$ e.proxADefinir \Comment $\Ogr$(1)
+				\State $res.dic \gets$ puntero(e) \Comment $\Ogr$(1)
 				\State $e.proxADefinir \gets$ e.proxADefinir $+$ 1 \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(1)
+		\underline{Complejidad:} $\Ogr$(copy(s))
 	\end{algorithm}
 	
 	\begin{algorithm}[H]
@@ -144,8 +162,32 @@
 				\State $res \gets$ ( e.valores[medio].clave $=$ c ) \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
+		\underline{Complejidad:} $\Ogr$($\#$claves)\\
+		\underline{Justificación:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
 	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{iDefinirLento}
+		\begin{algorithmic}
+			\Procedure{iDefinirLento}{\texttt{in/out} e : \texttt{estr}, \texttt{in} c : \texttt{nat}, \texttt{in} s : \texttt{$\sigma$}} $\to res$ : $ite$
+				\State $i \gets$ e.proxADefinir \Comment $\Ogr$(1)
+				\While{i $>$ 0 $\land$ e.valores[i-1].clave $>$ c} \Comment En el peor caso se repite e.proxADefinir veces,\\
+				 \hfill y lo de adentro es $\Ogr$(copy(s)) $\Rightarrow$ $\Ogr$(copy(s) * e.proxADefinir)	
+					\State $e.valores[i].clave \gets$ e.valores[i-1].clave \Comment $\Ogr$(1)
+					\State $e.valores[i].significado \gets$ e.valores[i-1].significado \Comment $\Ogr$(copy(s))
+					\State $i \gets$ i $-$ 1 \Comment $\Ogr$(1)
+				\EndWhile
+				\State $e.valores[i].clave \gets$ c \Comment $\Ogr$(1)
+				\State $e.valores[i].significado \gets$ Copiar(s) \Comment $\Ogr$(copy(s))
+				\State $res.pos \gets$ e.proxADefinir \Comment $\Ogr$(1)
+				\State $res.dic \gets$ puntero(e) \Comment $\Ogr$(1)
+				\State $e.proxADefinir \gets$ e.proxADefinir + 1 \Comment $\Ogr$(1)
+			\EndProcedure
+		\end{algorithmic}
+		\underline{Complejidad:} $\Ogr$($\#$claves * copy(s))\\
+		\underline{Justifiación:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves). $\Ogr$(1) + $\Ogr$(copy(s)) + $\Ogr$(copy(s) * e.proxADefinir) $=$ $\Ogr$(copy(s) * e.proxADefinir) $=$ $\Ogr$($\#$claves * copy(s))
+	\end{algorithm}	
+	
 	
 	\begin{algorithm}[H]
 		\caption{iObtener}
