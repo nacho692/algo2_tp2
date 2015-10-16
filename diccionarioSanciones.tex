@@ -14,7 +14,7 @@
 	[Genera un diccionario con todos los agentes con $0$ sanciones.]
 
 	\InterfazFuncion{Definir}{\Inout{ds}{diccS}, \In{s}{nat}, \In{significado}{conj(placa)}}{its}
-	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $\geq$ i]
+	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $>$ i]
 	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$<$s, significado$>$ $\land$\\
 	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}%uso el definir de diccLineal
 	[$\Ogr$(1)]
@@ -38,22 +38,28 @@
 	\tituloModulo{Representacion del Diccionaro de Sanciones}
 	\begin{Estructura}{diccS}
 		\begin{Tupla}
-			\tupItem{diccLineal}{dicc(nat, conj(placa))}
+			\tupItem{lista}{lista(tupla(nat, conj(placa)))}
 			\tupItem{diccLog}{diccLog(nat, con(placa))}
 			\tupItem{actualizar}{bool}
 		\end{Tupla}
 	\end{Estructura}
 	
-	\Rep{$\neg$e.actualizar $\Rightarrow$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ claves(e.diccLineal))$\land_l$ ($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)$\iff$ cp$=$obtener(n, e.diccLineal))
-		\\
-		$\land$e.actualizar$\Rightarrow$ Union(Significados(e.diccLog))$=$Union(Significados(e.diccLineal))}
+	Para simplificar las cosas usaremos clave y significado en vez de $\Pi1$ y $\Pi2$ cuanto utilicemos una tupla(nat, conj(placa))
+	\\
 	
-	\tadOperacion{Significados}{dicc(nat, conj(placa))}{conj(conj((placa)))}{}
+	\Rep{ClavesOrdenadas(e.lista) $land$ SinClavesRepetidas(e.lista)$\land$\\
+	($\neg$e.actualizar $\Rightarrow$ (longitud(e.lista) $\igobs$ $\#$(claves(e.diccLog)) \\
+	$\yluego$ (($\forall$ n: nat)(n $\in$ claves(e.diccLog) $\iff$ n $\in$ Claves(e.lista))\\
+	$\yluego$ (($\forall$ cp: conj(placa)) cp$=$obtener(n, e.diccLog)\\
+	$\iff$ ($\exists$ i: nat) cp$=$significado(e.lista[i]) $\land$ n $\igobs$ clave(e.lista[i])))))
+	}
+	
+	\tadOperacion{Significados}{diccLog(nat, conj(placa))}{conj(conj((placa)))}{}
 	\tadAxioma{Significados(d)}{\IF $\#$claves(d)$=0$
 		THEN $\emptyset$
 		ELSE Ag(obtener(dameUno(claves(d)), Significados(borrar(dameUno(claves(d)),d)))
 		FI}
-	Uso el Significados(dicc(nat, conj(placa))) para mi diccLineal y diccLog aunque deberia hacer uno especifico para el diccLog, pero es trivial y es mas amigable a la vista
+
 	
 	~	
 	
@@ -68,8 +74,8 @@
 	
 	
 	\AbsFc{diccS}{d : diccS $/$ \\
-		($\forall$ n : nat) n$\in$claves(e.diccLineal) $\Rightarrow_L$ obtener(n, e.diccLineal$=$obtener(n, d))\\
-		$\land$ def?(n, e.diccLineal) $=$ Def?(n, d) }
+		($\forall$ n : nat) (n$\in$ClavesLista(e.lista) $\iff$ Def?(n, d)) \\
+		$\yluego$ (Def?(n, d) $\Rightarrow_L$ ($\exists$ i: nat) (n $=$ clave(e.lista[i]) $\implies$ significado(e.lista[i])  $=$ obtener(n, d))) }
 	
 
 \begin{Algoritmos}
@@ -79,7 +85,7 @@
 		\begin{algorithmic}[1]
 			\Procedure{iCrearDiccS}{\texttt{in} sig : \texttt{conj(placa)}} $\to res$ : estr
 			\State $res$.diccLog$\leftarrow$ Vacio($\#$(sig)) //vacio de diccionario logaritmico \Comment $\Ogr$(1)
-			\State $res$.diccLineal$\leftarrow$ Vacio() //vacio de diccionario lineal \Comment $\Ogr$(1)
+			\State $res$.lista$\leftarrow$ Vacia() //vacia de lista enlazada \Comment $\Ogr$(1)
 			\State $res$.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
 			\EndProcedure
 		\end{algorithmic}
@@ -90,7 +96,7 @@
 		\caption{iDefinir}
 		\begin{algorithmic}[1]
 			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itDic
-			\State it$\leftarrow$ Definir(e.diccLineal, s, sig) //definir de diccLineal \Comment $\Ogr$($\#$sig)
+			\State it$\leftarrow$ AgregarAtras(e.lista, s, sig) //agregar atras de lista enlazada \Comment $\Ogr$($\#$sig)
 			\State $res \leftarrow$ it \Comment $\Ogr$(1)
 			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1) 
 			\EndProcedure
@@ -104,7 +110,7 @@
 			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : conj(placa)
 			\If{e.actualizar} \Comment $\Ogr$(1)
 				\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
-				\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de claves de diccLineal veces \Comment $\Ogr$($\#$claves(e.diccLineal))
+				\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de clavesDeLista veces \Comment $\Ogr$($\#$Claves(e.lista))
 					\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
 					\State avanzar(it) \Comment $\Ogr$(1) 
 				\EndWhile
@@ -113,9 +119,9 @@
 			\State Obtener(e.diccLog, s) $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista))
 		\\
-		\underline{Justificacion:} $\Ogr$($\#$claves(e.diccLineal))+$\Ogr$(log $\#$claves(e.diccLineal)). En el peor de los casos sera la $\Ogr$($\#$claves(e.diccLineal)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.diccLineal)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.diccLineal)) puesto que nunca entraremos en el while.
+		\underline{Justificacion:} $\Ogr$($\#$claves(e.lista))+$\Ogr$(log $\#$claves(e.lista)). En el peor de los casos sera la $\Ogr$($\#$claves(e.lista)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.lista)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.lista)) puesto que nunca entraremos en el while.
 	\end{algorithm}	
 	
 	\begin{algorithm}[H]
@@ -123,10 +129,19 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
-			\State $res \leftarrow$ Definido?(e.diccLineal, s) //uso el definido de diccLineal \Comment $\Ogr$($\#$claves(e.diccLineal))
+			\If{e.actualizar} \Comment $\Ogr$(1)
+			\State it $\leftarrow$ CrearIt(e) \Comment $\Ogr$(1)
+			\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de clavesDeLista veces \Comment $\Ogr$($\#$Claves(e.lista))
+			\State e.diccLog $\leftarrow$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
+			\State avanzar(it) \Comment $\Ogr$(1) 
+			\EndWhile
+			\State e.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
+			\EndIf
+			\State Definido(e.diccLog, s) //Definido? de diccLog$\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves(e.diccLineal))
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista))
+		\underline{Justificacion:}Semejante a la justificacion de iObtener
 		
 	\end{algorithm}
 
