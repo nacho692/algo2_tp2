@@ -441,7 +441,7 @@ $\Ogr(|n_m|)$ + $\Ogr(|n_m|)$ = $\Ogr(|n_m|)$ con $|n_m|$ = max($|h_m|$,$|e_m|$)
 	 	\State posicion $pos$ $\gets$ CrearPosicion(X(SiguienteSignificado($it$)),Y(SiguienteSignificado($it$))) \Comment $\Ogr(1)$
 	 	\State itConj(placa) $itc$ $\gets$ AgregarRapido($pl$,Obtener($res$.sanciones,0)) \Comment $\Ogr(n) + \Ogr(1)$
 	 	\State datosAg $ag \gets \langle pl$,0,0,$pos$,$itdic$,$itc \rangle$ \Comment $\Ogr(1)$
-	 	\State itDicLog(nat,datosAg) $itdl \gets$ Definir($res$.agentes,$pl$,$ag$) \Comment $\Ogr(n)$ %TODO: Definir lento?
+	 	\State itDicLog(nat,datosAg) $itdl \gets$ DefinirLento($res$.agentes,$pl$,$ag$) \Comment $\Ogr(n)$
 	 	\State $res$.posiciones.mAg[X($pos$)][Y($pos$)] $\gets itdl$ \Comment $\Ogr(1)$
 	 	\State Definir($res$.agentesRapido,$pl$,$itdl$) \Comment $\Ogr(1)$ promedio
 	 	\If{($f$ || $res$.masVigilante.placa $\geq pl$)} \Comment $\Ogr(1)$
