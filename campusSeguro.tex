@@ -77,12 +77,51 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	{$c$ = ingresarEstudiante($n$,$p$,$c_0$)}
 	[$\Ogr(|n_m|)$]
 	
+	\InterfazFuncion{IngresarHippie}{\Inout{c}{campusSeg}, \In{n}{nombre}, \In{p}{posicion}}{}
+	[$c$ = $c_0 \land n \notin$  (estudiantes($c$)$\cup$hippies($c$))$\land$esIngreso($p$,campus($c$))$\land \neg$ estaOcupada?($p$,$c$)]
+	{$c$ = ingresarHippie($n$,$p$,$c_0$)}
+	[$\Ogr(|n_m|)$]
+	
+	\InterfazFuncion{MoverEstudiante}{\Inout{c}{campusSeg}, \In{n}{nombre}, \In{d}{direccion}}{}
+	[$c$ = $c_0 \land n \in$ estudiantes($c$)$\land$(seRetira($n$,$d$,$c$)$\lor$\\(posValida(proxPosicion(posEstudianteYHippie($n$,$c$), $d$,campus($c$)),campus($c$))$\land$\\
+	$\neg$estaOcupada?(proxPosicion(posEstudianteYHippie($n$,$c$),$d$,campus($c$)),$c$)))]
+	{$c$ = moverEstudiante($n$,$d$,$c_0$)}
+	[$\Ogr(|n_m|)$]
+	
+	\InterfazFuncion{MoverHippie}{\Inout{c}{campusSeg}, \In{n}{nombre}}{}
+	[$c$ = $c_0 \land n \in$ hippies($c$)$\land \neg$todasOcupadas?(vecinos(posEstudianteYHippie($n$,$c$),campus($c$)),$c$)]
+	{$c$ = moverHippie($n$,$c_0$)}
+	[$\Ogr(|n_m|) + \Ogr(N_e)$]
+
+	\InterfazFuncion{MoverAgente}{\Inout{c}{campusSeg}, \In{a}{agente}}{}
+	[$c$ = $c_0 \land$\\
+	$a \in$ agentes($c$)$\yluego$ cantSanciones($a$,$c$) $\leq$ 3 $\land$ $\neg$todasOcupadas?(vecinos(posAgente($a$,$c$),campus($c$)),$c$) ]
+	{$c$ = moverAgente($a$,$c_0$)}
+	[$\Ogr(|n_m|) + \Ogr(log N_a) + \Ogr(N_h)$]
+	
 	\InterfazFuncion{MasVigilante}{\In{c}{campusSeg}}{placa}
 	[$\#Agentes(c) \geq$ 1]
 	{$res \igobs$masVigilante($c$)}
 	[$\Ogr(1)$]
 
+	\InterfazFuncion{ConMismasSanciones}{\In{c}{campusSeg}, \In{a}{agente}}{itConjNoModif(placa)}
+	[$a \in Agentes(c)$]
+	{esPermutacion(Siguientes($res$),secuenciarConj(conMismasSanciones($a$,$c$)))}
+	[$\Ogr(1)$]
+	
+	\InterfazFuncion{ConKSanciones}{\In{c}{campusSeg}, \In{k}{nat}}{itConjNoModif(placa)}
+	[$a \in Agentes(c)$]
+	{esPermutacion(Siguientes($res$),secuenciarConj(conKSanciones($a$,$c$)))}
+	[$\Ogr(1)$]
+	
+	\InterfazFuncion{CantHippies}{\In{c}{campusSeg}}{nat}
+	{$res \igobs$ cantHippies($c$)}
+	[$\Ogr(1)$]
 
+	\InterfazFuncion{CantEstudiantes}{\In{c}{campusSeg}}{nat}
+	{$res \igobs$ cantEstudiantes($c$)}
+	[$\Ogr(1)$]	
+	
 \end{Interfaz}
 
 \begin{Representacion}
@@ -525,6 +564,61 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \end{algorithm}
 
 
+\begin{algorithm}[H]
+\caption{Con K Sanciones}
+\begin{algorithmic}[1]
+\Procedure{iConKSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} k : \texttt{nat}} $\to res$:itConjNoModif(placa)
+	\If{Def($c$.sanciones,$k$)} \Comment $\Ogr(N_a)$ o $\Ogr(log N_a)$
+		\State $res \gets$ CrearIt(Obtener($c$.sanciones,$k$)) \Comment $\Ogr(log N_a)$
+	\Else
+		\State $res \gets$ CrearIt(Vacio()) \Comment $\Ogr(1)$
+	\EndIf
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(N_a)$ si hubo sanciones entre la ultima con K sanciones o $\Ogr(log N_a)$ si no.
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Con Mismas Sanciones}
+\begin{algorithmic}[1]
+\Procedure{iConMismasSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$:itConjNoModif(placa)
+	\State $res \gets$ CrearIt(SiguienteSignificado(Obtener($c$.agentesRapido,$pl$).kSanc)) \Comment $\Ogr(1)$ promedio
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$ promedio
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Cantidad de Hippies}
+\begin{algorithmic}[1]
+\Procedure{iCantHippies}{\texttt{in} c : \texttt{estr}} $\to res$:nat
+	\State $res \gets \#$Claves($c$.hippies) \Comment $\Ogr(1)$
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Cantidad de Estudiantes}
+\begin{algorithmic}[1]
+\Procedure{iCantEstudiantes}{\texttt{in} c : \texttt{estr}} $\to res$:nat
+	\State $res \gets \#$Claves($c$.estudiantes) \Comment $\Ogr(1)$
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Mas Vigilante}
+\begin{algorithmic}[1]
+\Procedure{iMasVigilante}{\texttt{in} c : \texttt{estr}} $\to res$:placa
+	\State $res \gets c$.masVigilante.pl \Comment $\Ogr(1)$
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(1)$
+\end{algorithm}
 
 \begin{algorithm}[H]
 \caption{Nueva Posicion Hippie o Agente}
