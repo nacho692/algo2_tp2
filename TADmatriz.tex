@@ -1,6 +1,7 @@
 \begin{tad}{\tadNombre{Matriz($\alpha$)}}
 \tadIgualdadObservacional{m}{m'}{matriz($\alpha$)}{ancho(m) $\igobs$ ancho(m') $\land$ alto(m) $\igobs$ alto(m') \\
-$\yluego$ ($\forall c, f$: nat ) valor(m, c, f) $\igobs$ valor(m', c, f)}
+$\yluego$ ( ($\forall col, fila$: nat ) posValida(m, col, fila ) $\impluego$
+(valor(m, col, fila) $\igobs$ valor(m', col, fila ) ) )}
 
 \tadParametrosFormales{
     \tadEncabezadoInline{géneros}{$\alpha$}
