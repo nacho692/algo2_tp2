@@ -8,75 +8,80 @@
 
 	\tituloModulo{Operaciones básicas de iterador de sanciones}
 	
-	Para simplificar las cosas usaremos clave y significado en vez de $\Pi1$ y $\Pi2$ cuanto utilicemos una tupla(nat, conj(placa))
-	
+		
 	\InterfazFuncion{CrearIts}{\In{ds}{diccS}}{itS}
 	{SecuSuby($res$)$\igobs$ordenar$\pi1$(secuenciarDic(ds))}
 	[$\Ogr$(1)]
-	[crea iterador de sanciones]
+	[Crea iterador de sanciones]
 	
 	\InterfazFuncion{HaySiguiente}{\In{its}{itS}}{bool}
 	{$res \igobs$ haySiguiente?(its)}
 	[$\Ogr$(1)]
-	[me retorna true si hay quedan elementos para avanzar]
+	[True si y solo si hay elementos siguientes]
 	
 	\InterfazFuncion{Siguiente}{\In{its}{itS}}{tupla(nat, conj(placa))}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its))}
+	{$res \igobs$ siguiente(its)}
 	[$\Ogr$(1)]
-	[devuelve el elemento siguiente del iterador]
+	[Devuelve el elemento siguiente por referencia]
+	[La tupla no es modificable]
 	
 	\InterfazFuncion{SiguienteClave}{\In{its}{itS}}{nat}
 	[haySiguiente?(its)]
-	{alias($res \igobs$ siguiente(its).clave)}
+	{$res \igobs$ siguiente(its).clave}
 	{$\Ogr$(1)}
-	{devuelve la clave del siguiente iterador}
+	{Devuelve la clave del siguiente iterador}
+	[La clave no es modificable]
 	
 	\InterfazFuncion{SiguienteSignificado}{\In{its}{itS}}{conj(placa)}
 	[haySiguiente?(its)]
 	{alias($res \igobs$ siguiente(its).significado)}
 	[$\Ogr$(1)]
-	[devuelve el significado del siguiente iterador]
+	[Devuelve el significado del siguiente]
+	[El significado es modificable]
 	
 	\InterfazFuncion{Avanzar}{\Inout{its}{itS}}{itS}
 	[it$=$it$_0$ $\land$ haySiguiente?(its)]
 	{it $\igobs$ avanzar(it$_0$)}
 	[$\Ogr$(1)]
-	[avanza en uno el iterador]
+	[Avanza en uno el iterador]
 
 	\InterfazFuncion{EliminarSiguiente}{\Inout{its}{itS}}{}
 	[it$=$it$_0$ $\land$ haySiguiente?(its)]
 	{it $\igobs$ eliminarSiguiente(it$_0$)}
 	[$\Ogr$(1)]
-	[elimina la clave del elemento que se encuentra en la posicion siguiente]
+	[Elimina el elemento que se encuentra en la posicion siguiente]
 
 
 \end{Interfaz}
 
 \begin{Representacion}
 	
+	Basicamente es una capa que trabaja sobre un iterador de lista, todas las funciones del iterador de sanciones hacen que el diccionario actualice en la proxima busqueda, ya que permite modificar los valores internos del diccionario.
 	
 	\tituloModulo{Representacion del Iterador de Diccionaro de Sanciones}
-	\begin{Estructura}{itS}[itLista]
-		Donde $itLista$ es itLista(tupla(nat, conj(placa)))
+	\begin{Estructura}{itS}[itSanc]
+	    \begin{Tupla}[itSanc]
+			\tupItem{actualizar}{puntero(bool)}
+			\tupItem{itL}{itLista(tupla(nat, conj(placa)))}
+		\end{Tupla}
 	\end{Estructura}
 	
-	\Rep[itS][it]{true}
-	
-	~
-	~
+	\Rep[itS][it]{Rep(it.itL)}
 	
 	
-	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{crearItBi(Anteriores(it), Siguientes(it))}
+	\AbsFc[itS]{itBi(tupla(nat, conj(placa)))}[i]{Abs(itL)}
+
+\end{Representacion}
 
 \begin{Algoritmos}
 	
 	\begin{algorithm}[H]
 		\caption{iCrearIt}
-		
 		\begin{algorithmic}[1]
 			\Procedure{iCrearIt}{\texttt{in} e : \texttt{estr}} $\to res$ itLista
-			\State $res \leftarrow$ CrearIt(e.lista) //uso el crearIt de lista \Comment $\Ogr$(1)
+			\State $res$.actualizar $\gets$ $\&e$.actualizar \Comment $\Ogr(1)$
+			\State $res \leftarrow$ CrearIt($e$.lista) //uso el crearIt de lista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -86,8 +91,8 @@
 		\caption{iHaySiguiente}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iHaySiguiente}{\texttt{in} itl : \texttt{itLista}} $\to res$ bool
-			\State $res \leftarrow$ HaySiguiente(itl) //uso el HaySiguiente de itLista \Comment $\Ogr$(1)
+			\Procedure{iHaySiguiente}{\texttt{in} it : \texttt{itSanc}} $\to res$ bool
+			\State $res \leftarrow$ HaySiguiente($it$.itL) //uso el HaySiguiente de itLista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -97,8 +102,9 @@
 		\caption{iSiguiente}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iSiguiente}{\texttt{in} itl : \texttt{itLista}} $\to res$ $<$nat, conj(placa)$>$
-			\State $res \leftarrow$ Siguiente(itl) //uso el Siguiente de itLista \Comment $\Ogr$(1)
+			\Procedure{iSiguiente}{\texttt{in} it : \texttt{itSanc}} $\to res$ $\langle$nat, conj(placa)$\rangle$
+			\State $it$.*actualizar $\gets$ true \Comment $\Ogr(1)$
+			\State $res \leftarrow$ Siguiente($it$.itL) //uso el Siguiente de itLista \Comment $\Ogr(1)$
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -108,8 +114,8 @@
 		\caption{iSiguienteClave}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iSiguienteClave}{\texttt{in} itl : \texttt{itLista}} $\to res$ nat
-			\State $res \leftarrow$ Siguiente(itl).clave //uso el Siguiente de itLista \Comment $\Ogr$(1)
+			\Procedure{iSiguienteClave}{\texttt{in} it : \texttt{itSanc}} $\to res$ nat
+			\State $res \leftarrow$ Siguiente($it$.itL).clave //uso el Siguiente de itLista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -119,8 +125,9 @@
 		\caption{iSiguienteSignificado}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iSiguienteSignificado}{\texttt{in} itl : \texttt{itLista}} $\to res$ conj(placa)
-			\State $res \leftarrow$ Siguiente(itl).significado //uso el Siguiente de itLista \Comment $\Ogr$(1)
+			\Procedure{iSiguienteSignificado}{\texttt{in} it : \texttt{itSanc}} $\to res$ conj(placa)
+			\State $it$.*actualizar $\gets$ true \Comment $\Ogr$(1)
+			\State $res \leftarrow$ Siguiente($it$.itL).significado //uso el Siguiente de itLista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -130,8 +137,9 @@
 		\caption{iAvanzar}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iAvanzar}{\texttt{in/out} itl : \texttt{itLista}} $\to res$ itLista
-			\State $res \leftarrow$ Avanzar(itl) //uso el Avanzar de itLista \Comment $\Ogr$(1)
+			\Procedure{iAvanzar}{\texttt{in/out} it : \texttt{itSanc}}
+			\State $it$.*actualizar $\gets$ true \Comment $\Ogr$(1)
+			\State Avanzar($it$.itL) //uso el Avanzar de itLista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -141,13 +149,12 @@
 		\caption{iEliminarSiguiente}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iEliminarSiguiente}{\texttt{in/out} itl : \texttt{itLista}, \texttt{in/out} e : \texttt{estr}}
-			\State EliminarSiguiente(itl) //uso el EliminarSiguiente de itLista \Comment $\Ogr$(1)
-			\State e.actualizar $\leftarrow$ true \Comment $\Ogr$(1)
+			\Procedure{iEliminarSiguiente}{\texttt{in/out} it : \texttt{itSanc}}
+			\State $it$.*actualizar $\gets$ true \Comment $\Ogr$(1)			
+			\State EliminarSiguiente($it$.itL) //uso el EliminarSiguiente de itLista \Comment $\Ogr$(1)
 			\EndProcedure 
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
 	\end{algorithm}	
 	
 \end{Algoritmos}
-\end{Representacion}

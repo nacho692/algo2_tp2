@@ -104,16 +104,17 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	{$res \igobs$masVigilante($c$)}
 	[$\Ogr(1)$]
 
-	\InterfazFuncion{ConMismasSanciones}{\In{c}{campusSeg}, \In{a}{agente}}{itConjNoModif(placa)}
+	\InterfazFuncion{ConMismasSanciones}{\In{c}{campusSeg}, \In{a}{agente}}{conj(placa)}
 	[$a \in Agentes(c)$]
-	{esPermutacion(Siguientes($res$),secuenciarConj(conMismasSanciones($a$,$c$)))}
+	{$res \igobs$ conMismasSanciones($a$,$c$)}
 	[$\Ogr(1)$]
+	[El conjunto se devuelve por referencia y no se puede modificar]	
 	
-	\InterfazFuncion{ConKSanciones}{\In{c}{campusSeg}, \In{k}{nat}}{itConjNoModif(placa)}
-	[$a \in Agentes(c)$]
-	{esPermutacion(Siguientes($res$),secuenciarConj(conKSanciones($a$,$c$)))}
+	\InterfazFuncion{ConKSanciones}{\In{c}{campusSeg}, \In{k}{nat}}{conj(placa)}
+	{$res \igobs$ conKsanciones($k$,$c$)}
 	[$\Ogr(1)$]
-	
+	[El conjunto se devuelve por referencia y no se puede modificar]
+		
 	\InterfazFuncion{CantHippies}{\In{c}{campusSeg}}{nat}
 	{$res \igobs$ cantHippies($c$)}
 	[$\Ogr(1)$]
@@ -567,11 +568,11 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \begin{algorithm}[H]
 \caption{Con K Sanciones}
 \begin{algorithmic}[1]
-\Procedure{iConKSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} k : \texttt{nat}} $\to res$:itConjNoModif(placa)
+\Procedure{iConKSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} k : \texttt{nat}} $\to res$:conj(placa)
 	\If{Def($c$.sanciones,$k$)} \Comment $\Ogr(N_a)$ o $\Ogr(log N_a)$
-		\State $res \gets$ CrearIt(Obtener($c$.sanciones,$k$)) \Comment $\Ogr(log N_a)$
+		\State $res \gets$ Obtener($c$.sanciones,$k$) \Comment $\Ogr(log N_a)$
 	\Else
-		\State $res \gets$ CrearIt(Vacio()) \Comment $\Ogr(1)$
+		\State $res \gets$ Vacio() \Comment $\Ogr(1)$
 	\EndIf
 \EndProcedure
 \end{algorithmic}
@@ -581,8 +582,8 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \begin{algorithm}[H]
 \caption{Con Mismas Sanciones}
 \begin{algorithmic}[1]
-\Procedure{iConMismasSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$:itConjNoModif(placa)
-	\State $res \gets$ CrearIt(SiguienteSignificado(Obtener($c$.agentesRapido,$pl$).kSanc)) \Comment $\Ogr(1)$ promedio
+\Procedure{iConMismasSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$:conj(placa)
+	\State $res \gets$ SiguienteSignificado(Obtener($c$.agentesRapido,$pl$).kSanc) \Comment $\Ogr(1)$ promedio
 \EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$ promedio

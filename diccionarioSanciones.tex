@@ -8,28 +8,34 @@
 
 	\tituloModulo{Operaciones básicas de diccionario de sanciones}
 
-	\InterfazFuncion{CrearDiccS}{\In{significado}{conj(placa)}}{diccS}
-	{$res \igobs$ definir($0$, significado, vacio)}
+	\InterfazFuncion{Crear}{\In{significado}{conj(placa)}}{diccS}
+	{$res \igobs$ Vacio()}
 	[$\Ogr$(1)]
-	[Genera un diccionario con todos los agentes con $0$ sanciones.]
+	[Crea un diccionario vacio]
 
 	\InterfazFuncion{Definir}{\Inout{ds}{diccS}, \In{s}{nat}, \In{significado}{conj(placa)}}{its}
 	[ds$_0$=ds $\land$ ($\forall$ i: nat) i $\in$ claves(ds) $\Rightarrow$ s $>$ i]
-	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$<$s, significado$>$ $\land$\\
-	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}%uso el definir de diccLineal
+	{(ds $\igobs$ definir(s, significado, ds)) $\land$ haySiguiente($res$) $\land_l$ siguiente($res$)=$\langle$s, significado$\rangle$ $\land$\\
+	secuSuby($res$)$\igobs$ordenar$\pi$1(secuenciarDic(ds))}
 	[$\Ogr$(1)]
-	[defino la clave $s$ con el significado $significado$ en mi diccionario $ds$]
+	[Define la clave $s$ con el significado $significado$ en mi diccionario $ds$, la clave tiene que ser mas grande que todas las claves ingresadas anteriormente. Se devuelve un iterador al elemento definido]
 	
 	\InterfazFuncion{Obtener}{\Inout{ds}{diccS}, \In{s}{nat}}{conj(placa)}
+	{alias($res \igobs$ obtener(s, ds))}
+	[$\Ogr$(1)]
+	[Retorna el conjunto de placas con $s$ sanciones del $ds$]
+	[El conjunto es modificable]
+
+	\InterfazFuncion{Actualizar}{\Inout{ds}{diccS}}{conj(placa)}
 	{$res \igobs$ obtener(s, ds)}
 	[$\Ogr$(1)]
-	[me retorna el conjunto de placas con $s$ sanciones del $ds$]
+	[Setea el diccionario a actualizar la busqueda rapida]
 
-	\InterfazFuncion{Def?}{\In{ds}{diccS}, \In{s}{nat}}{bool}
+	\InterfazFuncion{Definido}{\In{ds}{diccS}, \In{s}{nat}}{bool}
 	[def?(s, ds)]
 	{$res \igobs$ def?(s, ds)}  
-	[$\Ogr$(1)]
-	[me dice si esta definida la clave $s$ en el diccionario $ds$]
+	[$\Ogr(n)$ si el flag actualizar esta alto o $\Ogr(log(n)$ si esta bajo]
+	[True si esta definida la clave $s$ en el diccionario $ds$, false en caso contrario]
 	
 \end{Interfaz}
 
@@ -88,10 +94,10 @@
 \begin{Algoritmos}
 	
 	\begin{algorithm}[H]
-		\caption{iCrearDiccS}
+		\caption{Crear}
 		\begin{algorithmic}[1]
-			\Procedure{iCrearDiccS}{\texttt{in} sig : \texttt{conj(placa)}} $\to res$ : estr
-			\State $res$.diccLog$\leftarrow$ Vacio($\#$(sig)) //vacio de diccionario logaritmico \Comment $\Ogr$(1)
+			\Procedure{iCrear}{\texttt{in} sig : \texttt{conj(placa)}} $\to res$ : estr
+			\State $res$.diccLog$\leftarrow$ Vacio() //vacio de diccionario logaritmico \Comment $\Ogr$(1)
 			\State $res$.lista$\leftarrow$ Vacia() //vacia de lista enlazada \Comment $\Ogr$(1)
 			\State $res$.actualizar $\leftarrow$ false \Comment $\Ogr$(1) 
 			\EndProcedure
@@ -100,19 +106,19 @@
 	\end{algorithm}
 	
 	\begin{algorithm}[H]
-		\caption{iDefinir}
+		\caption{Definir}
 		\begin{algorithmic}[1]
 			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}, \texttt{in} sig : \texttt{conj(placa)}} $\to res$ : itDic
 			\State itLista $it \gets$ AgregarAtras(e.lista, s, sig) //agregar atras de lista enlazada \Comment $\Ogr$($\#$sig)
+			\State $e$.actualizar $\gets$ true
 			\State $res \gets$ it \Comment $\Ogr$(1)
-			\State e.actualizar $\gets$ true \Comment $\Ogr$(1) 
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$($\#$(sig))
 	\end{algorithm}
 
 	\begin{algorithm}[H]
-		\caption{iObtener}
+		\caption{Obtener}
 		\begin{algorithmic}[1]
 			\Procedure{iObtener}{\texttt{in/out} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : conj(placa)
 			\If{e.actualizar} \Comment $\Ogr$(1)
@@ -121,21 +127,20 @@
 					\State e.diccLog $\gets$ Definir(e.diccLog, SiguienteClave(it), SiguienteSignificado(it)) //Definir de diccLog \Comment $\Ogr$(1) 
 					\State avanzar(it) \Comment $\Ogr$(1) 
 				\EndWhile
-				\State e.actualizar $\gets$ false \Comment $\Ogr$(1) 
+				\State $e$.actualizar $\gets false$
 			\EndIf
-			\State Obtener(e.diccLog, s) $\Ogr$(1)
+			\State $res \gets$ Obtener(e.diccLog, s) \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista)) o $\Ogr$($log$ $\#$claves(e.lista))\\
-		
 		\underline{Justificacion:} $\Ogr$($\#$claves(e.lista))+$\Ogr$(log $\#$claves(e.lista)). En el peor de los casos sera la $\Ogr$($\#$claves(e.lista)) pues $\Ogr$($\#$claves(e.diccLog))$>\Ogr$(log $\#$claves(e.lista)). Y en el peor de los casos $\#$claves(e.diccLog) sera igual a la cantidad de agentes (esto sera cuando todos los agentes tengan diferentes sanciones). Cuando la cantidad de sanciones se mantenga (e.actualizar $=$ false) entonces tendremos una complejidad de $\Ogr$(log $\#$claves(e.lista)) puesto que nunca entraremos en el while.
 	\end{algorithm}	
 	
 	\begin{algorithm}[H]
-		\caption{iDef?}
+		\caption{Definido?}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iDef?}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
+			\Procedure{iDefinido}{\texttt{in} e : \texttt{estr}, \texttt{in} s : \texttt{nat}} $\to res$ : bool
 			\If{e.actualizar} \Comment $\Ogr$(1)
 			\State it $\gets$ CrearIt(e) \Comment $\Ogr$(1)
 			\While{HaySiguiente(it)} // $\Ogr$(1) cantidad de clavesDeLista veces \Comment $\Ogr$($\#$Claves(e.lista))
@@ -147,8 +152,8 @@
 			\State Definido(e.diccLog, s) //Definido? de diccLog$\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista))
-		\underline{Justificacion:}Semejante a la justificacion de iObtener
+		\underline{Complejidad:} $\Ogr$($\#$claves(e.lista))\\
+		\underline{Justificacion:}Semejante a la justificacion de Obtener
 		
 	\end{algorithm}
 
