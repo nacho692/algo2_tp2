@@ -110,9 +110,9 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	[$\Ogr(1)$]
 	[El conjunto se devuelve por referencia y no se puede modificar]	
 	
-	\InterfazFuncion{ConKSanciones}{\In{c}{campusSeg}, \In{k}{nat}}{conj(placa)}
+	\InterfazFuncion{ConKSanciones}{\Inout{c}{campusSeg}, \In{k}{nat}}{conj(placa)}
 	{$res \igobs$ conKsanciones($k$,$c$)}
-	[$\Ogr(1)$]
+	[$\Ogr(N_a)$ o $\Ogr(log N_a)$ dependiendo si hubo cambios en las sanciones]
 	[El conjunto se devuelve por referencia y no se puede modificar]
 		
 	\InterfazFuncion{CantHippies}{\In{c}{campusSeg}}{nat}
@@ -134,13 +134,20 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\tupItem{hippies}{diccNombres(nombre,posicion)}%
 		\tupItem{estudiantes}{diccNombres(nombre,posicion)}\\
 		\tupItem{agentes}{diccLog(nat,datosAg)}\\
-		\tupItem{sanciones}{diccSanc(nat,conj(placa))}\\
+		%\tupItem{sanciones1}{diccSanc(nat,conj(placa))}\\
+		\tupItem{sanc}{sanciones}\\		
 		\tupItem{agentesRapido}{diccH(nat,itDiccLog(nat,posicion))}\\
 		\tupItem{pos}{posiciones}
 		\tupItem{masVigilante}{tupla(pl: placa, premios: nat}
 		\tupItem{cp}{campus}
     \end{Tupla}
     
+    \begin{Tupla}[sanciones]
+			\tupItem{lista}{lista(tupla(c : nat,s :conj(placa)))}
+			\tupItem{rapidas}{diccLog(nat, con(placa))}
+			\tupItem{actualizar}{bool}
+	\end{Tupla}
+		
 	\begin{Tupla}[posiciones]
 		\tupItem{mAg}{matriz(tupla(def: bool,datos: itDiccLog(nat,posicion))}\\
 		\tupItem{mH}{matriz(tupla(def: bool,datos: itDiccN(nombre, posicion))}\\
@@ -152,7 +159,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
       \tupItem{sanciones}{nat}
       \tupItem{premios}{nat}
       \tupItem{pos}{posicion}%
-      \tupItem{kSanc}{itDiccS(nat, conj(placa)}%
+      \tupItem{kSanc}{itLista(tupla(nat, conj(placa))}%
       \tupItem{mismasSanc}{itconj(placa)}%
     \end{Tupla}
   \end{Estructura}
@@ -164,9 +171,13 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\item Las claves de hippies y estudiantes intersecan vacio.
 		\item No hay posiciones iguales en estudiantes, hippies y agentes y todas se encuentran en rango.
 		\item Las placas de agentes y agentesRapido son iguales y, a igual placa, el siguiente del iterador de agentesRapido es el agente en agentes y la secuencia subyacente del iterador es permutacion de la secuencia de tuplas del diccionario de agentes.
-		\item Las claves de sanciones y las diferentes sanciones de agentes forman el mismo conjunto. Los conjuntos de placas de la clave i de sanciones tienen todas las placas cuyos agentes tengan i sanciones.
-		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador kSanc es igual a una secuencia ordenada de sanciones y la siguiente clave del iterador es la cantidad de sanciones del datosAg.
-		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador mismasSanc es permutacion del conjunto de placas del diccionario sanciones donde se encuentra su propia placa, y el siguiente del iterador es su misma placa.
+		
+		\item La union del primer elemento de la lista de sanciones y las diferentes sanciones de agentes forman el mismo conjunto. Los conjuntos de placas del elemento i de sanciones tienen todas las placas cuyos agentes tengan i sanciones.
+		\item La lista de sanciones esta ordenada por su primer elemento de la tupla estrictamente
+		\item Si actualizar esta en false, las tuplas de la lista son tuplas clave, significado del diccionario logaritmico y vice versa		
+		
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador kSanc es igual a una secuencia ordenada de sanciones y el siguiente primer elemento de la tupla del iterador es la cantidad de sanciones del datosAg.
+		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador mismasSanc es permutacion del conjunto de placas de la lista de sanciones donde se encuentra su propia placa, y el siguiente del iterador es su misma placa.
 		\item filas+1 y columnas+1 de cp (campus) es igual al alto y ancho de las matrices de pos.
 		\item mAg, el booleano es true si y solo si hay un agente en placasPos en esa posicion.\\
 		Si es true, la siguiente clave del iterador es el agente en esa posicion y la secuencia subyacente es permutacion de los agentes en agentes.
@@ -186,17 +197,23 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\item $\land$ (claves($e$.agentes) $=$ claves($e$.agentesRapido) $\yluego$ ($\forall p$: placa) (def?($p$,e.agentes) $\impluego$ \\
 		$\pi_1$(Siguiente(obtener($p$,$e$.agentesRapido))) = obtener($p$,$e$.agentes))\\
 		$\land$ esPermutacion(SecuSuby(obtener($p$,$e$.agentesRapido)),secuenciarDic($e$.agentes)))
-		\item $\land$ unionSignificados($e$.sanciones) = claves($e$.agentes)\\
-		$\land$ ($\forall n$: nat) def?($n$,$e$.sanciones) $\impluego$ \\
-		($\neg$(obtener($n$,$e$.sanciones) = $\emptyset$) $\land$ ($\forall p$: placa) ($p \in$ obtener($n$,$e$.sanciones) $\implies$ \\
-		def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pl = p $\land$ obtener($p$,$e$.agentes).sanciones = n))
+		\item $\land$ ($\forall c:$ nat)($\forall s:$ conj(placa)) (esta?($\langle c$,$s \rangle$,$e$.sanciones.lista) $\iff$ $s \subseteq$ claves($e$.agentes) \\
+		$\yluego$ ($\forall pl:$placa) $pl \in$ $s$ $\impluego$ obtener($pl$,$e$.agentes).sanciones=$c$ $\land$ obtener($pl$,$e$.agentes).pl = $pl$)
+		\item ($\forall i$: nat)($i \leq$longitud(e.lista)-2)$e$.sanciones.lista[$i$].c < $e$.sanciones.lista[$i+1$].c
+		\item $\neg e$.samnciones.actualizar $\implies$ \\
+	($\forall c$: nat)($\forall s$:conj(nat))(esta?($\langle$c,s$\rangle)$,$e$.sanciones.lista) $\iff$ def?($c$,$e$.sanciones.rapidas)\\
+	 $\yluego s$ = obtener($c$,$e$.sanciones.rapidas)
 		\item $\land$ ($\forall p$: placa) def?($p$,$e$.agentes) $\impluego$ \\
-		SecuSuby(obtener($p$,$e$.agentes).kSanc) = ordenar$\pi_1$(secuenciarDic($e$.sanciones)) \\
-		$\land$ $pi_1$(Siguiente(obtener($p$,$e$.agentes).kSanc)) = obtener($p$,$e$.agentes).pl
-		\item $\land$ ($\forall p$: placa) (def?($p$,$e$.agentes) $\yluego$ def?(obtener($p$,$e$.agentes).sanciones,$e$.sanciones) $\impluego$ \\
-		esPermutacion(SecuSuby(obtener($p$,$e$.agentes).mismasSanc),\\
-		secuenciarConj(obtener(obtener($p$,$e$.agentes).sanciones,$e$.sanciones)))\\
-		$\land$ siguiente(obtener($p$,$e$.agentes).mismasSanc) = $p$
+		SecuSuby(obtener($p$,$e$.agentes).kSanc) = ordenar$\pi_1$($e$.sanciones.lista) \\
+		$\land$ $\pi_1$(Siguiente(obtener($p$,$e$.agentes).kSanc)) = obtener($p$,$e$.agentes).pl
+		\item $\land$ ($\forall c$: nat)($\forall s$: conj(placa)) (esta?($\langle$c,s$\rangle)$,$e$.sanciones.lista)\\
+		 $\land$ ($\forall pl:$ placa)($pl \in s$ $\land$ def?($pl$,$e$.agentes))) $\impluego$ \\
+		 esPermutacion(secuenciarConj($s$),SecuSuby(obtener($pl$,$e$.agentes).mismasSanc))\\
+		 $\land$ siguiente(obtener($pl$,$e$.agentes).mismasSanc) = $pl$
+		%\item $\land$ ($\forall p$: placa) (def?($p$,$e$.agentes) $\yluego$ def?(obtener($p$,$e$.agentes).sanciones,$e$.sanciones) $\impluego$ \\
+%		esPermutacion(SecuSuby(obtener($p$,$e$.agentes).mismasSanc),\\
+%		secuenciarConj(obtener(obtener($p$,$e$.agentes).sanciones,$e$.sanciones)))\\
+		
 		\item $\land$ Ancho(mAg) = columnas($e$.campus) + 1 $\land$ Alto(mAg) = filas($e$.campus) + 1 \\
 		$\land$ Ancho(mH) = Ancho(mAg) $\land$ Alto(mH) = Alto(mAg)\\
 		$\land$ Ancho(mE) = Ancho(mH) $\land$ Alto(mE) = Alto(mH)
@@ -429,19 +446,23 @@ $\Ogr(|n_m|)$ + $\Ogr(|n_m|)$ = $\Ogr(|n_m|)$ con $|n_m|$ = max($|h_m|$,$|e_m|$)
 	
 	\State $res$.hippies $\gets$ Vacio() \Comment $\Ogr(1)$
 	\State $res$.estudiantes $\gets$ Vacio() \Comment $\Ogr(1)$
-	\State $res$.sanciones $\gets$ Vacio() \Comment $\Ogr(1)$
+	
+	\State $res$.sanciones.lista $\gets$ Vacia() \Comment $\Ogr(1)$
+	\State $res$.sanciones.rapidas $\gets$ Vacio() \Comment $\Ogr(1)$
+	\State $res$.sanciones.actualizar $\gets$ true \Comment $\Ogr(1)$
 	\State $res$.agentesRapido $\gets$ Vacio($\#$Claves($d$)) \Comment $\Ogr(1)$
 	\State $res$.agentes $\gets$ Vacio($\#$Claves($d$)) \Comment $\Ogr(1)$ %TODO, ver la complejidad
 	\State itDicc(placa,posicion) $it$ $\gets$ CrearIt($d$) \Comment $\Ogr(1)$
 	\If{HaySiguiente($it$)} \Comment $\Ogr(1)$
 		\State conj(placa) $cp$ $\gets$ Vacio() \Comment $\Ogr(1)$
-		\State itDicc(nat,conj(placa)) $itdic$ $\gets$ Definir(0,$cp$,$res$.sanciones) \Comment $\Ogr(1)$
+		\State itLista($\langle$nat,conj(placa)$\rangle$) itlist $\gets$ AgregarAtras($res$.sanciones.lista, cp) \Comment (un conjunto vacio) $\Ogr(1)$
+		%\State itDicc(nat,conj(placa)) $itdic$ $\gets$ Definir(0,$cp$,$res$.sanciones) \Comment $\Ogr(1)$
 		\State bool $f$ $\gets$ true \Comment $\Ogr(1)$
 		\While{HaySiguiente($it$)} \Comment $n$ * $\Ogr(1)$
-	 	\State placa $pl$ $\gets$ SiguienteClave($it$) \Comment $\Ogr(1)$
+	 	\State placa $pl$ $\gets$ Copia(SiguienteClave($it$)) \Comment $\Ogr(1)$
 	 	\State posicion $pos$ $\gets$ CrearPosicion(X(SiguienteSignificado($it$)),Y(SiguienteSignificado($it$))) \Comment $\Ogr(1)$
-	 	\State itConj(placa) $itc$ $\gets$ AgregarRapido($pl$,Obtener($res$.sanciones,0)) \Comment $\Ogr(n) + \Ogr(1)$
-	 	\State datosAg $ag \gets \langle pl$,0,0,$pos$,$itdic$,$itc \rangle$ \Comment $\Ogr(1)$
+	 	\State itConj(placa) $itc$ $\gets$ AgregarRapido(Siguiente(itlist).s, $pl$) \Comment $\Ogr(1)$
+	 	\State datosAg $ag \gets \langle pl$,0,0,$pos$,$itlist$,$itc \rangle$ \Comment $\Ogr(1)$
 	 	\State itDicLog(nat,datosAg) $itdl \gets$ DefinirLento($res$.agentes,$pl$,$ag$) \Comment $\Ogr(n)$
 	 	\State $res$.posiciones.mAg[X($pos$)][Y($pos$)] $\gets itdl$ \Comment $\Ogr(1)$
 	 	\State Definir($res$.agentesRapido,$pl$,$itdl$) \Comment $\Ogr(1)$ promedio
@@ -463,7 +484,7 @@ Donde
 	\item $n$ es $\#$Claves($d$)
 \end{itemize}	
 \underline{Justificacion:} Sumo los $\Ogr(1)$ continuos para aclarar un poco ($C$*$\Ogr(1)$ = $\Ogr(1)$)\\
-$4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Ogr(h*a) + \Ogr(n)*(\Ogr(n) + \Ogr(1)$ prom = $\Ogr(h*a) + \Ogr(n^2) + \Ogr(n)$ prom = $\Ogr(h*a + n^2) + \Ogr(n)$ prom
+$4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(1)$ prom) = $\Ogr(h*a) + \Ogr(n)*(\Ogr(n) + \Ogr(1)$ prom = $\Ogr(h*a) + \Ogr(n^2) + \Ogr(n)$ prom = $\Ogr(h*a + n^2) + \Ogr(n)$ prom
 \end{algorithm}
 
 
@@ -568,9 +589,12 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \begin{algorithm}[H]
 \caption{Con K Sanciones}
 \begin{algorithmic}[1]
-\Procedure{iConKSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} k : \texttt{nat}} $\to res$:conj(placa)
-	\If{Def($c$.sanciones,$k$)} \Comment $\Ogr(N_a)$ o $\Ogr(log N_a)$
-		\State $res \gets$ Obtener($c$.sanciones,$k$) \Comment $\Ogr(log N_a)$
+\Procedure{iConKSanciones}{\texttt{in/out} c : \texttt{estr}, \texttt{in} k : \texttt{nat}} $\to res$:conj(placa)
+	\If{$c$.sanciones.actualizar} \Comment $\Ogr(1)$
+		\State actualizarSanciones($c$) \Comment $\Ogr(N_a)$
+	\EndIf
+	\If{Def($c$.sanciones,$k$)} \Comment $\Ogr(log N_a)$
+		\State $res \gets$ Obtener($c$.sanciones.rapidas,$k$) \Comment $\Ogr(log N_a)$
 	\Else
 		\State $res \gets$ Vacio() \Comment $\Ogr(1)$
 	\EndIf
@@ -583,7 +607,7 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \caption{Con Mismas Sanciones}
 \begin{algorithmic}[1]
 \Procedure{iConMismasSanciones}{\texttt{in} c : \texttt{estr}, \texttt{in} pl : \texttt{placa}} $\to res$:conj(placa)
-	\State $res \gets$ SiguienteSignificado(Obtener($c$.agentesRapido,$pl$).kSanc) \Comment $\Ogr(1)$ promedio
+	\State $res \gets$ Siguiente(Obtener($c$.agentesRapido,$pl$).kSanc) \Comment $\Ogr(1)$ promedio
 \EndProcedure
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$ promedio
@@ -620,6 +644,25 @@ $4*\Ogr(h*a) + \Ogr(1) + n * \Ogr(1) * (\Ogr(n) + \Ogr(n) + \Ogr(1)$ prom = $\Og
 \end{algorithmic}
 \underline{Complejidad:} $\Ogr(1)$
 \end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Actualizar Sanciones}
+\begin{algorithmic}[1]
+\Procedure{iActualizarSanciones}{\texttt{in/out} c : \texttt{estr}}
+	\State it $\gets$ CrearIt(e.sanciones.lista) \Comment $\Ogr$(1)
+	\While{HaySiguiente(it)} \Comment $n*\Ogr(1)$
+		\State Definir(e.sanciones.rapidas, Siguiente(it).c, Siguiente(it).s) \Comment $\Ogr(\#(Claves(Siguiente(it).s)))$
+		\State Avanzar(it) \Comment $\Ogr$(1) 
+	\EndWhile
+	\State $c$.sanciones.actualizar $\gets false$ \Comment $\Ogr(1)$
+\EndProcedure
+\end{algorithmic}
+\underline{Complejidad:} $\Ogr(n)$
+\underline{Justificacion:} Estableciendo $n$ como la cantidad de sanciones diferentes. Si bien el definir de diccionario logaritmico funciona por copia, la sumatoria de todos la conjuntos de la lista de sanciones es menor o igual $n$ (en peor caso $n$). Por lo tanto la complejidad es, en todos los casos $\Ogr(2n)$ = $\Ogr(n)$
+\end{algorithm}
+
+
 
 \begin{algorithm}[H]
 \caption{Nueva Posicion Hippie o Agente}
@@ -813,11 +856,12 @@ $\Ogr(4*|h_m| + 4*4)$ = $\Ogr(4*|h_m| + 16)$ = $\Ogr(4*|h_m|)$ = $\Ogr(|h_m|)$
 		\If{rodeado($c$,$p$) $\&\&$ esEstudiante($c$,$p$) $\&\&$ $\#$Claves($cag$) $\geq$ 1} \Comment $\Ogr(1)$
 		\State itConj(posicion) $itca \gets cag$ \Comment $\Ogr(1)$
 			\While{HaySiguiente($itca$)} \Comment $m*\Ogr(1)$
+				\State $c$.sanciones.actualizar $\gets$ true \Comment $\Ogr(1)$
 				\State posicion $pa \gets$ Siguiente($itca$) \Comment $\Ogr(1)$
-				\State Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato).sanciones ++ \Comment $\Ogr(1)$
 				\State datosAg $datos \gets$ Siguiente($c$.pos.mAg[X($pa$)][Y($pa$)]).dato \Comment $\Ogr(1)$
+				\State $datos$.sanciones ++
 				\State EliminarSiguiente($datos$.mismasSanc) \Comment $\Ogr(1)$
-				\If{$\#$(SiguienteSignificado($datos$.kSanc)) == 0} \Comment $\Ogr(1)$
+				\If{$\#$(Siguiente($datos$.kSanc).s) == 0} \Comment $\Ogr(1)$
 					\State EliminarSiguiente($datos$.kSanc) \Comment $\Ogr(1)$
 				\EndIf
 				\If{$datos$.sanciones $<$ SiguienteClave($datos$.kSanc)} \Comment $\Ogr(1)$
