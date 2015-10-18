@@ -23,13 +23,13 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	[Devuelve el campus de Campus Seguro]
 	[El campus se devuelve por referencia]
 
-	\InterfazFuncion{Estudiantes}{\In{c}{campusSeg}}{itClavesDiccN(nombre,posicion)}
+	\InterfazFuncion{Estudiantes}{\In{c}{campusSeg}}{itClavesDiccN(nombre)}
 	{esPermutacion(Siguientes($res$),secuenciarConj(estudiantes($d$))}
 	[$\Ogr(1)$]
 	[Devuelve Iterador no modificable de todos los estudiantes actualmente en el campus]
 	[Si hay un cambio en los estudiantes, el iterador puede quedar invalidado]
   
-	\InterfazFuncion{Hippies}{\In{c}{campusSeg}}{itClavesDiccN(nombre,posicion)}
+	\InterfazFuncion{Hippies}{\In{c}{campusSeg}}{itClavesDiccN(nombre)}
 	{esPermutacion(Siguientes($res$),secuenciarConj(hippies($d$))}
 	[$\Ogr(1)$]
 	[Devuelve Iterador no modificable de todos los hippies actualmente en el campus]
@@ -138,7 +138,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\tupItem{sanc}{sanciones}\\		
 		\tupItem{agentesRapido}{diccH(nat,itDiccLog(nat,posicion))}\\
 		\tupItem{pos}{posiciones}
-		\tupItem{masVigilante}{tupla(pl: placa, premios: nat}
+		\tupItem{masVigilante}{tupla(pl: placa, premios: nat)}\\
 		\tupItem{cp}{campus}
     \end{Tupla}
     
@@ -149,7 +149,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	\end{Tupla}
 		
 	\begin{Tupla}[posiciones]
-		\tupItem{mAg}{matriz(tupla(def: bool,datos: itDiccLog(nat,posicion))}\\
+		\tupItem{mAg}{matriz(tupla(def: bool,datos: itDiccLog(nat, datosAg))}\\
 		\tupItem{mH}{matriz(tupla(def: bool,datos: itDiccN(nombre, posicion))}\\
 		\tupItem{mE}{matriz(tupla(def: bool,datos: itDiccN(nombre, posicion))}
 	\end{Tupla}
@@ -172,7 +172,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\item No hay posiciones iguales en estudiantes, hippies y agentes y todas se encuentran en rango.
 		\item Las placas de agentes y agentesRapido son iguales y, a igual placa, el siguiente del iterador de agentesRapido es el agente en agentes y la secuencia subyacente del iterador es permutacion de la secuencia de tuplas del diccionario de agentes.
 		
-		\item La union del primer elemento de la lista de sanciones y las diferentes sanciones de agentes forman el mismo conjunto. Los conjuntos de placas del elemento i de sanciones tienen todas las placas cuyos agentes tengan i sanciones.
+		\item Los conjuntos de la lista de sanciones son subconjuntos del total de las placas de agentes. Una placa esta en uno de estos conjuntos si y sólo si el agente correspondiente tiene tantas sanciones como el valor correspondiente a ese conjunto.
 		\item La lista de sanciones esta ordenada por su primer elemento de la tupla estrictamente
 		\item Si actualizar esta en false, las tuplas de la lista son tuplas clave, significado del diccionario logaritmico y vice versa		
 		
@@ -197,8 +197,9 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\item $\land$ (claves($e$.agentes) $=$ claves($e$.agentesRapido) $\yluego$ ($\forall p$: placa) (def?($p$,e.agentes) $\impluego$ \\
 		$\pi_1$(Siguiente(obtener($p$,$e$.agentesRapido))) = obtener($p$,$e$.agentes))\\
 		$\land$ esPermutacion(SecuSuby(obtener($p$,$e$.agentesRapido)),secuenciarDic($e$.agentes)))
-		\item $\land$ ($\forall c:$ nat)($\forall s:$ conj(placa)) (esta?($\langle c$,$s \rangle$,$e$.sanciones.lista) $\iff$ $s \subseteq$ claves($e$.agentes) \\
-		$\yluego$ ($\forall pl:$placa) $pl \in$ $s$ $\impluego$ obtener($pl$,$e$.agentes).sanciones=$c$ $\land$ obtener($pl$,$e$.agentes).pl = $pl$)
+		\item $\land$ ($\forall c:$ nat)($\forall s:$ conj(placa)) (esta?($\langle c$,$s \rangle$,$e$.sanciones.lista) $\implies$ \\
+		( $s \subseteq$ claves($e$.agentes) $\land$ $\neg\emptyset$?(s) \\
+		$\yluego$ ($\forall pl:$placa) $pl \in$ $s$ $\iff$ obtener($pl$,$e$.agentes).sanciones=$c$ $\land$ obtener($pl$,$e$.agentes).pl = $pl$))
 		\item ($\forall i$: nat)($i \leq$longitud(e.lista)-2)$e$.sanciones.lista[$i$].c < $e$.sanciones.lista[$i+1$].c
 		\item $\neg e$.samnciones.actualizar $\implies$ \\
 	($\forall c$: nat)($\forall s$:conj(nat))(esta?($\langle$c,s$\rangle)$,$e$.sanciones.lista) $\iff$ def?($c$,$e$.sanciones.rapidas)\\
@@ -206,8 +207,8 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		\item $\land$ ($\forall p$: placa) def?($p$,$e$.agentes) $\impluego$ \\
 		SecuSuby(obtener($p$,$e$.agentes).kSanc) = ordenar$\pi_1$($e$.sanciones.lista) \\
 		$\land$ $\pi_1$(Siguiente(obtener($p$,$e$.agentes).kSanc)) = obtener($p$,$e$.agentes).pl
-		\item $\land$ ($\forall c$: nat)($\forall s$: conj(placa)) (esta?($\langle$c,s$\rangle)$,$e$.sanciones.lista)\\
-		 $\land$ ($\forall pl:$ placa)($pl \in s$ $\land$ def?($pl$,$e$.agentes))) $\impluego$ \\
+		\item $\land$ ($\forall c$: nat)($\forall s$: conj(placa))($\forall pl:$ placa) \\
+		(esta?($\langle$c,s$\rangle)$,$e$.sanciones.lista) $\land$ ($pl \in s$ $\land$ def?($pl$,$e$.agentes))) $\impluego$ \\
 		 esPermutacion(secuenciarConj($s$),SecuSuby(obtener($pl$,$e$.agentes).mismasSanc))\\
 		 $\land$ siguiente(obtener($pl$,$e$.agentes).mismasSanc) = $pl$
 		%\item $\land$ ($\forall p$: placa) (def?($p$,$e$.agentes) $\yluego$ def?(obtener($p$,$e$.agentes).sanciones,$e$.sanciones) $\impluego$ \\
@@ -218,16 +219,18 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		$\land$ Ancho(mH) = Ancho(mAg) $\land$ Alto(mH) = Alto(mAg)\\
 		$\land$ Ancho(mE) = Ancho(mH) $\land$ Alto(mE) = Alto(mH)
 		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mAg) $\land$ 0 $< j <$ Alto(mAg) $\impluego$ \\
-		($pi_1$(Valor(mAg,$i$,$j$)) $\iff$ \\
+		($\pi_1$(Valor(mAg,$i$,$j$)) $\iff$ \\
 		($\exists p$: placa) def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pos = $\langle i$, $j \rangle$ $\land$ \\ 
-		esPermutacion(SecuSuby($\pi_2$(Valor(mAg,$i$,$j$))), secuenciarDic(agentes)) \\
+		esPermutacion(SecuSuby($\pi_2$(Valor(mAg,$i$,$j$))), secuenciarDic($e$.agentes)) \\
 		$\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mAg,$i$,$j$))) = obtener($p$,$e$.agentes).pl)
 		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mH) $\land$ 0 $< j <$ Alto(mH) $\impluego$ \\
-		($\pi_1$(Valor(mH,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.hippies) $\yluego$ \\
+		($\pi_1$(Valor(mH,$i$,$j$)) $\iff$ \\
+		($\exists n$: nombre)(def?($n$,$e$.hippies) $\yluego$ \\
 		obtener($n$,$e$.hippies) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mH,$i$,$j$)))) = $n$ $\land$ \\
 		esPermutacion(SecuSuby($\pi_2$(Valor(mH,$i$,$j$)),secuenciarDic($e$.hippies)))
 		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mE) $\land$ 0 $< j <$ Alto(mE) $\impluego$ \\
-		($\pi_1$(Valor(mE,$i$,$j$)) $\iff$ ($\exists n$: nombre)(def?($n$,$e$.estudiantes) $\yluego$ \\
+		($\pi_1$(Valor(mE,$i$,$j$)) $\iff$ \\
+		($\exists n$: nombre)(def?($n$,$e$.estudiantes) $\yluego$ \\
 		obtener($n$,$e$.estudiantes) = $\langle i$, $j \rangle$ $\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mE,$i$,$j$)))) = $n$ $\land$ \\
 		esPermutacion(SecuSuby($\pi_2$(Valor(mE,$i$,$j$)),secuenciarDic($e$.estudiantes)))
 		\item $\#$claves($e$.agentes) $\geq$ 1 $\implies$ ($\exists p$: placa) def?($p$,$e$.agentes) $\yluego$ \\
@@ -296,23 +299,32 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
   \tadOperacion{ordenar$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)}{secu($\langle \beta, \alpha \rangle$)}{}
   \tadAxioma{ordenar$\pi_1$($s$)}{
   \IF vacia?($s$) THEN $<>$ 
-  ELSE min$\pi_1$($s$) $\bullet$ ordenar$\pi_1$(fin($s$))
+  ELSE min$\pi_1$($s$) $\bullet$ ordenar$\pi_1$(sacar(min$\pi_1$($s$),$s$))
   FI}
 
   ~
 
   \tadOperacion{min$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
-  \tadAxioma{min$\pi_1$($s$)}{minAux$\pi_1$($s$,prim($s$)}
+  \tadAxioma{min$\pi_1$($s$)}{minAux$\pi_1$($s$,prim($s$))}
 
   ~
   
   \tadOperacion{minAux$\pi_1$}{secu($\langle \beta $,$ \alpha \rangle$)/s, $\langle \beta $ , $\alpha \rangle$}{$\langle \beta, \alpha \rangle$}{$\neg$vacia?($s$)}
-  \tadAxioma{minAux$\pi_1$($s$,$e$}{\IF long($s$) = 1 THEN 
+  \tadAxioma{minAux$\pi_1$($s$,$e$)}{\IF long($s$) = 1 THEN 
   {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI} 
   ELSE minAux$\pi_1$(fin($s$),
-  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI}
+  {\IF $\pi_1$(prim($s$)) < $\pi_1$($e$) THEN prim($s$) ELSE $e$ FI})
   FI}
 
+  ~
+  
+  \tadOperacion{sacar}{$\alpha$,secu($\alpha$)/s}{secu($\alpha$)}{esta?($a$,$s$)}
+  \tadAxioma{sacar($a$,$s$)}{
+  	\IF prim($s$) = $a$
+  		THEN fin($s$)
+  		ELSE prim($s$) $\bullet$ sacar($a$,fin($s$))
+  	FI}
+  
   ~
   
   \AbsFc[estr]{campusSeg}[e]

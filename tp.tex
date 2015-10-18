@@ -95,8 +95,40 @@
 	\item $nombre$ es string
 \end{itemize}
 \item Al no haber un modulo de arreglos explicito en modulos basicos, pueden haber diferencias triviales en los diferentes algoritmos
-
+\item Se asume que el módulo nat tiene las siguientes funciones
+	\begin{itemize}
+		\item 	\InterfazFuncion{max}{\In{a}{nat}, \In{b}{nat}}{nat}
+				{res $\igobs$ 
+					\IF a > b
+						THEN a
+						ELSE b
+					FI}
+				[$\Ogr$(1)]
+		\item 	\InterfazFuncion{min}{\In{a}{nat}, \In{b}{nat}}{nat}
+				{res $\igobs$ 
+					\IF a < b
+						THEN a
+						ELSE b
+					FI}
+				[$\Ogr$(1)]
+		\item 	\InterfazFuncion{mod}{\In{a}{nat}, \In{m}{nat}}{nat}
+				{res $\igobs$ modulo(a, m)}
+				[$\Ogr$(1)]
+	\end{itemize}
+\item Se asume que el módulo bool tiene la siguiente función
+	\begin{itemize}
+		\item 	\InterfazFuncion{$\beta$}{\In{b}{bool}}{nat}
+				{res $\igobs$ \IF b THEN 1 ELSE 0 FI}
+				[$\Ogr$(1)]
+	\end{itemize}
 \end{itemize}
+
+\tadOperacion{modulo}{nat,nat}{nat}{}
+\tadAxioma{modulo($a$,$m$)}{
+	\IF $a$ $<$ $m$
+		THEN $a$
+		ELSE modulo($a$ $-$ $m$)
+	FI}
 
 \section{Modulos}
 \subsection{Modulo Campus Seguro}
