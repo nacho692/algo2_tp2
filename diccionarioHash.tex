@@ -24,7 +24,7 @@
 	{Definir}
 	{\In{clave}{nat}, \In{significado}{$\sigma$}, \Inout{dicc}{dicch(nat,$\sigma$)}}
 	{}
-	[$\neg$def?(clave,dicc) $\land$ dicc=$dicc_0$]
+	[dicc=$dicc_0$ $\land$ $\neg$def?(clave,$dicc_0$) $\land$ claves($dicc_0$) < tamaño($dicc_0$)]
 	{dicc $\igobs$ Definir(clave,significado,$dicc_0$)}
 	[$\Ogr(1)$ en caso promedio]
 	[Agrega un elemento al diccionario.]	
@@ -33,7 +33,7 @@
 	{Obtener}
 	{\In{clave}{nat}, \Inout{dicc}{dicch(nat,$\sigma$)}}
 	{$\sigma$}
-	[def?(clave,dicc) $\land$ dicc=$dicc_0$]
+	[def?(clave,$dicc_0$) $\land$ dicc=$dicc_0$]
 	{alias(res $\igobs$ obtener(clave,dicc)) 
 		$\land$\\ 
 		($\forall$ clave' : nat)( (clave' $\in$ claves(dicc) $\land$ clave $\neq$ clave' )$\impluego$ obtener(clave',dicc) $\igobs$ obtener(clave',$dicc_0$) )}

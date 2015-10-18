@@ -174,7 +174,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		
 		\item Los conjuntos de la lista de sanciones son subconjuntos del total de las placas de agentes. Una placa esta en uno de estos conjuntos si y sólo si el agente correspondiente tiene tantas sanciones como el valor correspondiente a ese conjunto.
 		\item La lista de sanciones esta ordenada por su primer elemento de la tupla estrictamente
-		\item Si actualizar esta en false, las tuplas de la lista son tuplas clave, significado del diccionario logaritmico y vice versa		
+		\item Si actualizar esta en false, las tuplas de la lista son tuplas (clave, significado) del diccionario logaritmico y vice versa		
 		
 		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador kSanc es igual a una secuencia ordenada de sanciones y el siguiente primer elemento de la tupla del iterador es la cantidad de sanciones del datosAg.
 		\item Para todos los datosAg de agentes, la secuencia subyacente del iterador mismasSanc es permutacion del conjunto de placas de la lista de sanciones donde se encuentra su propia placa, y el siguiente del iterador es su misma placa.
@@ -189,6 +189,7 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 	\end{enumerate}
 	
 	Para facilitar la lectura se renombra las matrices $e$.pos.mXX a mXX
+	\newpage
   \Rep[estr]{
 	\begin{enumerate}
 		\item claves($e$.hippies) $\cap$ claves(e.estudiantes) = $\emptyset$
@@ -220,9 +221,9 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
 		$\land$ Ancho(mE) = Ancho(mH) $\land$ Alto(mE) = Alto(mH)
 		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mAg) $\land$ 0 $< j <$ Alto(mAg) $\impluego$ \\
 		($\pi_1$(Valor(mAg,$i$,$j$)) $\iff$ \\
-		($\exists p$: placa) def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pos = $\langle i$, $j \rangle$ $\land$ \\ 
+		($\exists p$: placa) (def?($p$,$e$.agentes) $\yluego$ (obtener($p$,$e$.agentes).pos = $\langle i$, $j \rangle$ $\land$ \\ 
 		esPermutacion(SecuSuby($\pi_2$(Valor(mAg,$i$,$j$))), secuenciarDic($e$.agentes)) \\
-		$\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mAg,$i$,$j$))) = obtener($p$,$e$.agentes).pl)
+		$\land$ $\pi_1$(Siguiente($\pi_2$(Valor(mAg,$i$,$j$))) = obtener($p$,$e$.agentes).pl))
 		\item $\land$ ($\forall i$: nat) ($\forall j$: nat) 0 $< i <$ Ancho(mH) $\land$ 0 $< j <$ Alto(mH) $\impluego$ \\
 		($\pi_1$(Valor(mH,$i$,$j$)) $\iff$ \\
 		($\exists n$: nombre)(def?($n$,$e$.hippies) $\yluego$ \\
@@ -333,8 +334,8 @@ Se sigue el siguiente orden para las funciones que proveen los movimientos de es
   (obtener($a$,$e$.agentes).sanciones = cantSanciones($a$,$cs$) $\land$\\
   obtener($a$,$e$.agentes).premios = cantHippiesAtrapados($a$,$cs$) $\land$\\
   obtener($a$,$e$.agentes).posicion = posAgente($a$,$cs$)))) $\yluego$ \\
-  ($\forall n:$ nombre)(def?($n$,$e$.hippies) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.hippies)) $\land$\\
-  (def?($n$,$e$.estudiantes) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($a$,$e$.estudiantes)) }
+  ($\forall n:$ nombre)(def?($n$,$e$.hippies) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($n$,$e$.hippies)) $\land$\\
+  (def?($n$,$e$.estudiantes) $\impluego$ posEstudianteYHippie($n$,$cs$) = obtener($n$,$e$.estudiantes)) }
 
 
 \end{Representacion}
