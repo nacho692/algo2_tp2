@@ -34,7 +34,7 @@
 	[Y(p$_2$) $<$ Y(p$_1$) $\land$ X(p$_2$) $<$ X(p$_1$)]
 	{$res \igobs$ <X(p$_1$) $-$ X(p$_2$), Y(p$_1$) $-$ Y(p$_2$)>}
 	[$\Theta$(1)]
-	[Devuelve una nueva instancia del tipo posicion, resultado de sumar ambas X's e Y's.]
+	[Devuelve una nueva instancia del tipo posicion, resultado de restar a la primer posicion, la segunda.]
 	
 	\InterfazFuncion{DistanciaPosiciones}{\In{p_1}{posicion},\In{p_2}{posicion}}{nat}
 	{$res  \igobs$ Max(X(p$_1$), X(p$_2$)) - Min(X(p$_1$),X(p$_2$)) $+$ Max(Y(p$_1$),Y(p$_2$)) - Max(Y(p$_1$),Y(p$_2$)) }
@@ -61,23 +61,6 @@
 	\Abs[estr]{posicion}[e]{$p$}
 	{X($p$) $=$ $e$.x $\land$ Y($p$) $=$ $e$.y}
 	
-	~
-	
-	\tadOperacion{Max}{nat,nat}{nat}{}
-	\tadAxioma{Max(x,y)}{	
-		\IF x >\ y
-		THEN x
-		ELSE y
-		FI}	
-	
-	~
-	
-	\tadOperacion{Min}{nat,nat}{nat}{}
-	\tadAxioma{Min(x,y)}{	
-		\IF x >\ y
-		THEN y
-		ELSE x
-		FI}
 	
 \end{Representacion}
 

@@ -23,7 +23,7 @@
 	\InterfazFuncion{Definir}{\Inout{m}{matriz($\alpha$), \In{ancho}{nat}, \In{alto}{nat}, \In{a}{$\alpha$}}}{}
 	[posValida(m, ancho, alto) $\land$ m$_0$=m]
 	{m $\igobs$ definir(alto, ancho, a, m$_0$)}
-	[$\Ogr$(copy($\sigma$))]
+	[$\Ogr$(copy($\alpha$))]
 	[Defino el elemento $a$ en la matriz.]
 	
 	\InterfazFuncion{$\bullet$[$\bullet$][$\bullet$]}{\Inout{m}{matriz($\alpha$)}, \In{ancho}{nat}, \In{alto}{nat}}{$\alpha$}
@@ -31,11 +31,11 @@
 	{alias($res \igobs$ valor(m, ancho, alto))}
 	[$\Ogr$(1)]
 	[Devuelve el elemento en la posicion $ancho$*$alto$ de la matriz $m$ con alias.]
-	[res es modificable si y sólo si $\sigma$ es modificable.]
+	[res es modificable si y sólo si $\alpha$ es modificable.]
 
 	\InterfazFuncion{Copiar}{\In{m}{matriz($\alpha$)}}{matriz($\alpha$)}
 	{$res \igobs$ m}  
-	[$\Ogr$($ancho$ x $alto$ x copy($\sigma$))]
+	[$\Ogr$($ancho$ x $alto$ x copy($\alpha$))]
 	[Crea una copia de la matriz $m$.]
 
 	\InterfazFuncion{Alto}{\In{m}{matriz($\alpha$)}}{nat}
@@ -75,7 +75,7 @@
 	
 	\AbsFc{matriz($\alpha$)}
 	{mat: matriz($\alpha$) $|$ $e$.ancho = Ancho(mat) $\land$ e.alto = Alto(mat) $\yluego$\\
-	($\forall$ i, j: nat)( (i $<$ $e$.ancho $\land$ j $<$ $e$.alto) $\impluego$ e.matriz[i][j] = Valor?(mat, i, j) )}
+	($\forall$ i, j: nat)( (i $<$ $e$.ancho $\land$ j $<$ $e$.alto) $\impluego$ (e.matriz[i])[j] = Valor?(mat, i, j) )}
 	
 \begin{Algoritmos}
 	
@@ -84,22 +84,22 @@
 		
 		\begin{algorithmic}[1]
 			\Procedure{iCrearMatriz}{\texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $estr$
-			\State $res$ $\leftarrow$ CrearArreglo(ancho) de arreglos\_dimensionables de $\sigma$ \Comment $\Ogr$(1)
+			\State $res$ $\leftarrow$ CrearArreglo(ancho) de arreglos\_dimensionables de $\alpha$ \Comment $\Ogr$(ancho)
 			\State i $\leftarrow$ $0$ \Comment $\Ogr$(1)
-			\While{i $<$ ancho} \Comment $\Ogr$(alto x copy($\sigma$)) ancho de veces $\implies$ $\Ogr$(ancho x alto x copy($\sigma$))
+			\While{i $<$ ancho} \Comment $\Ogr$(alto x copy($\alpha$)) ancho de veces $\implies$ $\Ogr$(ancho x alto x copy($\alpha$))
 				\State j $\leftarrow$ $0$ \Comment $\Ogr$(1)
-				\State $res$[i] $\leftarrow$ CrearArreglo(alto) de $\sigma$ \Comment $\Ogr$(1)
-				\While{j $<$ alto} \Comment $\Ogr$( copy($\sigma$) ) alto de veces $\implies$  $\Ogr$(alto x copy($\sigma$))
-					\State $res$[i][j] $\leftarrow$ Copiar(a) \Comment $\Ogr$( copy($\sigma$))
+				\State $res$[i] $\leftarrow$ CrearArreglo(alto) de $\alpha$ \Comment $\Ogr$(alto)
+				\While{j $<$ alto} \Comment $\Ogr$( copy($\alpha$) ) alto de veces $\implies$  $\Ogr$(alto x copy($\alpha$))
+					\State $res$[i][j] $\leftarrow$ Copiar(a) \Comment $\Ogr$( copy($\alpha$))
 					\State j $\leftarrow$ j$+1$ \Comment $\Ogr$(1)
 				\EndWhile
 				\State i $\leftarrow$ i$+1$ \Comment $\Ogr$(1)
 			\EndWhile
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(ancho x alto x copy($\sigma$))
+		\underline{Complejidad:} $\Ogr$(ancho x alto x copy($\alpha$))
 		\\
-		\underline{Justificacion:} $\Ogr$(1)+$\Ogr$(1)+$\Ogr$(ancho x alto x copy($\sigma$)) $\implies \Ogr$(ancho x alto x copy($\sigma$))
+		\underline{Justificacion:} $\Ogr$(ancho)+$\Ogr$(1)+$\Ogr$(ancho x alto x copy($\alpha$)) $\implies \Ogr$(ancho x alto x copy($\alpha$))
 		
 	\end{algorithm}
 	
@@ -107,11 +107,11 @@
 		\caption{iDefinir}
 		
 		\begin{algorithmic}[1]
-			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}} $\to res$ : $\alpha$
-			\State (e.matriz[ancho])[alto] $\leftarrow$ Copiar(a) \Comment $\Ogr$(1) $\Rightarrow \Ogr$(copy($\sigma$))
+			\Procedure{iDefinir}{\texttt{in/out} e : \texttt{estr}, \texttt{in} ancho : \texttt{nat}, \texttt{in} alto : \texttt{nat}, \texttt{in} a : \texttt{$\alpha$}}
+			\State (e.matriz[ancho])[alto] $\leftarrow$ Copiar(a) \Comment $\Ogr$(1) $\Rightarrow \Ogr$($copy$($\alpha$))
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(copy($\sigma$))
+		\underline{Complejidad:} $\Ogr$($copy$($\alpha$))
 		
 	\end{algorithm}
 	
@@ -144,9 +144,9 @@
 			\EndWhile
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+		\underline{Complejidad:} $\Ogr$(ancho x alto x $copy$($\alpha$))
 		\\
-		\underline{Justificacion:} Llamo $\alpha$ a el tipo de elemento de e.matriz. $\Ogr$(e.ancho x e.alto x copy($\alpha$)) + $\Ogr$(1) + $\Ogr$(e.ancho x e.alto x $copy$($\alpha$)) $=$ $\Ogr$(e.ancho x e.alto x $copy$($\alpha$))
+		\underline{Justificacion:} Llamo $\alpha$ a el tipo de elemento de e.matriz. $\Ogr$(e.ancho x e.alto x copy($\alpha$)) + $\Ogr$(1) + $\Ogr$(e.ancho x e.alto x $copy$($\alpha$)) $=$ $\Ogr$(ancho x alto x $copy$($\alpha$)).
 		
 	\end{algorithm}
 	

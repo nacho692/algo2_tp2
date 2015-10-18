@@ -41,8 +41,8 @@
 
 \begin{Representacion}
 	
-	\begin{Estructura}{itDiccLog(tupla<nat, $\sigma$>)}
-		\begin{Tupla}
+	\begin{Estructura}{itDiccLog(tupla <nat, $\sigma$>)}[ite]
+		\begin{Tupla}[ite]
 			\tupItem{pos}{nat}
 			\tupItem{dic}{puntero(estr)}
 		\end{Tupla}
@@ -51,20 +51,20 @@
 		
 ~
 	
-	\Rep[ite][i]{i.pos $\leq$ *dic.proxADefinir}
+	\Rep[ite][i]{i.pos $\leq$ *(i.dic).proxADefinir}
 
 ~
 
 	\Abs[ite]{itDiccLog(tupla<nat,$\sigma$>)}[i]{itL}{Siguientes(itL) $\igobs$ \\
-	SecuenciarClavesArreglo(*dic.valores, *dic.tamaño, i.pos)}
+	SecuenciarClavesArreglo(*(i.dic).valores, *(i.dic).tamaño, i.pos)}
 	
 ~
 
-	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>),nat,nat}{secu(nat)}{}
-	\tadAxioma{SecuenciaClavesArreglo(var,tam,pos)}{
+	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>), nat}{secu(nat)}{}
+	\tadAxioma{SecuenciaClavesArreglo(var, tam, pos)}{
 		\IF pos $\igobs$ tam
 			THEN <>
-			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var,tam,pos $+$ 1 )
+			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var, tam, pos $+$ 1 )
 		FI}	
 	
 \end{Representacion}
@@ -94,7 +94,7 @@
 	\begin{algorithm}[H]
 		\caption{iSiguienteSignificado}
 		\begin{algorithmic}
-			\Procedure{iSiguienteClave}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
+			\Procedure{iSiguienteSignificado}{\texttt{in} i : \texttt{ite}} $\to res$ : $nat$
 				\State $res \gets$ *(i.dic).valores[i.pos].significado \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}

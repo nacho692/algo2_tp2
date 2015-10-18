@@ -21,13 +21,9 @@
 			THEN <>
 			ELSE dameUno(cs) $\bullet$ Secuenciar(sinUno(cs))
 		FI}	
-
-~
 	
 	\tadOperacion{Permutacion}{secu(nat),secu(nat)}{bool}{}
 	\tadAxioma{Permutacion(s,t)}{ Iguales( MultiConjuntizar(s), MultiConjuntizar(t) )}
-
-~
 	
 	\tadOperacion{MultiConjuntizar}{secu(nat)}{multiconj(nat)}{}
 	\tadAxioma{MultiConjuntizar(s)}{
@@ -35,8 +31,6 @@
 			THEN $\emptyset$
 			ELSE Ag(prim(s), MultiConjuntizar(fin(s)) )
 		FI}
-
-~
 
 	\tadOperacion{Iguales}{multiconj(nat),multiconj(nat)}{bool}{}
 	\tadAxioma{Iguales(m$_1$, m$_2$)}{
@@ -46,7 +40,6 @@
 		$\land$ Iguales(sinUno(m$_1$), m$_2$ $-\{$dameUno(m$_1$)$\}$ )
 		FI}
 		
-
 ~
 	
 	\InterfazFuncion{HaySiguiente}{\In{it}{itClavesDiccLog(nat)}}{bool}
@@ -81,20 +74,20 @@
 	
 ~	
 
-	\Rep[ite][i]{i.pos $\leq$ e.proxADefinir $\land$ i.dic $\neq$ NULL}
+	\Rep[ite][i]{i.pos $\leq$ *(i.dic).proxADefinir $\land$ i.dic $\neq$ NULL}
 	
 ~
 
 	\Abs[ite]{itClavesDiccLog(nat)}[i]{itC}{\\
-	Siguientes(itC) $\igobs$ SecuenciarClavesArreglo(*dic.valores, *dic.tamaño, i.pos)}
+	Siguientes(itC) $\igobs$ SecuenciarClavesArreglo(*(i.dic).valores, \\ *(i.dic).tamaño, i.pos )}
 	
 ~
 
-	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>),nat,nat}{secu(nat)}{}
-	\tadAxioma{SecuenciaClavesArreglo(var,tam,pos)}{
+	\tadOperacion{SecuenciarClavesArreglo}{arreglo(tupla<$clave$ : nat, $significado$ : $\sigma$>),nat}{secu(nat)}{}
+	\tadAxioma{SecuenciaClavesArreglo(var, tam, pos)}{
 		\IF pos $\igobs$ tam
 			THEN <>
-			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var,tam,pos $+$ 1 )
+			ELSE var[pos].clave $\bullet$ SecuenciarArreglo(var, tam, pos $+$ 1 )
 		FI}	
 	
 \end{Representacion}

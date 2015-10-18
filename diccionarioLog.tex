@@ -43,7 +43,7 @@
 	\InterfazFuncion{Obtener}{\Inout{d}{diccLog(nat,$\sigma$)}, \In{c}{nat}}{$\sigma$}
 	[def?(c,d) $\land$ d=$d_0$]
 	{alias(res $\igobs$ obtener(c,d)) $\land$ ($\forall$ c' : nat)( (c' $\in$ claves(d) $\land$ c $\neq$ c') 
-	$\Rightarrow$ obtener(c',d) $\igobs$ obtener(c,d) )}
+	$\impluego$ obtener(c',d) $\igobs$ obtener(c,$d_0$) )}
 	[$\Ogr$(log $\#$claves(d))]
 	[Devuelve el significado de la clave c.]
 	[res es modificable si y sólo si $\sigma$ modificable.]
@@ -56,16 +56,16 @@
 	
 	\begin{Estructura}{diccLog(nat, $\sigma$)}
 		\begin{Tupla}
-			\tupItem{tamaño}{nat}
-			\tupItem{valores}{arreglo dimensionable de tupla<$clave$ : nat, $significado$ : $\sigma$>}
+			\tupItem{tamaño}{nat} \\
+			\tupItem{valores}{arreglo dimensionable de tupla <$clave$ : nat, $significado$ : $\sigma$>}
 			\tupItem{proxADefinir}{nat}
 		\end{Tupla}
 	\end{Estructura}
 	
 	\Rep{SinRepetidos(Claves(e.valores)) $\land$ Ordenada(Claves(e.valores))\\
-		e.tamaño $\igobs$ tamaño(e.valores) $\land$ e.proxADefinir $\leq$ e.tamaño\\
+		$\land$ e.tamaño $\igobs$ tamaño(e.valores) $\land$ e.proxADefinir $\leq$ e.tamaño\\
 		$\land$ ($\forall$ i : nat)( (i $<$ e.tamaño $\land$ $\neg$definido(e.valores, i)) $\impluego$  \\
-		\tab \tab \tab \tab ( ($\forall$ j : nat)( (i $<$ j $\land$ j $<$ e.tamaño ) $\impluego$ $\neg$definido(e.valores, i)))}
+		\tab \tab \tab \tab ( ($\forall$ j : nat)( (i $<$ j $\land$ j $<$ e.tamaño ) $\impluego$ $\neg$definido(e.valores, j ))))}
 		
 ~
 	\tadOperacion{SinRepetidos}{secu(nat)}{bool}{}
@@ -100,7 +100,7 @@
 	\AbsFc{diccLog(nat,$\sigma$)}{d : diccLog(nat,$\sigma$)/\\
 	e.tamaño $\igobs$ tamaño(d)\\
 	($\forall$ c : nat)( def?(c,d) $\Leftrightarrow$ ($\exists$ i : nat)( 0 $\leq$ i $<$ e.tamaño) $\land$ definido(e.valores,i) $\yluego$ e.valores[i].clave $\igobs$ c )\\
-	($\forall$ c : nat)( def(c,d) $\impluego$ Obtener(c,d) $\igobs$ Significado(c,e) )}
+	$\yluego$ ( def(c,d) $\impluego$ Obtener(c,d) $\igobs$ Significado(c,e) )}
 	
 ~
 
@@ -123,8 +123,8 @@
 		\begin{algorithmic}
 			\Procedure{iVacio}{\texttt{in} tam : \texttt{nat}} $\to res$ : $estr$
 				\State $e.tamaño \gets$ tam \Comment $\Ogr$(1)
-				\State $e.valores \gets$ CrearArreglo(tam) \Comment $\Ogr$(1)
-				\State $e.proxADefinir \gets$ 0 \Comment $\Ogr$(1)				
+				\State $e.valores \gets$ CrearArreglo(tam) \Comment $\Ogr$(tam)
+				\State $e.proxADefinir \gets$ 0 \Comment $\Ogr$(tam)				
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(1)
@@ -162,7 +162,7 @@
 				\State $res \gets$ ( e.valores[medio].clave $=$ c ) \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves)\\
+		\underline{Complejidad:} $\Ogr$(log $\#$claves)\\
 		\underline{Justificación:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
 	\end{algorithm}
 	
@@ -207,7 +207,7 @@
 				\State $res \gets$ e.valores[medio].significado \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
-		\underline{Complejidad:} $\Ogr$($\#$claves)\\
+		\underline{Complejidad:} $\Ogr$(log $\#$claves)\\
 		\underline{Justificación:} e.proxADefinir $-$ 1 coincide con la cantidad de claves definidas en el diccionario, pues se van agregando adelante. $\Ogr$(e.proxADefinir) $=$ $\Ogr$($\#$claves)
 	\end{algorithm}
 	

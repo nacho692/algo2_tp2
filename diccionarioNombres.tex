@@ -12,7 +12,7 @@
 	\textbf{se explica con}: \tadNombre{diccionario(string,$\sigma$)}
 	
 	\textbf{usa}: nat, bool
-	
+
 	\textbf{géneros}: \TipoVariable{diccNom(string, $\sigma$)}
 	
 	\tituloModulo{Operaciones de DiccionarioNombres(string,$\sigma$)}
@@ -24,7 +24,7 @@
 	
 	\InterfazFuncion{Definir}{\Inout{d}{diccNom(string,$\sigma$)}, \In{c}{string}, \In{s}{$\sigma$}}{itDiccNom(string,$\sigma$)}
 	[$\neg$def?(c,d) $\land$ d=$d_0$]
-	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <k,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
+	{d $\igobs$ Definir(c,s,$d_0$) $\land$ haySiguiente(res) $\yluego$ siguiente(res) $\igobs$ <c,s> $\land$ alias(esPermutacion(SecuSuby(res),d))}
 	[$\Ogr$(|c| + copy(s))]
 	[Agrega un elemento al diccionario y devuelve un iterador apuntando a ese elemento.]	
 	
@@ -82,7 +82,6 @@
 						FI}
 	Donde li es Lista(tupla<$letra$ : char, $significado$ : puntero($\sigma$), $prox$ : diccT(string, $\sigma$)>
 	
-~	
 	
 	\tadOperacion{SinRepetidos}{secu($\alpha$)}{bool}{}
 	\tadAxioma{SinRepetidos(s)}{\IF vacio?(s)
@@ -90,7 +89,6 @@
 									ELSE $\neg$esta?(prim(s),fin(s)) $\land$ SinRepetidos(fin(s))
 								FI}
 	
-~
 ~
 	
 	
@@ -216,7 +214,7 @@
 	\end{algorithm}
 	
 	\begin{algorithm}[H]
-		\caption{iBuscar}
+		\caption{Buscar}
 
 		\InterfazFuncion{Buscar}{\In{c}{char}, \Inout{t}{diccT(string,$\sigma$)}}{tupla<$letra$ char, $significado$ puntero($\sigma$), $prox$ diccT(string,$\sigma$)>}
 		[esta(c,t)]
@@ -228,7 +226,7 @@
 ~	
 
 		\begin{algorithmic}
-			\Procedure{iBuscar}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $tupla<char, puntero(\sigma), diccT(string,\sigma)>$
+			\Procedure{Buscar}{\texttt{in} c : \texttt{char}, \texttt{in} t : \texttt{diccT(string,$\sigma$)}} $\to res$ : $tupla<char, puntero(\sigma), diccT(string,\sigma)>$
 				\State $it \gets$ crearIt(t)
 				\While{Siguiente(it).letra $\neq$ c} \Comment Se repite a lo sumo la cantidad de char, que es una constate $\Rightarrow$ $\Ogr$(1)
 					\State Avanzar(it) \Comment $\Ogr$(1)
@@ -249,7 +247,7 @@
 					\State $piso \gets$ Buscar(c[i],piso).prox \Comment $\Ogr$(1)
 					\State i++ \Comment $\Ogr$(1)
 				\EndWhile
-				\State $res \gets$ *(Buscar(s[i],piso).significado) \Comment $\Ogr$(1)
+				\State $res \gets$ *(Buscar(c[i],piso).significado) \Comment $\Ogr$(1)
 			\EndProcedure
 		\end{algorithmic}
 		\underline{Complejidad:} $\Ogr$(|c|)
